@@ -13,9 +13,9 @@ The project uses a [forked version](https://github.com/progrium/prmd) of Heroku'
 
 # Roadmap
 
-[x] sketch out new resources and endpoints
-[ ] create full schemas for them
-[ ] write API intro docs (auth, range, etc)
-[ ] get internal feedback, iterate
-[ ] start new Go frontend
-[ ] get trusted external feedback, iterate
+- [x] sketch out new resources and endpoints
+- [ ] create full schemas for them
+- [ ] write API intro docs (auth, range, etc)
+- [ ] get internal feedback, iterate
+- [ ] start new Go frontend
+- [ ] get trusted external feedback, iterate
