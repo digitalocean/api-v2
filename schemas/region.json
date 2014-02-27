@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
+  "id": "schema/region",
+  "title": "... - Region",
+  "type": [
+    "object"
+  ],
+  "definitions": {
+    "name": {
+      "description": "display name of region",
+      "example": "New York 1",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "id": {
+      "description": "unique identifier of region",
+      "example": 3,
+      "format": "integer",
+      "readOnly": true,
+      "type": [
+        "integer"
+      ]
+    },
+    "identity": {
+      "anyOf": [
+        {
+          "$ref": "/schema/region#/definitions/id"
+        }
+      ]
+    },
+    "slug": {
+      "description": "url friendly name",
+      "example": "nyc1",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    }
+  },
+  "links": [
+    {
+      "description": "List existing region.",
+      "href": "/regions",
+      "method": "GET",
+      "rel": "instances",
+      "title": "List"
+    }
+  ],
+  "properties": {
+    "name": {
+      "$ref": "/schema/region#/definitions/name"
+    },
+    "id": {
+      "$ref": "/schema/region#/definitions/id"
+    },
+    "slug": {
+      "$ref": "/schema/region#/definitions/slug"
+    }
+  }
+}

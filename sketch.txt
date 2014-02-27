@@ -1,0 +1,77 @@
+GET		/oauth/authorizations
+POST	/oauth/authorizations
+GET		/oauth/authorizations/:id
+DELETE	/oauth/authorizations/:id
+
+GET		/oauth/clients
+POST	/oauth/clients
+GET 	/oauth/clients/:id
+PATCH 	/oauth/clients/:id
+DELETE	/oauth/clients/:id
+
+POST	/oauth/tokens
+
+GET		/regions
+GET		/sizes
+
+GET		/account/keys
+POST	/account/keys
+GET		/account/keys/:id_or_fingerprint
+DELETE	/account/keys/:id_or_fingerprint
+
+GET		/images
+GET		/images/:id
+PATCH	/images/:id
+DELETE	/images/:id
+POST	/images/:id/events 		201 / 303
+	transfer=nyc2
+GET		/images/:id/events/:id	200 *long-polling option
+
+GET		/domains
+POST	/domains
+GET		/domains/:name
+DELETE	/domains/:name
+GET		/domains/:name/records
+POST	/domains/:name/records
+GET		/domains/:name/records/:id
+PATCH	/domains/:name/records/:id
+DELETE	/domains/:name/records/:id
+
+POST	/droplets				201 / 303
+	Pragma: event-wait
+	Location: /droplets/:id/events/:id
+	
+GET 	/droplets
+GET		/droplets/:id
+DELETE	/droplets/:id			202 / 303
+	Location: /droplets/:id/events/:id
+PATCH	/droplets/:id
+GET		/droplets/:id/events
+POST	/droplets/:id/events	201 / 303
+	Location: /droplets/:id/events/:id
+	
+	reboot (soft/hard)
+	shutdown (soft/hard)
+	boot
+	resetpassword
+	resize
+	snapshot
+	rebuild
+	restore
+	
+GET		/droplets/:id/events/:id	*long-polling option
+	Pragma: event-wait
+
+
+	
+	
+standard
+	link to event
+	poll
+
+blocking
+	block until state changed
+	Pragma: event-wait
+
+async
+	provide http callback
