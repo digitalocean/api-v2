@@ -1,15 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-04/hyper-schema",
-  "id": "schema/region",
-  "title": "... - Region",
-  "description": "Regions are available datacenters within the DigitalOcean cloud.",
+  "id": "schema/size",
+  "title": "... - Size",
+  "description": "Sizes represent possible Droplet resources.",
   "type": [
     "object"
   ],
   "definitions": {
     "name": {
-      "description": "display name of region",
-      "example": "New York 1",
+      "description": "display name of size",
+      "example": "512MB",
       "format": "string",
       "readOnly": true,
       "type": [
@@ -17,8 +17,8 @@
       ]
     },
     "id": {
-      "description": "unique identifier of region",
-      "example": 3,
+      "description": "unique identifier of size",
+      "example": 2,
       "format": "integer",
       "readOnly": true,
       "type": [
@@ -28,13 +28,13 @@
     "identity": {
       "anyOf": [
         {
-          "$ref": "/schema/region#/definitions/id"
+          "$ref": "/schema/size#/definitions/id"
         }
       ]
     },
     "slug": {
       "description": "url friendly name",
-      "example": "nyc1",
+      "example": "512mb",
       "format": "string",
       "readOnly": true,
       "type": [
@@ -44,8 +44,8 @@
   },
   "links": [
     {
-      "description": "List available regions.",
-      "href": "/regions",
+      "description": "List available sizes.",
+      "href": "/sizes",
       "method": "GET",
       "rel": "instances",
       "title": "List"
@@ -53,13 +53,13 @@
   ],
   "properties": {
     "name": {
-      "$ref": "/schema/region#/definitions/name"
+      "$ref": "/schema/size#/definitions/name"
     },
     "id": {
-      "$ref": "/schema/region#/definitions/id"
+      "$ref": "/schema/size#/definitions/id"
     },
     "slug": {
-      "$ref": "/schema/region#/definitions/slug"
+      "$ref": "/schema/size#/definitions/slug"
     }
   }
 }

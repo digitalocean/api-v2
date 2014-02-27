@@ -1,0 +1,146 @@
+{
+  "definitions": {
+    "region": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "id": "schema/region",
+      "title": "... - Region",
+      "description": "Regions are available datacenters within the DigitalOcean cloud.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "name": {
+          "description": "display name of region",
+          "example": "New York 1",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "description": "unique identifier of region",
+          "example": 3,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/region/definitions/id"
+            }
+          ]
+        },
+        "slug": {
+          "description": "url friendly name",
+          "example": "nyc1",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "List available regions.",
+          "href": "/regions",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        }
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/region/definitions/name"
+        },
+        "id": {
+          "$ref": "#/definitions/region/definitions/id"
+        },
+        "slug": {
+          "$ref": "#/definitions/region/definitions/slug"
+        }
+      }
+    },
+    "size": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "id": "schema/size",
+      "title": "... - Size",
+      "description": "Sizes represent possible Droplet resources.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "name": {
+          "description": "display name of size",
+          "example": "512MB",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "description": "unique identifier of size",
+          "example": 2,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/size/definitions/id"
+            }
+          ]
+        },
+        "slug": {
+          "description": "url friendly name",
+          "example": "512mb",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "List available sizes.",
+          "href": "/sizes",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        }
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/size/definitions/name"
+        },
+        "id": {
+          "$ref": "#/definitions/size/definitions/id"
+        },
+        "slug": {
+          "$ref": "#/definitions/size/definitions/slug"
+        }
+      }
+    }
+  },
+  "properties": {
+    "region": {
+      "$ref": "#/definitions/region"
+    },
+    "size": {
+      "$ref": "#/definitions/size"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
+  "type": [
+    "object"
+  ]
+}
