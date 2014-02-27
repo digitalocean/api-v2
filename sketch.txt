@@ -1,77 +1,98 @@
-GET		/oauth/authorizations
-POST	/oauth/authorizations
-GET		/oauth/authorizations/:id
-DELETE	/oauth/authorizations/:id
+GET     /oauth/authorizations
+POST    /oauth/authorizations
+GET     /oauth/authorizations/:id
+DELETE  /oauth/authorizations/:id
 
-GET		/oauth/clients
-POST	/oauth/clients
-GET 	/oauth/clients/:id
-PATCH 	/oauth/clients/:id
-DELETE	/oauth/clients/:id
+GET     /oauth/clients
+POST    /oauth/clients
+GET     /oauth/clients/:id
+PATCH   /oauth/clients/:id
+DELETE  /oauth/clients/:id
 
-POST	/oauth/tokens
+POST    /oauth/tokens
 
-GET		/regions
-GET		/sizes
+GET     /regions
+GET     /sizes
 
-GET		/account/keys
-POST	/account/keys
-GET		/account/keys/:id_or_fingerprint
-DELETE	/account/keys/:id_or_fingerprint
+GET     /account/keys
+POST    /account/keys
+GET     /account/keys/:id_or_fingerprint
+DELETE  /account/keys/:id_or_fingerprint
 
-GET		/images
-GET		/images/:id
-PATCH	/images/:id
-DELETE	/images/:id
-POST	/images/:id/events 		201 / 303
-	transfer=nyc2
-GET		/images/:id/events/:id	200 *long-polling option
+GET     /images
+GET     /images/:id
+PATCH   /images/:id
+DELETE  /images/:id
+POST    /images/:id/events                # event producer
+  Event type available:
+    transfer
+GET     /images/:id/events/:id            # event resource
 
-GET		/domains
-POST	/domains
-GET		/domains/:name
-DELETE	/domains/:name
-GET		/domains/:name/records
-POST	/domains/:name/records
-GET		/domains/:name/records/:id
-PATCH	/domains/:name/records/:id
-DELETE	/domains/:name/records/:id
+GET     /domains
+POST    /domains
+GET     /domains/:name
+DELETE  /domains/:name
+GET     /domains/:name/records
+POST    /domains/:name/records
+GET     /domains/:name/records/:id
+PATCH   /domains/:name/records/:id
+DELETE  /domains/:name/records/:id
 
-POST	/droplets				201 / 303
-	Pragma: event-wait
-	Location: /droplets/:id/events/:id
+POST    /droplets                         # event producer
+GET     /droplets
+GET     /droplets/:id
+DELETE  /droplets/:id                     # event dependent
+PATCH   /droplets/:id
+GET     /droplets/:id/events
+POST    /droplets/:id/events              # event producer
+  Event types available:
+    reboot (soft/hard)
+    shutdown (soft/hard)
+    boot
+    resetpassword
+    resize
+    snapshot
+    rebuild
+    restore	
+GET     /droplets/:id/events/:id          # event resource
+
+
+# About events
+
+Some resources have event sub-resources to model long-running async operations.
+An event resource is mostly specific to the resource it is an event for, however
+it must model whether it has completed or not. It may also include a percentage
+value for its progress.
+
+There are two current ways to deal with events:
+
+1. Traditional Links and Polling
+  If an event is created directly (POST on a /events), then a 201 Created response
+  with a Location header linking to the event resource is provided. You can then
+  poll this resource until it is completed.
+
+  If an event is produced as a byproduct (boot event on POST /droplets), then a 201
+  Created response is provided with a Location header to the resource created AND 
+  a Link header of rel=event pointing to the event resource. You can then poll the 
+  resource via the Link header until it is completed.
+  
+  If an event is created that precludes the current action on a resource 
+  (DELETE /droplets/:id), then a 202 Accepted response is given with a Location header
+  pointing to the event resource is given. Again you can poll this to find out when
+  the operation completed.
+
+2. Long-polling and Pragma: event-wait
+  This approach takes advantage of long-polling to block on requests for event resources
+  until the event is completed. The way this option is enabled is using the request header
+  "Pragma: event-wait". This directive effects the API in two ways:
+  
+  If used on a request to GET an event resource, it will block until the event completes.
+  
+  If used on a request that produces or depends on an event, it will change the response
+  behavior to respond with 303 See Also and a Location header to the event resource. This
+  results in the potential for an automatic redirect to the event resource that should carry
+  over the Pragma: event-wait header, which will cause it to block. This allows you to enable
+  blocking behavior from resource operations that don't directly model the event, but may be
+  convenient to block from.
 	
-GET 	/droplets
-GET		/droplets/:id
-DELETE	/droplets/:id			202 / 303
-	Location: /droplets/:id/events/:id
-PATCH	/droplets/:id
-GET		/droplets/:id/events
-POST	/droplets/:id/events	201 / 303
-	Location: /droplets/:id/events/:id
-	
-	reboot (soft/hard)
-	shutdown (soft/hard)
-	boot
-	resetpassword
-	resize
-	snapshot
-	rebuild
-	restore
-	
-GET		/droplets/:id/events/:id	*long-polling option
-	Pragma: event-wait
-
-
-	
-	
-standard
-	link to event
-	poll
-
-blocking
-	block until state changed
-	Pragma: event-wait
-
-async
-	provide http callback
+A third way is possible in the future based on webhooks.
