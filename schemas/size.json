@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/hyper-schema",
   "id": "schema/size",
-  "title": "... - Size",
+  "title": "DigitalOcean API - Size",
   "description": "Sizes represent possible Droplet resources.",
   "type": [
     "object"

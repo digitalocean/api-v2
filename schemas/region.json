@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/hyper-schema",
   "id": "schema/region",
-  "title": "... - Region",
+  "title": "DigitalOcean API - Region",
   "description": "Regions are available datacenters within the DigitalOcean cloud.",
   "type": [
     "object"

@@ -11,8 +11,30 @@ DELETE  /oauth/clients/:id
 
 POST    /oauth/tokens
 
+
+# Regions
+
+name
+id
+slug
+
 GET     /regions
+
+# Sizes
+
+name
+id
+slug
+regions   * TODO
+
 GET     /sizes
+
+# Keys
+
+fingerprint
+id
+public_key
+name
 
 GET     /account/keys
 POST    /account/keys
@@ -23,15 +45,27 @@ GET     /images
 GET     /images/:id
 PATCH   /images/:id
 DELETE  /images/:id
-POST    /images/:id/events                # event producer
-  Event type available:
+POST    /images/:id/actions                # event producer
+  Action type available:
     transfer
-GET     /images/:id/events/:id            # event resource
+GET     /images/:id/actions/:id            # event resource
+
+# Domains
+
+id
+name
+ttl
+live_zone_file
+error?
+zone_file_with_error?
 
 GET     /domains
 POST    /domains
 GET     /domains/:name
 DELETE  /domains/:name
+
+# Domain Records
+
 GET     /domains/:name/records
 POST    /domains/:name/records
 GET     /domains/:name/records/:id
@@ -43,9 +77,9 @@ GET     /droplets
 GET     /droplets/:id
 DELETE  /droplets/:id                     # event dependent
 PATCH   /droplets/:id
-GET     /droplets/:id/events
-POST    /droplets/:id/events              # event producer
-  Event types available:
+GET     /droplets/:id/actions
+POST    /droplets/:id/actions              # event producer
+  Action types available:
     reboot (soft/hard)
     shutdown (soft/hard)
     boot
@@ -54,7 +88,7 @@ POST    /droplets/:id/events              # event producer
     snapshot
     rebuild
     restore	
-GET     /droplets/:id/events/:id          # event resource
+GET     /droplets/:id/actions/:id          # event resource
 
 
 # About events
