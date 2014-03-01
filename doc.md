@@ -10,36 +10,60 @@ Domain records are the DNS records for a domain.
     <th>Example</th>
   </tr>
   <tr>
-    <td><strong>created_at</strong></td>
-    <td><em>date-time</em></td>
-    <td>when domain-record was created</td>
-    <td><code>"2012-01-01T12:00:00Z"</code></td>
-  </tr>
-  <tr>
     <td><strong>id</strong></td>
     <td><em>uuid</em></td>
     <td>unique identifier of domain-record</td>
     <td><code>"01234567-89ab-cdef-0123-456789abcdef"</code></td>
   </tr>
   <tr>
-    <td><strong>updated_at</strong></td>
-    <td><em>date-time</em></td>
-    <td>when domain-record was updated</td>
-    <td><code>"2012-01-01T12:00:00Z"</code></td>
+    <td><strong>type</strong></td>
+    <td><em>string</em></td>
+    <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
+    <td><code>"CNAME"</code></td>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>name to use for the DNS record</td>
+    <td><code>"subdomain"</code></td>
+  </tr>
+  <tr>
+    <td><strong>data</strong></td>
+    <td><em>string</em></td>
+    <td>value to use for the DNS record</td>
+    <td><code>"@"</code></td>
+  </tr>
+  <tr>
+    <td><strong>priority</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>priority for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>port</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>port for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>weight</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>weight for SRV records</td>
+    <td><code>null</code></td>
   </tr>
 </table>
 
 ### Domain Record Create
-Create a new domain-record.
+Create a new domain record.
 
 ```
-POST /domain-records
+POST /domains/{domain_identity}/records
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/domain-records
+$ curl -n -X POST https://api.heroku.com/domains/$DOMAIN_IDENTITY/records
 ```
 
 #### Response Example
@@ -50,23 +74,27 @@ RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "updated_at": "2012-01-01T12:00:00Z"
+  "type": "CNAME",
+  "name": "subdomain",
+  "data": "@",
+  "priority": null,
+  "port": null,
+  "weight": null
 }
 ```
 
 ### Domain Record Delete
-Delete an existing domain-record.
+Delete an existing domain record.
 
 ```
-DELETE /domain-records/{domain_record_identity}
+DELETE /domains/{domain_identity}/records/{domain_record_identity}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.heroku.com/domain-records/$DOMAIN_RECORD_IDENTITY
+$ curl -n -X DELETE https://api.heroku.com/domains/$DOMAIN_IDENTITY/records/$DOMAIN_RECORD_IDENTITY
 ```
 
 #### Response Example
@@ -77,23 +105,27 @@ RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "updated_at": "2012-01-01T12:00:00Z"
+  "type": "CNAME",
+  "name": "subdomain",
+  "data": "@",
+  "priority": null,
+  "port": null,
+  "weight": null
 }
 ```
 
 ### Domain Record Info
-Info for existing domain-record.
+Info for existing domain records.
 
 ```
-GET /domain-records/{domain_record_identity}
+GET /domains/{domain_identity}/records/{domain_record_identity}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/domain-records/$DOMAIN_RECORD_IDENTITY
+$ curl -n -X GET https://api.heroku.com/domains/$DOMAIN_IDENTITY/records/$DOMAIN_RECORD_IDENTITY
 ```
 
 #### Response Example
@@ -104,23 +136,27 @@ RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "updated_at": "2012-01-01T12:00:00Z"
+  "type": "CNAME",
+  "name": "subdomain",
+  "data": "@",
+  "priority": null,
+  "port": null,
+  "weight": null
 }
 ```
 
 ### Domain Record List
-List existing domain-record.
+List existing domain records.
 
 ```
-GET /domain-records
+GET /domains/{domain_identity}/records
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/domain-records
+$ curl -n -X GET https://api.heroku.com/domains/$DOMAIN_IDENTITY/records
 ```
 
 #### Response Example
@@ -134,24 +170,28 @@ RateLimit-Remaining: 1200
 ```javascript```
 [
   {
-    "created_at": "2012-01-01T12:00:00Z",
     "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "updated_at": "2012-01-01T12:00:00Z"
+    "type": "CNAME",
+    "name": "subdomain",
+    "data": "@",
+    "priority": null,
+    "port": null,
+    "weight": null
   }
 ]
 ```
 
 ### Domain Record Update
-Update an existing domain-record.
+Update an existing domain records.
 
 ```
-PATCH /domain-records/{domain_record_identity}
+PATCH /domains/{domain_identity}/records/{domain_record_identity}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.heroku.com/domain-records/$DOMAIN_RECORD_IDENTITY
+$ curl -n -X PATCH https://api.heroku.com/domains/$DOMAIN_IDENTITY/records/$DOMAIN_RECORD_IDENTITY
 ```
 
 #### Response Example
@@ -162,9 +202,13 @@ RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "updated_at": "2012-01-01T12:00:00Z"
+  "type": "CNAME",
+  "name": "subdomain",
+  "data": "@",
+  "priority": null,
+  "port": null,
+  "weight": null
 }
 ```
 
@@ -358,6 +402,238 @@ RateLimit-Remaining: 1200
     "bad_zone_error": "error information..."
   }
 ]
+```
+
+## Image Action
+Image actions are operations on images that may take a while to complete.
+
+### Attributes
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>id</strong></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of image action</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>transfer</strong></td>
+    <td><em>string</em></td>
+    <td>a region id or slug to transfer the image to</td>
+    <td><code>"nyc2"</code></td>
+  </tr>
+</table>
+
+### Image Action Create
+Create a new image action.
+
+```
+POST /images/{image_identity}/actions
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X POST https://api.heroku.com/images/$IMAGE_IDENTITY/actions
+```
+
+#### Response Example
+```
+HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "transfer": "nyc2"
+}
+```
+
+## Image
+Images are either snapshots or backups you've made, or public images of applications or base systems.
+
+### Attributes
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>id</strong></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of image</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>display name of the image</td>
+    <td><code>"My first snapshot"</code></td>
+  </tr>
+  <tr>
+    <td><strong>distribution</strong></td>
+    <td><em>string</em></td>
+    <td>name of the Linux distribution this image is based on</td>
+    <td><code>"Ubuntu"</code></td>
+  </tr>
+  <tr>
+    <td><strong>slug</strong></td>
+    <td><em>nullable string</em></td>
+    <td>url friendly name of the image</td>
+    <td><code>"ubuntu-12.10-x32"</code></td>
+  </tr>
+  <tr>
+    <td><strong>public</strong></td>
+    <td><em>boolean</em></td>
+    <td>whether accessible by all accounts or just your account</td>
+    <td><code>false</code></td>
+  </tr>
+</table>
+
+### Image Delete
+Delete an existing image.
+
+```
+DELETE /images/{image_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X DELETE https://api.heroku.com/images/$IMAGE_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "name": "My first snapshot",
+  "distribution": "Ubuntu",
+  "slug": "ubuntu-12.10-x32",
+  "public": false
+}
+```
+
+### Image Info
+Info for existing image.
+
+```
+GET /images/{image_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X GET https://api.heroku.com/images/$IMAGE_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "name": "My first snapshot",
+  "distribution": "Ubuntu",
+  "slug": "ubuntu-12.10-x32",
+  "public": false
+}
+```
+
+### Image List
+List existing images.
+
+```
+GET /images
+```
+
+#### Optional Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>private</strong></td>
+    <td><em>boolean</em></td>
+    <td>only show images for just your account</td>
+    <td><code>true</code></td>
+  </tr>
+</table>
+
+
+#### Curl Example
+```term
+$ curl -n -X GET https://api.heroku.com/images \
+-H "Content-Type: application/json" \
+-d '{"private":true}'
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+Accept-Range: id
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+[
+  {
+    "id": 32,
+    "name": "My first snapshot",
+    "distribution": "Ubuntu",
+    "slug": "ubuntu-12.10-x32",
+    "public": false
+  }
+]
+```
+
+### Image Update
+Update an existing image.
+
+```
+PATCH /images/{image_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X PATCH https://api.heroku.com/images/$IMAGE_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "name": "My first snapshot",
+  "distribution": "Ubuntu",
+  "slug": "ubuntu-12.10-x32",
+  "public": false
+}
 ```
 
 ## Key

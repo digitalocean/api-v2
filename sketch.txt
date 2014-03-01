@@ -41,15 +41,6 @@ POST    /account/keys
 GET     /account/keys/:id_or_fingerprint
 DELETE  /account/keys/:id_or_fingerprint
 
-GET     /images
-GET     /images/:id
-PATCH   /images/:id
-DELETE  /images/:id
-POST    /images/:id/actions                # event producer
-  Action type available:
-    transfer
-GET     /images/:id/actions/:id            # event resource
-
 # Domains
 
 id
@@ -66,11 +57,32 @@ DELETE  /domains/:name
 
 # Domain Records
 
+type
+name
+data
+priority
+port
+weight
+
+
 GET     /domains/:name/records
 POST    /domains/:name/records
 GET     /domains/:name/records/:id
 PATCH   /domains/:name/records/:id
 DELETE  /domains/:name/records/:id
+
+# Images
+
+GET     /images
+GET     /images/:id
+PATCH   /images/:id
+DELETE  /images/:id
+POST    /images/:id/actions                # event producer
+  Action type available:
+    transfer
+GET     /images/:id/actions/:id            # event resource
+
+# Droplets
 
 POST    /droplets                         # event producer
 GET     /droplets

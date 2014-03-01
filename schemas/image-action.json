@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
+  "title": "DigitalOcean API - Image Action",
+  "description": "Image actions are operations on images that may take a while to complete.",
+  "type": [
+    "object"
+  ],
+  "definitions": {
+    "id": {
+      "description": "unique identifier of image action",
+      "example": 32,
+      "format": "integer",
+      "readOnly": true,
+      "type": [
+        "integer"
+      ]
+    },
+    "identity": {
+      "anyOf": [
+        {
+          "$ref": "/schema/image-action#/definitions/id"
+        }
+      ]
+    },
+    "transfer": {
+      "description": "a region id or slug to transfer the image to",
+      "example": "nyc2",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string",
+        "integer"
+      ]
+    }
+  },
+  "links": [
+    {
+      "description": "Create a new image action.",
+      "href": "/images/{(%2Fschema%2Fimage%23%2Fdefinitions%2Fidentity)}/actions",
+      "method": "POST",
+      "rel": "create",
+      "title": "Create"
+    }
+  ],
+  "properties": {
+    "id": {
+      "$ref": "/schema/image-action#/definitions/id"
+    },
+    "transfer": {
+      "$ref": "/schema/image-action#/definitions/transfer"
+    }
+  },
+  "id": "schema/image-action"
+}
