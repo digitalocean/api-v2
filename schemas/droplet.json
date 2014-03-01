@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
+  "title": "DigitalOcean API - Droplet",
+  "description": "Droplets are VMs in the DigitalOcean cloud.",
+  "type": [
+    "object"
+  ],
+  "definitions": {
+    "id": {
+      "description": "unique identifier of droplet",
+      "example": 32,
+      "format": "integer",
+      "readOnly": true,
+      "type": [
+        "integer"
+      ]
+    },
+    "identity": {
+      "anyOf": [
+        {
+          "$ref": "/schema/droplet#/definitions/id"
+        }
+      ]
+    },
+    "name": {
+      "description": "name used to identify droplet",
+      "example": "my droplet",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "locked": {
+      "description": "name used to identify droplet",
+      "example": "my droplet",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "status": {
+      "description": "current status of droplet",
+      "example": "active",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "public_ip": {
+      "description": "public IP address of droplet",
+      "example": "192.168.1.1",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "private_ip": {
+      "description": "private IP address or null",
+      "example": null,
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "image": {
+      "description": "TODO",
+      "example": null,
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "region": {
+      "description": "TODO",
+      "example": null,
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "size": {
+      "description": "TODO",
+      "example": null,
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "snapshots": {
+      "description": "TODO",
+      "example": null,
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "backups": {
+      "description": "TODO",
+      "example": null,
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "keys": {
+      "description": "TODO",
+      "example": "32,64",
+      "format": "numeric CSV",
+      "readOnly": true,
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "links": [
+    {
+      "description": "Create a new droplet.",
+      "href": "/droplets",
+      "method": "POST",
+      "rel": "create",
+      "title": "Create"
+    },
+    {
+      "description": "Delete an existing droplet.",
+      "href": "/droplets/{(%2Fschema%2Fdroplet%23%2Fdefinitions%2Fidentity)}",
+      "method": "DELETE",
+      "rel": "destroy",
+      "title": "Delete"
+    },
+    {
+      "description": "Info for existing droplet.",
+      "href": "/droplets/{(%2Fschema%2Fdroplet%23%2Fdefinitions%2Fidentity)}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info"
+    },
+    {
+      "description": "List existing droplet.",
+      "href": "/droplets",
+      "method": "GET",
+      "rel": "instances",
+      "title": "List"
+    },
+    {
+      "description": "Update an existing droplet.",
+      "href": "/droplets/{(%2Fschema%2Fdroplet%23%2Fdefinitions%2Fidentity)}",
+      "method": "PATCH",
+      "rel": "update",
+      "title": "Update"
+    }
+  ],
+  "properties": {
+    "id": {
+      "$ref": "/schema/droplet#/definitions/id"
+    },
+    "name": {
+      "$ref": "/schema/droplet#/definitions/name"
+    },
+    "image": {
+      "$ref": "/schema/droplet#/definitions/image"
+    },
+    "region": {
+      "$ref": "/schema/droplet#/definitions/region"
+    },
+    "size": {
+      "$ref": "/schema/droplet#/definitions/size"
+    },
+    "backups": {
+      "$ref": "/schema/droplet#/definitions/backups"
+    },
+    "snapshots": {
+      "$ref": "/schema/droplet#/definitions/snapshots"
+    },
+    "locked": {
+      "$ref": "/schema/droplet#/definitions/locked"
+    },
+    "status": {
+      "$ref": "/schema/droplet#/definitions/status"
+    },
+    "public_ip": {
+      "$ref": "/schema/droplet#/definitions/public_ip"
+    },
+    "private_ip": {
+      "$ref": "/schema/droplet#/definitions/private_ip"
+    }
+  },
+  "id": "schema/droplet"
+}

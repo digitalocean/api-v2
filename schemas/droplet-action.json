@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
+  "title": "DigitalOcean API - Droplet Action",
+  "description": "Droplet actions are operations on droplets that may take a while to complete.",
+  "type": [
+    "object"
+  ],
+  "definitions": {
+    "id": {
+      "description": "unique identifier of droplet action",
+      "example": 32,
+      "format": "integer",
+      "readOnly": true,
+      "type": [
+        "integer"
+      ]
+    },
+    "identity": {
+      "anyOf": [
+        {
+          "$ref": "/schema/droplet-action#/definitions/id"
+        }
+      ]
+    },
+    "reboot": {
+      "description": "reboot the machine, specifying a hard or soft reboot",
+      "example": "hard",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "shutdown": {
+      "description": "shutdown the machine, specifying a hard or soft shutdown",
+      "example": "soft",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "boot": {
+      "description": "boot the machine, no value necessary",
+      "example": null,
+      "format": "null",
+      "readOnly": true,
+      "type": [
+        "null"
+      ]
+    },
+    "resetpassword": {
+      "description": "reset the root password, no value necessary",
+      "example": null,
+      "format": "null",
+      "readOnly": true,
+      "type": [
+        "null"
+      ]
+    },
+    "resize": {
+      "description": "resize the machine, specifying a size id or slug",
+      "example": "32mb",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "snapshot": {
+      "description": "snapshot the machine, specifying the name for the snapshot image",
+      "example": "My snapshot",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "rebuild": {
+      "description": "rebuild the machine, specifying an image id or slug",
+      "example": 32,
+      "format": "string or integer",
+      "readOnly": true,
+      "type": [
+        "string",
+        "integer"
+      ]
+    },
+    "restore": {
+      "description": "restore the machine, specifying an image id or slug",
+      "example": 32,
+      "format": "string or integer",
+      "readOnly": true,
+      "type": [
+        "string",
+        "integer"
+      ]
+    }
+  },
+  "links": [
+    {
+      "description": "Create a new droplet action.",
+      "href": "/droplet/{(%2Fschema%droplet%23%2Fdefinitions%2Fidentity)}/actions",
+      "method": "POST",
+      "rel": "create",
+      "title": "Create"
+    },
+    {
+      "description": "Info for existing droplet action.",
+      "href": "/droplet/{(%2Fschema%droplet%23%2Fdefinitions%2Fidentity)}/actions/{(%2Fschema%2Fdroplet-action%23%2Fdefinitions%2Fidentity)}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info"
+    }
+  ],
+  "properties": {
+    "id": {
+      "$ref": "/schema/droplet-action#/definitions/id"
+    },
+    "reboot": {
+      "$ref": "/schema/droplet-action#/definitions/reboot"
+    },
+    "shutdown": {
+      "$ref": "/schema/droplet-action#/definitions/shutdown"
+    },
+    "boot": {
+      "$ref": "/schema/droplet-action#/definitions/boot"
+    },
+    "resetpassword": {
+      "$ref": "/schema/droplet-action#/definitions/resetpassword"
+    },
+    "resize": {
+      "$ref": "/schema/droplet-action#/definitions/resize"
+    },
+    "snapshot": {
+      "$ref": "/schema/droplet-action#/definitions/snapshot"
+    },
+    "rebuild": {
+      "$ref": "/schema/droplet-action#/definitions/rebuild"
+    },
+    "restore": {
+      "$ref": "/schema/droplet-action#/definitions/restore"
+    }
+  },
+  "id": "schema/droplet-action"
+}

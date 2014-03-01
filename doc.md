@@ -404,6 +404,397 @@ RateLimit-Remaining: 1200
 ]
 ```
 
+## Droplet Action
+Droplet actions are operations on droplets that may take a while to complete.
+
+### Attributes
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>id</strong></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of droplet action</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>reboot</strong></td>
+    <td><em>string</em></td>
+    <td>reboot the machine, specifying a hard or soft reboot</td>
+    <td><code>"hard"</code></td>
+  </tr>
+  <tr>
+    <td><strong>shutdown</strong></td>
+    <td><em>string</em></td>
+    <td>shutdown the machine, specifying a hard or soft shutdown</td>
+    <td><code>"soft"</code></td>
+  </tr>
+  <tr>
+    <td><strong>boot</strong></td>
+    <td><em>nullable null</em></td>
+    <td>boot the machine, no value necessary</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>resetpassword</strong></td>
+    <td><em>nullable null</em></td>
+    <td>reset the root password, no value necessary</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>resize</strong></td>
+    <td><em>string</em></td>
+    <td>resize the machine, specifying a size id or slug</td>
+    <td><code>"32mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>snapshot</strong></td>
+    <td><em>string</em></td>
+    <td>snapshot the machine, specifying the name for the snapshot image</td>
+    <td><code>"My snapshot"</code></td>
+  </tr>
+  <tr>
+    <td><strong>rebuild</strong></td>
+    <td><em>string or integer</em></td>
+    <td>rebuild the machine, specifying an image id or slug</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>restore</strong></td>
+    <td><em>string or integer</em></td>
+    <td>restore the machine, specifying an image id or slug</td>
+    <td><code>32</code></td>
+  </tr>
+</table>
+
+### Droplet Action Create
+Create a new droplet action.
+
+```
+POST /droplet/{schema%droplet_identity}/actions
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X POST https://api.heroku.com/droplet/$SCHEMA%DROPLET_IDENTITY/actions
+```
+
+#### Response Example
+```
+HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "reboot": "hard",
+  "shutdown": "soft",
+  "boot": null,
+  "resetpassword": null,
+  "resize": "32mb",
+  "snapshot": "My snapshot",
+  "rebuild": 32,
+  "restore": 32
+}
+```
+
+### Droplet Action Info
+Info for existing droplet action.
+
+```
+GET /droplet/{schema%droplet_identity}/actions/{droplet_action_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X GET https://api.heroku.com/droplet/$SCHEMA%DROPLET_IDENTITY/actions/$DROPLET_ACTION_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "reboot": "hard",
+  "shutdown": "soft",
+  "boot": null,
+  "resetpassword": null,
+  "resize": "32mb",
+  "snapshot": "My snapshot",
+  "rebuild": 32,
+  "restore": 32
+}
+```
+
+## Droplet
+Droplets are VMs in the DigitalOcean cloud.
+
+### Attributes
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>id</strong></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of droplet</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>name used to identify droplet</td>
+    <td><code>"my droplet"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image</strong></td>
+    <td><em>nullable string</em></td>
+    <td>TODO</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>region</strong></td>
+    <td><em>nullable string</em></td>
+    <td>TODO</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>size</strong></td>
+    <td><em>nullable string</em></td>
+    <td>TODO</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>backups</strong></td>
+    <td><em>nullable string</em></td>
+    <td>TODO</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>snapshots</strong></td>
+    <td><em>nullable string</em></td>
+    <td>TODO</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>locked</strong></td>
+    <td><em>string</em></td>
+    <td>name used to identify droplet</td>
+    <td><code>"my droplet"</code></td>
+  </tr>
+  <tr>
+    <td><strong>status</strong></td>
+    <td><em>string</em></td>
+    <td>current status of droplet</td>
+    <td><code>"active"</code></td>
+  </tr>
+  <tr>
+    <td><strong>public_ip</strong></td>
+    <td><em>string</em></td>
+    <td>public IP address of droplet</td>
+    <td><code>"192.168.1.1"</code></td>
+  </tr>
+  <tr>
+    <td><strong>private_ip</strong></td>
+    <td><em>nullable string</em></td>
+    <td>private IP address or null</td>
+    <td><code>null</code></td>
+  </tr>
+</table>
+
+### Droplet Create
+Create a new droplet.
+
+```
+POST /droplets
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X POST https://api.heroku.com/droplets
+```
+
+#### Response Example
+```
+HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "name": "my droplet",
+  "image": null,
+  "region": null,
+  "size": null,
+  "backups": null,
+  "snapshots": null,
+  "locked": "my droplet",
+  "status": "active",
+  "public_ip": "192.168.1.1",
+  "private_ip": null
+}
+```
+
+### Droplet Delete
+Delete an existing droplet.
+
+```
+DELETE /droplets/{droplet_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X DELETE https://api.heroku.com/droplets/$DROPLET_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "name": "my droplet",
+  "image": null,
+  "region": null,
+  "size": null,
+  "backups": null,
+  "snapshots": null,
+  "locked": "my droplet",
+  "status": "active",
+  "public_ip": "192.168.1.1",
+  "private_ip": null
+}
+```
+
+### Droplet Info
+Info for existing droplet.
+
+```
+GET /droplets/{droplet_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X GET https://api.heroku.com/droplets/$DROPLET_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "name": "my droplet",
+  "image": null,
+  "region": null,
+  "size": null,
+  "backups": null,
+  "snapshots": null,
+  "locked": "my droplet",
+  "status": "active",
+  "public_ip": "192.168.1.1",
+  "private_ip": null
+}
+```
+
+### Droplet List
+List existing droplet.
+
+```
+GET /droplets
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X GET https://api.heroku.com/droplets
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+Accept-Range: id
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+[
+  {
+    "id": 32,
+    "name": "my droplet",
+    "image": null,
+    "region": null,
+    "size": null,
+    "backups": null,
+    "snapshots": null,
+    "locked": "my droplet",
+    "status": "active",
+    "public_ip": "192.168.1.1",
+    "private_ip": null
+  }
+]
+```
+
+### Droplet Update
+Update an existing droplet.
+
+```
+PATCH /droplets/{droplet_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X PATCH https://api.heroku.com/droplets/$DROPLET_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "name": "my droplet",
+  "image": null,
+  "region": null,
+  "size": null,
+  "backups": null,
+  "snapshots": null,
+  "locked": "my droplet",
+  "status": "active",
+  "public_ip": "192.168.1.1",
+  "private_ip": null
+}
+```
+
 ## Image Action
 Image actions are operations on images that may take a while to complete.
 
@@ -445,6 +836,32 @@ $ curl -n -X POST https://api.heroku.com/images/$IMAGE_IDENTITY/actions
 #### Response Example
 ```
 HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
+```
+```javascript```
+{
+  "id": 32,
+  "transfer": "nyc2"
+}
+```
+
+### Image Action Info
+Info for existing image action.
+
+```
+GET /images/{image_identity}/actions/{droplet_action_identity}
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X GET https://api.heroku.com/images/$IMAGE_IDENTITY/actions/$DROPLET_ACTION_IDENTITY
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
 ETag: "0123456789abcdef0123456789abcdef"
 RateLimit-Remaining: 1200
 ```
@@ -574,7 +991,7 @@ GET /images
   <tr>
     <td><strong>private</strong></td>
     <td><em>boolean</em></td>
-    <td>only show images for just your account</td>
+    <td>only show images for your account</td>
     <td><code>true</code></td>
   </tr>
 </table>

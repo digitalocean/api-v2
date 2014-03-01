@@ -73,33 +73,56 @@ DELETE  /domains/:name/records/:id
 
 # Images
 
+id
+name
+distribution
+slug
+public
+
+
 GET     /images
 GET     /images/:id
 PATCH   /images/:id
 DELETE  /images/:id
 POST    /images/:id/actions                # event producer
   Action type available:
-    transfer
+    transfer(region)
 GET     /images/:id/actions/:id            # event resource
 
 # Droplets
+
+id
+image_id
+name
+region_id
+size_id
+backups_active
+backups
+snapshots
+ip_address
+private_ip_address
+locked
+status
+
+ssh_keys
 
 POST    /droplets                         # event producer
 GET     /droplets
 GET     /droplets/:id
 DELETE  /droplets/:id                     # event dependent
 PATCH   /droplets/:id
+
 GET     /droplets/:id/actions
 POST    /droplets/:id/actions              # event producer
   Action types available:
-    reboot (soft/hard)
-    shutdown (soft/hard)
+    reboot(soft/hard)
+    shutdown(soft/hard)
     boot
     resetpassword
-    resize
-    snapshot
-    rebuild
-    restore	
+    resize(size)
+    snapshot(name)
+    rebuild(image)
+    restore(image)
 GET     /droplets/:id/actions/:id          # event resource
 
 

@@ -40,6 +40,13 @@
       "method": "POST",
       "rel": "create",
       "title": "Create"
+    },
+    {
+      "description": "Info for existing image action.",
+      "href": "/images/{(%2Fschema%2Fimage%23%2Fdefinitions%2Fidentity)}/actions/{(%2Fschema%2Fdroplet-action%23%2Fdefinitions%2Fidentity)}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info"
     }
   ],
   "properties": {
