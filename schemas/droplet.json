@@ -174,7 +174,7 @@
       "$ref": "/schema/droplet#/definitions/name"
     },
     "image": {
-      "$ref": "/schema/droplet#/definitions/image"
+      "$ref": "/schema/droplet#/definitions/name"
     },
     "region": {
       "$ref": "/schema/droplet#/definitions/region"

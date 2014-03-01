@@ -562,9 +562,9 @@ Droplets are VMs in the DigitalOcean cloud.
   </tr>
   <tr>
     <td><strong>image</strong></td>
-    <td><em>nullable string</em></td>
-    <td>TODO</td>
-    <td><code>null</code></td>
+    <td><em>string</em></td>
+    <td>name used to identify droplet</td>
+    <td><code>"my droplet"</code></td>
   </tr>
   <tr>
     <td><strong>region</strong></td>
@@ -639,7 +639,7 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": null,
+  "image": "my droplet",
   "region": null,
   "size": null,
   "backups": null,
@@ -674,7 +674,7 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": null,
+  "image": "my droplet",
   "region": null,
   "size": null,
   "backups": null,
@@ -709,7 +709,7 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": null,
+  "image": "my droplet",
   "region": null,
   "size": null,
   "backups": null,
@@ -747,7 +747,7 @@ RateLimit-Remaining: 1200
   {
     "id": 32,
     "name": "my droplet",
-    "image": null,
+    "image": "my droplet",
     "region": null,
     "size": null,
     "backups": null,
@@ -783,7 +783,7 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": null,
+  "image": "my droplet",
   "region": null,
   "size": null,
   "backups": null,
