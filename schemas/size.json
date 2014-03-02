@@ -7,6 +7,15 @@
     "object"
   ],
   "definitions": {
+    "slug": {
+      "description": "unique string identifier of size",
+      "example": "512mb",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
     "name": {
       "description": "display name of size",
       "example": "512MB",
@@ -28,17 +37,73 @@
     "identity": {
       "anyOf": [
         {
-          "$ref": "/schema/size#/definitions/id"
+          "$ref": "/schema/size#/definitions/slug"
         }
       ]
     },
-    "slug": {
-      "description": "url friendly name",
+    "memory": {
+      "description": "amount of RAM provided",
       "example": "512mb",
       "format": "string",
       "readOnly": true,
       "type": [
         "string"
+      ]
+    },
+    "cpus": {
+      "description": "number of CPUs provided",
+      "example": "1",
+      "format": "integer",
+      "readOnly": true,
+      "type": [
+        "integer"
+      ]
+    },
+    "disk": {
+      "description": "amount of SSD disk storage provided",
+      "example": "20gb",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "transfer": {
+      "description": "amount of network transfer provided",
+      "example": "1tb",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "price_monthly": {
+      "description": "cost of running for a month",
+      "example": "5.00",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "price_hourly": {
+      "description": "cost of running for an hour",
+      "example": "0.007",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
+      ]
+    },
+    "regions": {
+      "description": "slugs of regions this size is currently available in",
+      "example": ["nyc2", "sf1"],
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "type": [
+        "array"
       ]
     }
   },
@@ -52,14 +117,29 @@
     }
   ],
   "properties": {
-    "name": {
-      "$ref": "/schema/size#/definitions/name"
-    },
-    "id": {
-      "$ref": "/schema/size#/definitions/id"
-    },
     "slug": {
       "$ref": "/schema/size#/definitions/slug"
+    },
+    "memory": {
+      "$ref": "/schema/size#/definitions/memory"
+    },
+    "cpus": {
+      "$ref": "/schema/size#/definitions/cpus"
+    },
+    "disk": {
+      "$ref": "/schema/size#/definitions/disk"
+    },
+    "transfer": {
+      "$ref": "/schema/size#/definitions/transfer"
+    },
+    "price_monthly": {
+      "$ref": "/schema/size#/definitions/price_monthly"
+    },
+    "price_hourly": {
+      "$ref": "/schema/size#/definitions/price_hourly"
+    },
+    "regions": {
+      "$ref": "/schema/size#/definitions/regions"
     }
   }
 }

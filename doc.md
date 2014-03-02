@@ -475,13 +475,13 @@ Droplet actions are operations on droplets that may take a while to complete.
 Create a new droplet action.
 
 ```
-POST /droplet/{schema%droplet_identity}/actions
+POST /droplet/{droplet_identity}/actions
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/droplet/$SCHEMA%DROPLET_IDENTITY/actions
+$ curl -n -X POST https://api.heroku.com/droplet/$DROPLET_IDENTITY/actions
 ```
 
 #### Response Example
@@ -508,13 +508,13 @@ RateLimit-Remaining: 1200
 Info for existing droplet action.
 
 ```
-GET /droplet/{schema%droplet_identity}/actions/{droplet_action_identity}
+GET /droplet/{droplet_identity}/actions/{droplet_action_identity}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/droplet/$SCHEMA%DROPLET_IDENTITY/actions/$DROPLET_ACTION_IDENTITY
+$ curl -n -X GET https://api.heroku.com/droplet/$DROPLET_IDENTITY/actions/$DROPLET_ACTION_IDENTITY
 ```
 
 #### Response Example
@@ -561,22 +561,82 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><code>"my droplet"</code></td>
   </tr>
   <tr>
-    <td><strong>image</strong></td>
-    <td><em>string</em></td>
-    <td>name used to identify droplet</td>
-    <td><code>"my droplet"</code></td>
-  </tr>
-  <tr>
     <td><strong>region</strong></td>
-    <td><em>nullable string</em></td>
-    <td>TODO</td>
-    <td><code>null</code></td>
+    <td><em>string</em></td>
+    <td>slug of region for this droplet</td>
+    <td><code>"nyc2"</code></td>
   </tr>
   <tr>
-    <td><strong>size</strong></td>
+    <td><strong>image:distribution</strong></td>
+    <td><em>string</em></td>
+    <td>name of the Linux distribution this image is based on</td>
+    <td><code>"Ubuntu"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:id</strong></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of image</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:name</strong></td>
+    <td><em>string</em></td>
+    <td>display name of the image</td>
+    <td><code>"My first snapshot"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:public</strong></td>
+    <td><em>boolean</em></td>
+    <td>whether accessible by all accounts or just your account</td>
+    <td><code>false</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:slug</strong></td>
     <td><em>nullable string</em></td>
-    <td>TODO</td>
-    <td><code>null</code></td>
+    <td>url friendly name of the image</td>
+    <td><code>"ubuntu-12.10-x32"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:cpus</strong></td>
+    <td><em>integer</em></td>
+    <td>number of CPUs provided</td>
+    <td><code>"1"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:disk</strong></td>
+    <td><em>string</em></td>
+    <td>amount of SSD disk storage provided</td>
+    <td><code>"20gb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:memory</strong></td>
+    <td><em>string</em></td>
+    <td>amount of RAM provided</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:price_hourly</strong></td>
+    <td><em>string</em></td>
+    <td>cost of running for an hour</td>
+    <td><code>"0.007"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:price_monthly</strong></td>
+    <td><em>string</em></td>
+    <td>cost of running for a month</td>
+    <td><code>"5.00"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:slug</strong></td>
+    <td><em>string</em></td>
+    <td>unique string identifier of size</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:transfer</strong></td>
+    <td><em>string</em></td>
+    <td>amount of network transfer provided</td>
+    <td><code>"1tb"</code></td>
   </tr>
   <tr>
     <td><strong>backups</strong></td>
@@ -592,9 +652,9 @@ Droplets are VMs in the DigitalOcean cloud.
   </tr>
   <tr>
     <td><strong>locked</strong></td>
-    <td><em>string</em></td>
-    <td>name used to identify droplet</td>
-    <td><code>"my droplet"</code></td>
+    <td><em>boolean</em></td>
+    <td>???</td>
+    <td><code>false</code></td>
   </tr>
   <tr>
     <td><strong>status</strong></td>
@@ -623,10 +683,75 @@ Create a new droplet.
 POST /droplets
 ```
 
+#### Required Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>name used to identify droplet</td>
+    <td><code>"my droplet"</code></td>
+  </tr>
+  <tr>
+    <td><strong>region</strong></td>
+    <td><em>string</em></td>
+    <td>slug of region for this droplet</td>
+    <td><code>"nyc2"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size</strong></td>
+    <td><em>string</em></td>
+    <td>slug of size for this droplet</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image_id</strong></td>
+    <td><em>integer</em></td>
+    <td>id of image to use</td>
+    <td><code>32</code></td>
+  </tr>
+</table>
+
+
+#### Optional Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>key_ids</strong></td>
+    <td><em>nullable numeric CSV</em></td>
+    <td>comma separated list of key ids for root access</td>
+    <td><code>"32,64"</code></td>
+  </tr>
+  <tr>
+    <td><strong>private_networking</strong></td>
+    <td><em>boolean</em></td>
+    <td>enable private networking, if available in this region</td>
+    <td><code>false</code></td>
+  </tr>
+  <tr>
+    <td><strong>backups</strong></td>
+    <td><em>boolean</em></td>
+    <td>enable backups for this droplet</td>
+    <td><code>false</code></td>
+  </tr>
+</table>
+
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/droplets
+$ curl -n -X POST https://api.heroku.com/droplets \
+-H "Content-Type: application/json" \
+-d '{"name":"my droplet","region":"nyc2","size":"512mb","image_id":32,"key_ids":"32,64","private_networking":false,"backups":false}'
 ```
 
 #### Response Example
@@ -639,12 +764,26 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": "my droplet",
-  "region": null,
-  "size": null,
+  "region": "nyc2",
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "My first snapshot",
+    "distribution": "Ubuntu",
+    "public": false
+  },
+  "size": {
+    "slug": "512mb",
+    "memory": "512mb",
+    "cpus": "1",
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
   "backups": null,
   "snapshots": null,
-  "locked": "my droplet",
+  "locked": false,
   "status": "active",
   "public_ip": "192.168.1.1",
   "private_ip": null
@@ -674,12 +813,26 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": "my droplet",
-  "region": null,
-  "size": null,
+  "region": "nyc2",
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "My first snapshot",
+    "distribution": "Ubuntu",
+    "public": false
+  },
+  "size": {
+    "slug": "512mb",
+    "memory": "512mb",
+    "cpus": "1",
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
   "backups": null,
   "snapshots": null,
-  "locked": "my droplet",
+  "locked": false,
   "status": "active",
   "public_ip": "192.168.1.1",
   "private_ip": null
@@ -709,12 +862,26 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": "my droplet",
-  "region": null,
-  "size": null,
+  "region": "nyc2",
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "My first snapshot",
+    "distribution": "Ubuntu",
+    "public": false
+  },
+  "size": {
+    "slug": "512mb",
+    "memory": "512mb",
+    "cpus": "1",
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
   "backups": null,
   "snapshots": null,
-  "locked": "my droplet",
+  "locked": false,
   "status": "active",
   "public_ip": "192.168.1.1",
   "private_ip": null
@@ -747,12 +914,26 @@ RateLimit-Remaining: 1200
   {
     "id": 32,
     "name": "my droplet",
-    "image": "my droplet",
-    "region": null,
-    "size": null,
+    "region": "nyc2",
+    "image": {
+      "id": 32,
+      "slug": "ubuntu-12.10-x32",
+      "name": "My first snapshot",
+      "distribution": "Ubuntu",
+      "public": false
+    },
+    "size": {
+      "slug": "512mb",
+      "memory": "512mb",
+      "cpus": "1",
+      "disk": "20gb",
+      "transfer": "1tb",
+      "price_monthly": "5.00",
+      "price_hourly": "0.007"
+    },
     "backups": null,
     "snapshots": null,
-    "locked": "my droplet",
+    "locked": false,
     "status": "active",
     "public_ip": "192.168.1.1",
     "private_ip": null
@@ -767,10 +948,29 @@ Update an existing droplet.
 PATCH /droplets/{droplet_identity}
 ```
 
+#### Required Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>name used to identify droplet</td>
+    <td><code>"my droplet"</code></td>
+  </tr>
+</table>
+
+
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.heroku.com/droplets/$DROPLET_IDENTITY
+$ curl -n -X PATCH https://api.heroku.com/droplets/$DROPLET_IDENTITY \
+-H "Content-Type: application/json" \
+-d '{"name":"my droplet"}'
 ```
 
 #### Response Example
@@ -783,12 +983,26 @@ RateLimit-Remaining: 1200
 {
   "id": 32,
   "name": "my droplet",
-  "image": "my droplet",
-  "region": null,
-  "size": null,
+  "region": "nyc2",
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "My first snapshot",
+    "distribution": "Ubuntu",
+    "public": false
+  },
+  "size": {
+    "slug": "512mb",
+    "memory": "512mb",
+    "cpus": "1",
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
   "backups": null,
   "snapshots": null,
-  "locked": "my droplet",
+  "locked": false,
   "status": "active",
   "public_ip": "192.168.1.1",
   "private_ip": null
@@ -815,7 +1029,7 @@ Image actions are operations on images that may take a while to complete.
   <tr>
     <td><strong>transfer</strong></td>
     <td><em>string</em></td>
-    <td>a region id or slug to transfer the image to</td>
+    <td>a region slug to transfer the image to</td>
     <td><code>"nyc2"</code></td>
   </tr>
 </table>
@@ -827,10 +1041,28 @@ Create a new image action.
 POST /images/{image_identity}/actions
 ```
 
+#### Optional Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>transfer</strong></td>
+    <td><em>string</em></td>
+    <td>a region slug to transfer the image to</td>
+    <td><code>"nyc2"</code></td>
+  </tr>
+</table>
+
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/images/$IMAGE_IDENTITY/actions
+$ curl -n -X POST https://api.heroku.com/images/$IMAGE_IDENTITY/actions \
+-H "Content-Type: application/json" \
+-d '{"transfer":"nyc2"}'
 ```
 
 #### Response Example
@@ -850,13 +1082,13 @@ RateLimit-Remaining: 1200
 Info for existing image action.
 
 ```
-GET /images/{image_identity}/actions/{droplet_action_identity}
+GET /images/{image_identity}/actions/{image_action_identity}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/images/$IMAGE_IDENTITY/actions/$DROPLET_ACTION_IDENTITY
+$ curl -n -X GET https://api.heroku.com/images/$IMAGE_IDENTITY/actions/$IMAGE_ACTION_IDENTITY
 ```
 
 #### Response Example
@@ -913,6 +1145,12 @@ Images are either snapshots or backups you've made, or public images of applicat
     <td>whether accessible by all accounts or just your account</td>
     <td><code>false</code></td>
   </tr>
+  <tr>
+    <td><strong>regions</strong></td>
+    <td><em>array</em></td>
+    <td>slugs of regions this image is currently available in</td>
+    <td><code>["nyc2","sf1"]</code></td>
+  </tr>
 </table>
 
 ### Image Delete
@@ -940,7 +1178,11 @@ RateLimit-Remaining: 1200
   "name": "My first snapshot",
   "distribution": "Ubuntu",
   "slug": "ubuntu-12.10-x32",
-  "public": false
+  "public": false,
+  "regions": [
+    "nyc2",
+    "sf1"
+  ]
 }
 ```
 
@@ -969,7 +1211,11 @@ RateLimit-Remaining: 1200
   "name": "My first snapshot",
   "distribution": "Ubuntu",
   "slug": "ubuntu-12.10-x32",
-  "public": false
+  "public": false,
+  "regions": [
+    "nyc2",
+    "sf1"
+  ]
 }
 ```
 
@@ -1019,7 +1265,11 @@ RateLimit-Remaining: 1200
     "name": "My first snapshot",
     "distribution": "Ubuntu",
     "slug": "ubuntu-12.10-x32",
-    "public": false
+    "public": false,
+    "regions": [
+      "nyc2",
+      "sf1"
+    ]
   }
 ]
 ```
@@ -1031,10 +1281,29 @@ Update an existing image.
 PATCH /images/{image_identity}
 ```
 
+#### Required Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>display name of the image</td>
+    <td><code>"My first snapshot"</code></td>
+  </tr>
+</table>
+
+
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.heroku.com/images/$IMAGE_IDENTITY
+$ curl -n -X PATCH https://api.heroku.com/images/$IMAGE_IDENTITY \
+-H "Content-Type: application/json" \
+-d '{"name":"My first snapshot"}'
 ```
 
 #### Response Example
@@ -1049,7 +1318,11 @@ RateLimit-Remaining: 1200
   "name": "My first snapshot",
   "distribution": "Ubuntu",
   "slug": "ubuntu-12.10-x32",
-  "public": false
+  "public": false,
+  "regions": [
+    "nyc2",
+    "sf1"
+  ]
 }
 ```
 
@@ -1065,21 +1338,21 @@ Keys are your public SSH keys that you can use to access Droplets.
     <th>Example</th>
   </tr>
   <tr>
-    <td><strong>fingerprint</strong></td>
-    <td><em>string</em></td>
-    <td>a unique identifying string based on contents</td>
-    <td><code>"17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf"</code></td>
-  </tr>
-  <tr>
     <td><strong>id</strong></td>
     <td><em>integer</em></td>
     <td>unique identifier of key</td>
     <td><code>18</code></td>
   </tr>
   <tr>
+    <td><strong>fingerprint</strong></td>
+    <td><em>string</em></td>
+    <td>a unique identifying string based on contents</td>
+    <td><code>"17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf"</code></td>
+  </tr>
+  <tr>
     <td><strong>public_key</strong></td>
     <td><em>string</em></td>
-    <td>full public_key as uploaded</td>
+    <td>full public key string</td>
     <td><code>"ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com"</code></td>
   </tr>
   <tr>
@@ -1108,8 +1381,14 @@ POST /account/keys
   <tr>
     <td><strong>public_key</strong></td>
     <td><em>string</em></td>
-    <td>full public_key as uploaded</td>
+    <td>full public key string</td>
     <td><code>"ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com"</code></td>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>user specified identifier</td>
+    <td><code>"primary-key"</code></td>
   </tr>
 </table>
 
@@ -1119,7 +1398,7 @@ POST /account/keys
 ```term
 $ curl -n -X POST https://api.heroku.com/account/keys \
 -H "Content-Type: application/json" \
--d '{"public_key":"ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com"}'
+-d '{"public_key":"ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com","name":"primary-key"}'
 ```
 
 #### Response Example
@@ -1130,8 +1409,8 @@ RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
   "id": 18,
+  "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
   "public_key": "ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com",
   "name": "primary-key"
 }
@@ -1158,8 +1437,8 @@ RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
   "id": 18,
+  "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
   "public_key": "ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com",
   "name": "primary-key"
 }
@@ -1186,15 +1465,15 @@ RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
   "id": 18,
+  "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
   "public_key": "ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com",
   "name": "primary-key"
 }
 ```
 
 ### Key List
-List existing key.
+List existing keys.
 
 ```
 GET /account/keys
@@ -1217,8 +1496,8 @@ RateLimit-Remaining: 1200
 ```javascript```
 [
   {
-    "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
     "id": 18,
+    "fingerprint": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
     "public_key": "ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com",
     "name": "primary-key"
   }
@@ -1237,22 +1516,28 @@ Regions are available datacenters within the DigitalOcean cloud.
     <th>Example</th>
   </tr>
   <tr>
+    <td><strong>slug</strong></td>
+    <td><em>string</em></td>
+    <td>unique string identifier of region</td>
+    <td><code>"nyc1"</code></td>
+  </tr>
+  <tr>
     <td><strong>name</strong></td>
     <td><em>string</em></td>
     <td>display name of region</td>
     <td><code>"New York 1"</code></td>
   </tr>
   <tr>
-    <td><strong>id</strong></td>
-    <td><em>integer</em></td>
-    <td>unique identifier of region</td>
-    <td><code>3</code></td>
+    <td><strong>sizes</strong></td>
+    <td><em>array</em></td>
+    <td>slugs of sizes this region currently has capacity for</td>
+    <td><code>["512mb","1gb","2gb","4gb","8gb"]</code></td>
   </tr>
   <tr>
-    <td><strong>slug</strong></td>
-    <td><em>string</em></td>
-    <td>url friendly name</td>
-    <td><code>"nyc1"</code></td>
+    <td><strong>available</strong></td>
+    <td><em>bool</em></td>
+    <td>if new droplets can currently be created</td>
+    <td><code>true</code></td>
   </tr>
 </table>
 
@@ -1280,9 +1565,16 @@ RateLimit-Remaining: 1200
 ```javascript```
 [
   {
+    "slug": "nyc1",
     "name": "New York 1",
-    "id": 3,
-    "slug": "nyc1"
+    "sizes": [
+      "512mb",
+      "1gb",
+      "2gb",
+      "4gb",
+      "8gb"
+    ],
+    "available": true
   }
 ]
 ```
@@ -1299,22 +1591,52 @@ Sizes represent possible Droplet resources.
     <th>Example</th>
   </tr>
   <tr>
-    <td><strong>name</strong></td>
-    <td><em>string</em></td>
-    <td>display name of size</td>
-    <td><code>"512MB"</code></td>
-  </tr>
-  <tr>
-    <td><strong>id</strong></td>
-    <td><em>integer</em></td>
-    <td>unique identifier of size</td>
-    <td><code>2</code></td>
-  </tr>
-  <tr>
     <td><strong>slug</strong></td>
     <td><em>string</em></td>
-    <td>url friendly name</td>
+    <td>unique string identifier of size</td>
     <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>memory</strong></td>
+    <td><em>string</em></td>
+    <td>amount of RAM provided</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>cpus</strong></td>
+    <td><em>integer</em></td>
+    <td>number of CPUs provided</td>
+    <td><code>"1"</code></td>
+  </tr>
+  <tr>
+    <td><strong>disk</strong></td>
+    <td><em>string</em></td>
+    <td>amount of SSD disk storage provided</td>
+    <td><code>"20gb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>transfer</strong></td>
+    <td><em>string</em></td>
+    <td>amount of network transfer provided</td>
+    <td><code>"1tb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>price_monthly</strong></td>
+    <td><em>string</em></td>
+    <td>cost of running for a month</td>
+    <td><code>"5.00"</code></td>
+  </tr>
+  <tr>
+    <td><strong>price_hourly</strong></td>
+    <td><em>string</em></td>
+    <td>cost of running for an hour</td>
+    <td><code>"0.007"</code></td>
+  </tr>
+  <tr>
+    <td><strong>regions</strong></td>
+    <td><em>array</em></td>
+    <td>slugs of regions this size is currently available in</td>
+    <td><code>["nyc2","sf1"]</code></td>
   </tr>
 </table>
 
@@ -1334,7 +1656,7 @@ $ curl -n -X GET https://api.heroku.com/sizes
 #### Response Example
 ```
 HTTP/1.1 200 OK
-Accept-Range: id
+Accept-Range: slug
 Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
 ETag: "0123456789abcdef0123456789abcdef"
 RateLimit-Remaining: 1200
@@ -1342,9 +1664,17 @@ RateLimit-Remaining: 1200
 ```javascript```
 [
   {
-    "name": "512MB",
-    "id": 2,
-    "slug": "512mb"
+    "slug": "512mb",
+    "memory": "512mb",
+    "cpus": "1",
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007",
+    "regions": [
+      "nyc2",
+      "sf1"
+    ]
   }
 ]
 ```

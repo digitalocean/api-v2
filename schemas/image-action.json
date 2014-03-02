@@ -23,13 +23,12 @@
       ]
     },
     "transfer": {
-      "description": "a region id or slug to transfer the image to",
+      "description": "a region slug to transfer the image to",
       "example": "nyc2",
       "format": "string",
       "readOnly": true,
       "type": [
-        "string",
-        "integer"
+        "string"
       ]
     }
   },
@@ -39,11 +38,21 @@
       "href": "/images/{(%2Fschema%2Fimage%23%2Fdefinitions%2Fidentity)}/actions",
       "method": "POST",
       "rel": "create",
+      "schema": {
+        "properties": {
+          "transfer": {
+            "$ref": "/schema/image-action#/definitions/transfer"
+          }
+        },
+        "optional": [
+          "transfer"
+        ]
+      },
       "title": "Create"
     },
     {
       "description": "Info for existing image action.",
-      "href": "/images/{(%2Fschema%2Fimage%23%2Fdefinitions%2Fidentity)}/actions/{(%2Fschema%2Fdroplet-action%23%2Fdefinitions%2Fidentity)}",
+      "href": "/images/{(%2Fschema%2Fimage%23%2Fdefinitions%2Fidentity)}/actions/{(%2Fschema%2Fimage-action%23%2Fdefinitions%2Fidentity)}",
       "method": "GET",
       "rel": "self",
       "title": "Info"

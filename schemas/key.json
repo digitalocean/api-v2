@@ -35,7 +35,7 @@
       ]
     },
     "public_key": {
-      "description": "full public_key as uploaded",
+      "description": "full public key string",
       "example": "ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com",
       "readOnly": true,
       "type": [
@@ -62,10 +62,14 @@
         "properties": {
           "public_key": {
             "$ref": "/schema/key#/definitions/public_key"
+          },
+          "name": {
+            "$ref": "/schema/key#/definitions/name"
           }
         },
         "required": [
-          "public_key"
+          "public_key",
+          "name"
         ]
       },
       "title": "Create"
@@ -85,7 +89,7 @@
       "title": "Info"
     },
     {
-      "description": "List existing key.",
+      "description": "List existing keys.",
       "href": "/account/keys",
       "method": "GET",
       "rel": "instances",
@@ -93,11 +97,11 @@
     }
   ],
   "properties": {
-    "fingerprint": {
-      "$ref": "/schema/key#/definitions/fingerprint"
-    },
     "id": {
       "$ref": "/schema/key#/definitions/id"
+    },
+    "fingerprint": {
+      "$ref": "/schema/key#/definitions/fingerprint"
     },
     "public_key": {
       "$ref": "/schema/key#/definitions/public_key"

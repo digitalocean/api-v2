@@ -125,6 +125,8 @@ POST    /droplets/:id/actions              # event producer
     restore(image)
 GET     /droplets/:id/actions/:id          # event resource
 
+GET     /droplets/self
+
 
 # About events
 

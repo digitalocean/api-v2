@@ -100,14 +100,14 @@
   "links": [
     {
       "description": "Create a new droplet action.",
-      "href": "/droplet/{(%2Fschema%droplet%23%2Fdefinitions%2Fidentity)}/actions",
+      "href": "/droplet/{(%2Fschema%2Fdroplet%23%2Fdefinitions%2Fidentity)}/actions",
       "method": "POST",
       "rel": "create",
       "title": "Create"
     },
     {
       "description": "Info for existing droplet action.",
-      "href": "/droplet/{(%2Fschema%droplet%23%2Fdefinitions%2Fidentity)}/actions/{(%2Fschema%2Fdroplet-action%23%2Fdefinitions%2Fidentity)}",
+      "href": "/droplet/{(%2Fschema%2Fdroplet%23%2Fdefinitions%2Fidentity)}/actions/{(%2Fschema%2Fdroplet-action%23%2Fdefinitions%2Fidentity)}",
       "method": "GET",
       "rel": "self",
       "title": "Info"

@@ -33,12 +33,32 @@
       ]
     },
     "slug": {
-      "description": "url friendly name",
+      "description": "unique string identifier of region",
       "example": "nyc1",
       "format": "string",
       "readOnly": true,
       "type": [
         "string"
+      ]
+    },
+    "available": {
+      "description": "if new droplets can currently be created",
+      "example": true,
+      "format": "bool",
+      "readOnly": true,
+      "type": [
+        "bool"
+      ]
+    },
+    "sizes": {
+      "description": "slugs of sizes this region currently has capacity for",
+      "example": ["512mb", "1gb", "2gb", "4gb", "8gb"],
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "type": [
+        "array"
       ]
     }
   },
@@ -52,14 +72,17 @@
     }
   ],
   "properties": {
+    "slug": {
+      "$ref": "/schema/region#/definitions/slug"
+    },
     "name": {
       "$ref": "/schema/region#/definitions/name"
     },
-    "id": {
-      "$ref": "/schema/region#/definitions/id"
+    "sizes": {
+      "$ref": "/schema/region#/definitions/sizes"
     },
-    "slug": {
-      "$ref": "/schema/region#/definitions/slug"
+    "available": {
+      "$ref": "/schema/region#/definitions/available"
     }
   }
 }

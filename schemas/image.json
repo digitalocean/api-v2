@@ -67,6 +67,17 @@
       "type": [
         "boolean"
       ]
+    },
+    "regions": {
+      "description": "slugs of regions this image is currently available in",
+      "example": ["nyc2", "sf1"],
+      "items": {
+        "type": "string"
+      },
+      "readOnly": true,
+      "type": [
+        "array"
+      ]
     }
   },
   "links": [
@@ -106,6 +117,16 @@
       "href": "/images/{(%2Fschema%2Fimage%23%2Fdefinitions%2Fidentity)}",
       "method": "PATCH",
       "rel": "update",
+      "schema": {
+        "properties": {
+          "name": {
+            "$ref": "/schema/image#/definitions/name"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "title": "Update"
     }
   ],
@@ -124,6 +145,9 @@
     },
     "public": {
       "$ref": "/schema/image#/definitions/public"
+    },
+    "regions": {
+      "$ref": "/schema/image#/definitions/regions"
     }
   },
   "id": "schema/image"

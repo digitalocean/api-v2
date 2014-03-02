@@ -32,12 +32,12 @@
       ]
     },
     "locked": {
-      "description": "name used to identify droplet",
-      "example": "my droplet",
-      "format": "string",
+      "description": "???",
+      "example": false,
+      "format": "boolean",
       "readOnly": true,
       "type": [
-        "string"
+        "boolean"
       ]
     },
     "status": {
@@ -69,33 +69,64 @@
       ]
     },
     "image": {
-      "description": "TODO",
-      "example": null,
-      "format": "string",
-      "readOnly": true,
+      "description": "image used for droplet",
+      "properties": {
+        "id": {
+          "$ref": "/schema/image#/definitions/id"
+        },
+        "slug": {
+          "$ref": "/schema/image#/definitions/slug"
+        },
+        "name": {
+          "$ref": "/schema/image#/definitions/name"
+        },
+        "distribution": {
+          "$ref": "/schema/image#/definitions/distribution"
+        },
+        "public": {
+          "$ref": "/schema/image#/definitions/public"
+        }
+      },
       "type": [
-        "string",
-        "null"
+        "object"
       ]
     },
     "region": {
-      "description": "TODO",
-      "example": null,
+      "description": "slug of region for this droplet",
+      "example": "nyc2",
       "format": "string",
       "readOnly": true,
       "type": [
-        "string",
-        "null"
+        "string"
       ]
     },
     "size": {
-      "description": "TODO",
-      "example": null,
-      "format": "string",
-      "readOnly": true,
+      "description": "size used for droplet",
+      "properties": {
+        "slug": {
+          "$ref": "/schema/size#/definitions/slug"
+        },
+        "memory": {
+          "$ref": "/schema/size#/definitions/memory"
+        },
+        "cpus": {
+          "$ref": "/schema/size#/definitions/cpus"
+        },
+        "disk": {
+          "$ref": "/schema/size#/definitions/disk"
+        },
+        "transfer": {
+          "$ref": "/schema/size#/definitions/transfer"
+        },
+        "price_monthly": {
+          "$ref": "/schema/size#/definitions/price_monthly"
+        },
+        "price_hourly": {
+          "$ref": "/schema/size#/definitions/price_hourly"
+        }
+      },
       "type": [
-        "string",
-        "null"
+        "object"
       ]
     },
     "snapshots": {
@@ -118,14 +149,21 @@
         "null"
       ]
     },
-    "keys": {
-      "description": "TODO",
+    "key_ids": {
+      "description": "comma separated list of key ids for root access",
       "example": "32,64",
       "format": "numeric CSV",
-      "readOnly": true,
       "type": [
         "string",
         "null"
+      ]
+    },
+    "image_id": {
+      "description": "id of image to use",
+      "example": 32,
+      "format": "integer",
+      "type": [
+        "integer"
       ]
     }
   },
@@ -135,6 +173,58 @@
       "href": "/droplets",
       "method": "POST",
       "rel": "create",
+      "schema": {
+        "properties": {
+          "name": {
+            "$ref": "/schema/droplet#/definitions/name"
+          },
+          "region": {
+            "$ref": "/schema/droplet#/definitions/region"
+          },
+          "size": {
+            "description": "slug of size for this droplet",
+            "example": "512mb",
+            "format": "string",
+            "readOnly": true,
+            "type": [
+              "string"
+            ]
+          },
+          "image_id": {
+            "$ref": "/schema/droplet#/definitions/image_id"
+          },
+          "key_ids": {
+            "$ref": "/schema/droplet#/definitions/key_ids"
+          },
+          "private_networking": {
+            "description": "enable private networking, if available in this region",
+            "example": false,
+            "format": "boolean",
+            "type": [
+              "boolean"
+            ]
+          },
+          "backups": {
+            "description": "enable backups for this droplet",
+            "example": false,
+            "format": "boolean",
+            "type": [
+              "boolean"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "size",
+          "image_id",
+          "region"
+        ],
+        "optional": [
+          "key_ids",
+          "private_networking",
+          "backups"
+        ]
+      },
       "title": "Create"
     },
     {
@@ -163,6 +253,16 @@
       "href": "/droplets/{(%2Fschema%2Fdroplet%23%2Fdefinitions%2Fidentity)}",
       "method": "PATCH",
       "rel": "update",
+      "schema": {
+        "properties": {
+          "name": {
+            "$ref": "/schema/droplet#/definitions/name"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "title": "Update"
     }
   ],
@@ -173,11 +273,11 @@
     "name": {
       "$ref": "/schema/droplet#/definitions/name"
     },
-    "image": {
-      "$ref": "/schema/droplet#/definitions/name"
-    },
     "region": {
       "$ref": "/schema/droplet#/definitions/region"
+    },
+    "image": {
+      "$ref": "/schema/droplet#/definitions/image"
     },
     "size": {
       "$ref": "/schema/droplet#/definitions/size"
