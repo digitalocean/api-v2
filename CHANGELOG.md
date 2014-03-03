@@ -48,4 +48,7 @@
  * Rolled power_off into shutdown as "hard" shutdown. Default is "soft"
  * Renamed power_on to boot
  * Action to rename is not available. Edit droplet resource instead.
- 
+
+### Droplet Self resource
+
+ * Added initial resource for getting droplet information from droplet

@@ -9,7 +9,7 @@
 1. [Images](#image)
   * [Image Actions](#image-action)
 1. [Domains](#domain)
-  * [Domain Record](#domain-record)
+  * [Domain Records](#domain-record)
 1. [Keys](#key)
 1. [Regions](#region)
 1. [Sizes](#size)
