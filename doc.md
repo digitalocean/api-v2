@@ -3,8 +3,16 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-1. [Domain Record](#domain-record)
-1. [Domain](#domain)
+1. [Droplets](#droplet)
+  * [Droplet Actions](#droplet-action)
+  * [Droplet Self](#droplet-self)
+1. [Images](#image)
+  * [Image Actions](#image-action)
+1. [Domains](#domain)
+  * [Domain Record](#domain-record)
+1. [Keys](#key)
+1. [Regions](#region)
+1. [Sizes](#size)
 
 ## Overview
 
