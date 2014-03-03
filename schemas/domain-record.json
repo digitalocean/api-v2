@@ -8,12 +8,12 @@
   ],
   "definitions": {
     "id": {
-      "description": "unique identifier of domain-record",
-      "example": "01234567-89ab-cdef-0123-456789abcdef",
-      "format": "uuid",
+      "description": "unique identifier of domain record",
+      "example": 32,
+      "format": "integer",
       "readOnly": true,
       "type": [
-        "string"
+        "integer"
       ]
     },
     "identity": {
@@ -87,6 +87,38 @@
       "href": "/domains/{(%2Fschema%2Fdomain%23%2Fdefinitions%2Fidentity)}/records",
       "method": "POST",
       "rel": "create",
+      "schema": {
+        "properties": {
+          "type": {
+            "$ref": "/schema/domain-record#/definitions/type"
+          },
+          "name": {
+            "$ref": "/schema/domain-record#/definitions/name"
+          },
+          "data": {
+            "$ref": "/schema/domain-record#/definitions/data"
+          },
+          "priority": {
+            "$ref": "/schema/domain-record#/definitions/priority"
+          },
+          "port": {
+            "$ref": "/schema/domain-record#/definitions/port"
+          },
+          "weight": {
+            "$ref": "/schema/domain-record#/definitions/weight"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ],
+        "optional": [
+          "name",
+          "priority",
+          "port",
+          "weight"
+        ]
+      },
       "title": "Create"
     },
     {
@@ -115,6 +147,38 @@
       "href": "/domains/{(%2Fschema%2Fdomain%23%2Fdefinitions%2Fidentity)}/records/{(%2Fschema%2Fdomain-record%23%2Fdefinitions%2Fidentity)}",
       "method": "PATCH",
       "rel": "update",
+      "schema": {
+        "properties": {
+          "type": {
+            "$ref": "/schema/domain-record#/definitions/type"
+          },
+          "name": {
+            "$ref": "/schema/domain-record#/definitions/name"
+          },
+          "data": {
+            "$ref": "/schema/domain-record#/definitions/data"
+          },
+          "priority": {
+            "$ref": "/schema/domain-record#/definitions/priority"
+          },
+          "port": {
+            "$ref": "/schema/domain-record#/definitions/port"
+          },
+          "weight": {
+            "$ref": "/schema/domain-record#/definitions/weight"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ],
+        "optional": [
+          "name",
+          "priority",
+          "port",
+          "weight"
+        ]
+      },
       "title": "Update"
     }
   ],

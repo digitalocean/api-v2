@@ -11,9 +11,9 @@ Domain records are the DNS records for a domain.
   </tr>
   <tr>
     <td><strong>id</strong></td>
-    <td><em>uuid</em></td>
-    <td>unique identifier of domain-record</td>
-    <td><code>"01234567-89ab-cdef-0123-456789abcdef"</code></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of domain record</td>
+    <td><code>32</code></td>
   </tr>
   <tr>
     <td><strong>type</strong></td>
@@ -57,24 +57,81 @@ Domain records are the DNS records for a domain.
 Create a new domain record.
 
 ```
-POST /domains/{domain_identity}/records
+POST /domains/{domain_id}/records
 ```
+
+#### Required Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>type</strong></td>
+    <td><em>string</em></td>
+    <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
+    <td><code>"CNAME"</code></td>
+  </tr>
+  <tr>
+    <td><strong>data</strong></td>
+    <td><em>string</em></td>
+    <td>value to use for the DNS record</td>
+    <td><code>"@"</code></td>
+  </tr>
+</table>
+
+
+#### Optional Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>name to use for the DNS record</td>
+    <td><code>"subdomain"</code></td>
+  </tr>
+  <tr>
+    <td><strong>priority</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>priority for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>port</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>port for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>weight</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>weight for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+</table>
 
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/domains/$DOMAIN_IDENTITY/records
+$ curl -n -X POST https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records \
+-H "Content-Type: application/json" \
+-d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 201 Created
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "id": 32,
   "type": "CNAME",
   "name": "subdomain",
   "data": "@",
@@ -88,24 +145,22 @@ RateLimit-Remaining: 1200
 Delete an existing domain record.
 
 ```
-DELETE /domains/{domain_identity}/records/{domain_record_identity}
+DELETE /domains/{domain_id}/records/{domain-record_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.heroku.com/domains/$DOMAIN_IDENTITY/records/$DOMAIN_RECORD_IDENTITY
+$ curl -n -X DELETE https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "id": 32,
   "type": "CNAME",
   "name": "subdomain",
   "data": "@",
@@ -119,24 +174,22 @@ RateLimit-Remaining: 1200
 Info for existing domain records.
 
 ```
-GET /domains/{domain_identity}/records/{domain_record_identity}
+GET /domains/{domain_id}/records/{domain-record_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/domains/$DOMAIN_IDENTITY/records/$DOMAIN_RECORD_IDENTITY
+$ curl -n -X GET https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "id": 32,
   "type": "CNAME",
   "name": "subdomain",
   "data": "@",
@@ -150,27 +203,25 @@ RateLimit-Remaining: 1200
 List existing domain records.
 
 ```
-GET /domains/{domain_identity}/records
+GET /domains/{domain_id}/records
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/domains/$DOMAIN_IDENTITY/records
+$ curl -n -X GET https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
+Content-Range: id 23..342; max=200
 ```
 ```javascript```
 [
   {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "id": 32,
     "type": "CNAME",
     "name": "subdomain",
     "data": "@",
@@ -185,24 +236,81 @@ RateLimit-Remaining: 1200
 Update an existing domain records.
 
 ```
-PATCH /domains/{domain_identity}/records/{domain_record_identity}
+PATCH /domains/{domain_id}/records/{domain-record_id}
 ```
+
+#### Required Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>type</strong></td>
+    <td><em>string</em></td>
+    <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
+    <td><code>"CNAME"</code></td>
+  </tr>
+  <tr>
+    <td><strong>data</strong></td>
+    <td><em>string</em></td>
+    <td>value to use for the DNS record</td>
+    <td><code>"@"</code></td>
+  </tr>
+</table>
+
+
+#### Optional Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>name to use for the DNS record</td>
+    <td><code>"subdomain"</code></td>
+  </tr>
+  <tr>
+    <td><strong>priority</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>priority for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>port</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>port for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>weight</strong></td>
+    <td><em>nullable integer</em></td>
+    <td>weight for SRV records</td>
+    <td><code>null</code></td>
+  </tr>
+</table>
 
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.heroku.com/domains/$DOMAIN_IDENTITY/records/$DOMAIN_RECORD_IDENTITY
+$ curl -n -X PATCH https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
+-H "Content-Type: application/json" \
+-d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "id": 32,
   "type": "CNAME",
   "name": "subdomain",
   "data": "@",
@@ -288,16 +396,14 @@ POST /domains
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/domains \
+$ curl -n -X POST https://api.digitalocean.com/v1/domains \
 -H "Content-Type: application/json" \
--d '{"name":"example.com"}'
+-d '{"name":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 201 Created
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -314,20 +420,18 @@ RateLimit-Remaining: 1200
 Delete an existing domain.
 
 ```
-DELETE /domains/{domain_identity}
+DELETE /domains/{domain_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.heroku.com/domains/$DOMAIN_IDENTITY
+$ curl -n -X DELETE https://api.digitalocean.com/v1/domains/$DOMAIN_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -344,20 +448,18 @@ RateLimit-Remaining: 1200
 Info for existing domain.
 
 ```
-GET /domains/{domain_identity}
+GET /domains/{domain_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/domains/$DOMAIN_IDENTITY
+$ curl -n -X GET https://api.digitalocean.com/v1/domains/$DOMAIN_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -380,16 +482,14 @@ GET /domains
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/domains
+$ curl -n -X GET https://api.digitalocean.com/v1/domains
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
+Content-Range: id 23..342; max=200
 ```
 ```javascript```
 [
@@ -475,20 +575,78 @@ Droplet actions are operations on droplets that may take a while to complete.
 Create a new droplet action.
 
 ```
-POST /droplet/{droplet_identity}/actions
+POST /droplet/{droplet_id}/actions
 ```
+
+#### Optional Parameters
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>reboot</strong></td>
+    <td><em>string</em></td>
+    <td>reboot the machine, specifying a hard or soft reboot</td>
+    <td><code>"hard"</code></td>
+  </tr>
+  <tr>
+    <td><strong>shutdown</strong></td>
+    <td><em>string</em></td>
+    <td>shutdown the machine, specifying a hard or soft shutdown</td>
+    <td><code>"soft"</code></td>
+  </tr>
+  <tr>
+    <td><strong>boot</strong></td>
+    <td><em>nullable null</em></td>
+    <td>boot the machine, no value necessary</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>resetpassword</strong></td>
+    <td><em>nullable null</em></td>
+    <td>reset the root password, no value necessary</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>resize</strong></td>
+    <td><em>string</em></td>
+    <td>resize the machine, specifying a size id or slug</td>
+    <td><code>"32mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>snapshot</strong></td>
+    <td><em>string</em></td>
+    <td>snapshot the machine, specifying the name for the snapshot image</td>
+    <td><code>"My snapshot"</code></td>
+  </tr>
+  <tr>
+    <td><strong>rebuild</strong></td>
+    <td><em>string or integer</em></td>
+    <td>rebuild the machine, specifying an image id or slug</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>restore</strong></td>
+    <td><em>string or integer</em></td>
+    <td>restore the machine, specifying an image id or slug</td>
+    <td><code>32</code></td>
+  </tr>
+</table>
 
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/droplet/$DROPLET_IDENTITY/actions
+$ curl -n -X POST https://api.digitalocean.com/v1/droplet/$DROPLET_ID/actions \
+-H "Content-Type: application/json" \
+-d '{"reboot":null,"shutdown":null,"boot":null,"resetpassword":null,"resize":null,"snapshot":null,"rebuild":null,"restore":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 201 Created
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -508,20 +666,18 @@ RateLimit-Remaining: 1200
 Info for existing droplet action.
 
 ```
-GET /droplet/{droplet_identity}/actions/{droplet_action_identity}
+GET /droplet/{droplet_id}/actions/{droplet-action_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/droplet/$DROPLET_IDENTITY/actions/$DROPLET_ACTION_IDENTITY
+$ curl -n -X GET https://api.digitalocean.com/v1/droplet/$DROPLET_ID/actions/$DROPLET_ACTION_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -534,6 +690,178 @@ RateLimit-Remaining: 1200
   "snapshot": "My snapshot",
   "rebuild": 32,
   "restore": 32
+}
+```
+
+## Droplet Self
+Droplet meta-data reflection endpoint.
+
+### Attributes
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><strong>id</strong></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of droplet</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>name</strong></td>
+    <td><em>string</em></td>
+    <td>name used to identify droplet</td>
+    <td><code>"my droplet"</code></td>
+  </tr>
+  <tr>
+    <td><strong>region</strong></td>
+    <td><em>string</em></td>
+    <td>slug of region for this droplet</td>
+    <td><code>"nyc2"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:id</strong></td>
+    <td><em>integer</em></td>
+    <td>unique identifier of image</td>
+    <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:slug</strong></td>
+    <td><em>nullable string</em></td>
+    <td>url friendly name of the image</td>
+    <td><code>"ubuntu-12.10-x32"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:name</strong></td>
+    <td><em>string</em></td>
+    <td>display name of the image</td>
+    <td><code>"My first snapshot"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:distribution</strong></td>
+    <td><em>string</em></td>
+    <td>name of the Linux distribution this image is based on</td>
+    <td><code>"Ubuntu"</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:public</strong></td>
+    <td><em>boolean</em></td>
+    <td>whether accessible by all accounts or just your account</td>
+    <td><code>false</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:slug</strong></td>
+    <td><em>string</em></td>
+    <td>unique string identifier of size</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:memory</strong></td>
+    <td><em>string</em></td>
+    <td>amount of RAM provided</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:cpus</strong></td>
+    <td><em>integer</em></td>
+    <td>number of CPUs provided</td>
+    <td><code>"1"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:disk</strong></td>
+    <td><em>string</em></td>
+    <td>amount of SSD disk storage provided</td>
+    <td><code>"20gb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:transfer</strong></td>
+    <td><em>string</em></td>
+    <td>amount of network transfer provided</td>
+    <td><code>"1tb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:price_monthly</strong></td>
+    <td><em>string</em></td>
+    <td>cost of running for a month</td>
+    <td><code>"5.00"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:price_hourly</strong></td>
+    <td><em>string</em></td>
+    <td>cost of running for an hour</td>
+    <td><code>"0.007"</code></td>
+  </tr>
+  <tr>
+    <td><strong>backups</strong></td>
+    <td><em>nullable string</em></td>
+    <td>TODO</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>snapshots</strong></td>
+    <td><em>nullable string</em></td>
+    <td>TODO</td>
+    <td><code>null</code></td>
+  </tr>
+  <tr>
+    <td><strong>locked</strong></td>
+    <td><em>boolean</em></td>
+    <td>???</td>
+    <td><code>false</code></td>
+  </tr>
+  <tr>
+    <td><strong>status</strong></td>
+    <td><em>string</em></td>
+    <td>current status of droplet</td>
+    <td><code>"active"</code></td>
+  </tr>
+  <tr>
+    <td><strong>public_ip</strong></td>
+    <td><em>string</em></td>
+    <td>public IP address of droplet</td>
+    <td><code>"192.168.1.1"</code></td>
+  </tr>
+  <tr>
+    <td><strong>private_ip</strong></td>
+    <td><em>nullable string</em></td>
+    <td>private IP address or null</td>
+    <td><code>null</code></td>
+  </tr>
+</table>
+
+### Droplet Self Info
+Info for existing droplet.
+
+```
+GET /droplets/self
+```
+
+
+#### Curl Example
+```term
+$ curl -n -X GET https://api.digitalocean.com/v1/droplets/self
+```
+
+#### Response Example
+```
+HTTP/1.1 200 OK
+```
+```javascript```
+{
+  "id": 32,
+  "name": "my droplet",
+  "region": "nyc2",
+  "image": null,
+  "size": null,
+  "backups": null,
+  "snapshots": null,
+  "locked": false,
+  "status": "active",
+  "public_ip": "192.168.1.1",
+  "private_ip": null
 }
 ```
 
@@ -567,16 +895,16 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><code>"nyc2"</code></td>
   </tr>
   <tr>
-    <td><strong>image:distribution</strong></td>
-    <td><em>string</em></td>
-    <td>name of the Linux distribution this image is based on</td>
-    <td><code>"Ubuntu"</code></td>
-  </tr>
-  <tr>
     <td><strong>image:id</strong></td>
     <td><em>integer</em></td>
     <td>unique identifier of image</td>
     <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>image:slug</strong></td>
+    <td><em>nullable string</em></td>
+    <td>url friendly name of the image</td>
+    <td><code>"ubuntu-12.10-x32"</code></td>
   </tr>
   <tr>
     <td><strong>image:name</strong></td>
@@ -585,16 +913,28 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><code>"My first snapshot"</code></td>
   </tr>
   <tr>
+    <td><strong>image:distribution</strong></td>
+    <td><em>string</em></td>
+    <td>name of the Linux distribution this image is based on</td>
+    <td><code>"Ubuntu"</code></td>
+  </tr>
+  <tr>
     <td><strong>image:public</strong></td>
     <td><em>boolean</em></td>
     <td>whether accessible by all accounts or just your account</td>
     <td><code>false</code></td>
   </tr>
   <tr>
-    <td><strong>image:slug</strong></td>
-    <td><em>nullable string</em></td>
-    <td>url friendly name of the image</td>
-    <td><code>"ubuntu-12.10-x32"</code></td>
+    <td><strong>size:slug</strong></td>
+    <td><em>string</em></td>
+    <td>unique string identifier of size</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
+    <td><strong>size:memory</strong></td>
+    <td><em>string</em></td>
+    <td>amount of RAM provided</td>
+    <td><code>"512mb"</code></td>
   </tr>
   <tr>
     <td><strong>size:cpus</strong></td>
@@ -609,16 +949,10 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><code>"20gb"</code></td>
   </tr>
   <tr>
-    <td><strong>size:memory</strong></td>
+    <td><strong>size:transfer</strong></td>
     <td><em>string</em></td>
-    <td>amount of RAM provided</td>
-    <td><code>"512mb"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:price_hourly</strong></td>
-    <td><em>string</em></td>
-    <td>cost of running for an hour</td>
-    <td><code>"0.007"</code></td>
+    <td>amount of network transfer provided</td>
+    <td><code>"1tb"</code></td>
   </tr>
   <tr>
     <td><strong>size:price_monthly</strong></td>
@@ -627,16 +961,10 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><code>"5.00"</code></td>
   </tr>
   <tr>
-    <td><strong>size:slug</strong></td>
+    <td><strong>size:price_hourly</strong></td>
     <td><em>string</em></td>
-    <td>unique string identifier of size</td>
-    <td><code>"512mb"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:transfer</strong></td>
-    <td><em>string</em></td>
-    <td>amount of network transfer provided</td>
-    <td><code>"1tb"</code></td>
+    <td>cost of running for an hour</td>
+    <td><code>"0.007"</code></td>
   </tr>
   <tr>
     <td><strong>backups</strong></td>
@@ -749,38 +1077,22 @@ POST /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/droplets \
+$ curl -n -X POST https://api.digitalocean.com/v1/droplets \
 -H "Content-Type: application/json" \
--d '{"name":"my droplet","region":"nyc2","size":"512mb","image_id":32,"key_ids":"32,64","private_networking":false,"backups":false}'
+-d '{"name":null,"region":null,"size":"512mb","image_id":null,"key_ids":null,"private_networking":false,"backups":false}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 201 Created
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": {
-    "id": 32,
-    "slug": "ubuntu-12.10-x32",
-    "name": "My first snapshot",
-    "distribution": "Ubuntu",
-    "public": false
-  },
-  "size": {
-    "slug": "512mb",
-    "memory": "512mb",
-    "cpus": "1",
-    "disk": "20gb",
-    "transfer": "1tb",
-    "price_monthly": "5.00",
-    "price_hourly": "0.007"
-  },
+  "image": null,
+  "size": null,
   "backups": null,
   "snapshots": null,
   "locked": false,
@@ -794,42 +1106,26 @@ RateLimit-Remaining: 1200
 Delete an existing droplet.
 
 ```
-DELETE /droplets/{droplet_identity}
+DELETE /droplets/{droplet_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.heroku.com/droplets/$DROPLET_IDENTITY
+$ curl -n -X DELETE https://api.digitalocean.com/v1/droplets/$DROPLET_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": {
-    "id": 32,
-    "slug": "ubuntu-12.10-x32",
-    "name": "My first snapshot",
-    "distribution": "Ubuntu",
-    "public": false
-  },
-  "size": {
-    "slug": "512mb",
-    "memory": "512mb",
-    "cpus": "1",
-    "disk": "20gb",
-    "transfer": "1tb",
-    "price_monthly": "5.00",
-    "price_hourly": "0.007"
-  },
+  "image": null,
+  "size": null,
   "backups": null,
   "snapshots": null,
   "locked": false,
@@ -843,42 +1139,26 @@ RateLimit-Remaining: 1200
 Info for existing droplet.
 
 ```
-GET /droplets/{droplet_identity}
+GET /droplets/{droplet_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/droplets/$DROPLET_IDENTITY
+$ curl -n -X GET https://api.digitalocean.com/v1/droplets/$DROPLET_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": {
-    "id": 32,
-    "slug": "ubuntu-12.10-x32",
-    "name": "My first snapshot",
-    "distribution": "Ubuntu",
-    "public": false
-  },
-  "size": {
-    "slug": "512mb",
-    "memory": "512mb",
-    "cpus": "1",
-    "disk": "20gb",
-    "transfer": "1tb",
-    "price_monthly": "5.00",
-    "price_hourly": "0.007"
-  },
+  "image": null,
+  "size": null,
   "backups": null,
   "snapshots": null,
   "locked": false,
@@ -898,16 +1178,14 @@ GET /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/droplets
+$ curl -n -X GET https://api.digitalocean.com/v1/droplets
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
+Content-Range: id 23..342; max=200
 ```
 ```javascript```
 [
@@ -915,22 +1193,8 @@ RateLimit-Remaining: 1200
     "id": 32,
     "name": "my droplet",
     "region": "nyc2",
-    "image": {
-      "id": 32,
-      "slug": "ubuntu-12.10-x32",
-      "name": "My first snapshot",
-      "distribution": "Ubuntu",
-      "public": false
-    },
-    "size": {
-      "slug": "512mb",
-      "memory": "512mb",
-      "cpus": "1",
-      "disk": "20gb",
-      "transfer": "1tb",
-      "price_monthly": "5.00",
-      "price_hourly": "0.007"
-    },
+    "image": null,
+    "size": null,
     "backups": null,
     "snapshots": null,
     "locked": false,
@@ -945,7 +1209,7 @@ RateLimit-Remaining: 1200
 Update an existing droplet.
 
 ```
-PATCH /droplets/{droplet_identity}
+PATCH /droplets/{droplet_id}
 ```
 
 #### Required Parameters
@@ -968,38 +1232,22 @@ PATCH /droplets/{droplet_identity}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.heroku.com/droplets/$DROPLET_IDENTITY \
+$ curl -n -X PATCH https://api.digitalocean.com/v1/droplets/$DROPLET_ID \
 -H "Content-Type: application/json" \
--d '{"name":"my droplet"}'
+-d '{"name":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": {
-    "id": 32,
-    "slug": "ubuntu-12.10-x32",
-    "name": "My first snapshot",
-    "distribution": "Ubuntu",
-    "public": false
-  },
-  "size": {
-    "slug": "512mb",
-    "memory": "512mb",
-    "cpus": "1",
-    "disk": "20gb",
-    "transfer": "1tb",
-    "price_monthly": "5.00",
-    "price_hourly": "0.007"
-  },
+  "image": null,
+  "size": null,
   "backups": null,
   "snapshots": null,
   "locked": false,
@@ -1038,7 +1286,7 @@ Image actions are operations on images that may take a while to complete.
 Create a new image action.
 
 ```
-POST /images/{image_identity}/actions
+POST /images/{image_id}/actions
 ```
 
 #### Optional Parameters
@@ -1060,16 +1308,14 @@ POST /images/{image_identity}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/images/$IMAGE_IDENTITY/actions \
+$ curl -n -X POST https://api.digitalocean.com/v1/images/$IMAGE_ID/actions \
 -H "Content-Type: application/json" \
--d '{"transfer":"nyc2"}'
+-d '{"transfer":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 201 Created
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1082,20 +1328,18 @@ RateLimit-Remaining: 1200
 Info for existing image action.
 
 ```
-GET /images/{image_identity}/actions/{image_action_identity}
+GET /images/{image_id}/actions/{image-action_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/images/$IMAGE_IDENTITY/actions/$IMAGE_ACTION_IDENTITY
+$ curl -n -X GET https://api.digitalocean.com/v1/images/$IMAGE_ID/actions/$IMAGE_ACTION_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1157,20 +1401,18 @@ Images are either snapshots or backups you've made, or public images of applicat
 Delete an existing image.
 
 ```
-DELETE /images/{image_identity}
+DELETE /images/{image_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.heroku.com/images/$IMAGE_IDENTITY
+$ curl -n -X DELETE https://api.digitalocean.com/v1/images/$IMAGE_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1190,20 +1432,18 @@ RateLimit-Remaining: 1200
 Info for existing image.
 
 ```
-GET /images/{image_identity}
+GET /images/{image_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/images/$IMAGE_IDENTITY
+$ curl -n -X GET https://api.digitalocean.com/v1/images/$IMAGE_ID
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1245,18 +1485,16 @@ GET /images
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/images \
+$ curl -n -X GET https://api.digitalocean.com/v1/images \
 -H "Content-Type: application/json" \
--d '{"private":true}'
+-d '{"private":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
+Content-Range: id 23..342; max=200
 ```
 ```javascript```
 [
@@ -1278,7 +1516,7 @@ RateLimit-Remaining: 1200
 Update an existing image.
 
 ```
-PATCH /images/{image_identity}
+PATCH /images/{image_id}
 ```
 
 #### Required Parameters
@@ -1301,16 +1539,14 @@ PATCH /images/{image_identity}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.heroku.com/images/$IMAGE_IDENTITY \
+$ curl -n -X PATCH https://api.digitalocean.com/v1/images/$IMAGE_ID \
 -H "Content-Type: application/json" \
--d '{"name":"My first snapshot"}'
+-d '{"name":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1396,16 +1632,14 @@ POST /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.heroku.com/account/keys \
+$ curl -n -X POST https://api.digitalocean.com/v1/account/keys \
 -H "Content-Type: application/json" \
--d '{"public_key":"ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com","name":"primary-key"}'
+-d '{"public_key":null,"name":null}'
 ```
 
 #### Response Example
 ```
 HTTP/1.1 201 Created
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1420,20 +1654,18 @@ RateLimit-Remaining: 1200
 Delete an existing key.
 
 ```
-DELETE /account/keys/{key_identity}
+DELETE /account/keys/{key_id_or_fingerprint}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.heroku.com/account/keys/$KEY_IDENTITY
+$ curl -n -X DELETE https://api.digitalocean.com/v1/account/keys/$KEY_ID_OR_FINGERPRINT
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1448,20 +1680,18 @@ RateLimit-Remaining: 1200
 Info for existing key.
 
 ```
-GET /account/keys/{key_identity}
+GET /account/keys/{key_id_or_fingerprint}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/account/keys/$KEY_IDENTITY
+$ curl -n -X GET https://api.digitalocean.com/v1/account/keys/$KEY_ID_OR_FINGERPRINT
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1482,16 +1712,14 @@ GET /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/account/keys
+$ curl -n -X GET https://api.digitalocean.com/v1/account/keys
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id, fingerprint
-Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
+Content-Range: id 23..342; max=200
 ```
 ```javascript```
 [
@@ -1551,16 +1779,14 @@ GET /regions
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/regions
+$ curl -n -X GET https://api.digitalocean.com/v1/regions
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
+Content-Range: id 23..342; max=200
 ```
 ```javascript```
 [
@@ -1650,16 +1876,14 @@ GET /sizes
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.heroku.com/sizes
+$ curl -n -X GET https://api.digitalocean.com/v1/sizes
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: slug
-Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
-ETag: "0123456789abcdef0123456789abcdef"
-RateLimit-Remaining: 1200
+Content-Range: id 23..342; max=200
 ```
 ```javascript```
 [
