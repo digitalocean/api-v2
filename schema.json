@@ -1,9 +1,1243 @@
 {
+  "$schema": "http://json-schema.org/draft-04/hyper-schema",
   "definitions": {
+    "domain-record": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "id": "schema/domain-record",
+      "title": "DigitalOcean API - Domain Record",
+      "description": "Domain records are the DNS records for a domain.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of domain record",
+          "example": 32,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/domain-record/definitions/id"
+            }
+          ]
+        },
+        "type": {
+          "description": "type of DNS record (ex: A, CNAME, TXT, ...)",
+          "example": "CNAME",
+          "format": "string",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "description": "name to use for the DNS record",
+          "example": "subdomain",
+          "format": "string",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "data": {
+          "description": "value to use for the DNS record",
+          "example": "@",
+          "format": "string",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "priority": {
+          "description": "priority for SRV records",
+          "example": null,
+          "format": "integer",
+          "readOnly": false,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "port": {
+          "description": "port for SRV records",
+          "example": null,
+          "format": "integer",
+          "readOnly": false,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "weight": {
+          "description": "weight for SRV records",
+          "example": null,
+          "format": "integer",
+          "readOnly": false,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new domain record.",
+          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}/records",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+              "type": {
+                "$ref": "#/definitions/domain-record/definitions/type"
+              },
+              "name": {
+                "$ref": "#/definitions/domain-record/definitions/name"
+              },
+              "data": {
+                "$ref": "#/definitions/domain-record/definitions/data"
+              },
+              "priority": {
+                "$ref": "#/definitions/domain-record/definitions/priority"
+              },
+              "port": {
+                "$ref": "#/definitions/domain-record/definitions/port"
+              },
+              "weight": {
+                "$ref": "#/definitions/domain-record/definitions/weight"
+              }
+            },
+            "required": [
+              "type",
+              "data"
+            ],
+            "optional": [
+              "name",
+              "priority",
+              "port",
+              "weight"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing domain record.",
+          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}/records/{(%23%2Fdefinitions%2Fdomain-record%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing domain records.",
+          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}/records/{(%23%2Fdefinitions%2Fdomain-record%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing domain records.",
+          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}/records",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        },
+        {
+          "description": "Update an existing domain records.",
+          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}/records/{(%23%2Fdefinitions%2Fdomain-record%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+              "type": {
+                "$ref": "#/definitions/domain-record/definitions/type"
+              },
+              "name": {
+                "$ref": "#/definitions/domain-record/definitions/name"
+              },
+              "data": {
+                "$ref": "#/definitions/domain-record/definitions/data"
+              },
+              "priority": {
+                "$ref": "#/definitions/domain-record/definitions/priority"
+              },
+              "port": {
+                "$ref": "#/definitions/domain-record/definitions/port"
+              },
+              "weight": {
+                "$ref": "#/definitions/domain-record/definitions/weight"
+              }
+            },
+            "required": [
+              "type",
+              "data"
+            ],
+            "optional": [
+              "name",
+              "priority",
+              "port",
+              "weight"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/domain-record/definitions/id"
+        },
+        "type": {
+          "$ref": "#/definitions/domain-record/definitions/type"
+        },
+        "name": {
+          "$ref": "#/definitions/domain-record/definitions/name"
+        },
+        "data": {
+          "$ref": "#/definitions/domain-record/definitions/data"
+        },
+        "priority": {
+          "$ref": "#/definitions/domain-record/definitions/priority"
+        },
+        "port": {
+          "$ref": "#/definitions/domain-record/definitions/port"
+        },
+        "weight": {
+          "$ref": "#/definitions/domain-record/definitions/weight"
+        }
+      }
+    },
+    "domain": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "id": "schema/domain",
+      "title": "DigitalOcean API - Domain",
+      "description": "Domains are managed domain names that DigitalOcean provides DNS for.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "name": {
+          "description": "name of the domain",
+          "example": "example.com",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "id": {
+          "description": "unique identifier of domain",
+          "example": 32,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/domain/definitions/id"
+            }
+          ]
+        },
+        "ttl": {
+          "description": "time to live for records on this domain",
+          "example": 1800,
+          "format": "seconds",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "zone_file": {
+          "description": "contents of the zone file used by the DNS server",
+          "example": "$TTL\\t600\\n@\\t\\tIN\\tSOA ...",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "bad_zone_file": {
+          "description": "contents of updated zone file that produced an error or null",
+          "example": "$TTL\\t600\\n@\\t\\tIN\\tSOA ...",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bad_zone_error": {
+          "description": "error information associated with bad_zone_file or null",
+          "example": "error information...",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new domain.",
+          "href": "/domains",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+              "name": {
+                "$ref": "#/definitions/domain/definitions/name"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing domain.",
+          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing domain.",
+          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing domains.",
+          "href": "/domains",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        }
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/domain/definitions/name"
+        },
+        "id": {
+          "$ref": "#/definitions/domain/definitions/id"
+        },
+        "ttl": {
+          "$ref": "#/definitions/domain/definitions/ttl"
+        },
+        "zone_file": {
+          "$ref": "#/definitions/domain/definitions/zone_file"
+        },
+        "bad_zone_file": {
+          "$ref": "#/definitions/domain/definitions/bad_zone_file"
+        },
+        "bad_zone_error": {
+          "$ref": "#/definitions/domain/definitions/bad_zone_error"
+        }
+      }
+    },
+    "droplet-action": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "DigitalOcean API - Droplet Action",
+      "description": "Droplet actions are operations on droplets that may take a while to complete.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of droplet action",
+          "example": 32,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/droplet-action/definitions/id"
+            }
+          ]
+        },
+        "reboot": {
+          "description": "reboot the machine, specifying a hard or soft reboot",
+          "example": "hard",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "shutdown": {
+          "description": "shutdown the machine, specifying a hard or soft shutdown",
+          "example": "soft",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "boot": {
+          "description": "boot the machine, no value necessary",
+          "example": null,
+          "format": "null",
+          "readOnly": true,
+          "type": [
+            "null"
+          ]
+        },
+        "resetpassword": {
+          "description": "reset the root password, no value necessary",
+          "example": null,
+          "format": "null",
+          "readOnly": true,
+          "type": [
+            "null"
+          ]
+        },
+        "resize": {
+          "description": "resize the machine, specifying a size id or slug",
+          "example": "32mb",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "snapshot": {
+          "description": "snapshot the machine, specifying the name for the snapshot image",
+          "example": "My snapshot",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "rebuild": {
+          "description": "rebuild the machine, specifying an image id or slug",
+          "example": 32,
+          "format": "string or integer",
+          "readOnly": true,
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "restore": {
+          "description": "restore the machine, specifying an image id or slug",
+          "example": 32,
+          "format": "string or integer",
+          "readOnly": true,
+          "type": [
+            "string",
+            "integer"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new droplet action.",
+          "href": "/droplet/{(%23%2Fdefinitions%2Fdroplet%2Fdefinitions%2Fidentity)}/actions",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+              "reboot": {
+                "$ref": "#/definitions/droplet-action/definitions/reboot"
+              },
+              "shutdown": {
+                "$ref": "#/definitions/droplet-action/definitions/shutdown"
+              },
+              "boot": {
+                "$ref": "#/definitions/droplet-action/definitions/boot"
+              },
+              "resetpassword": {
+                "$ref": "#/definitions/droplet-action/definitions/resetpassword"
+              },
+              "resize": {
+                "$ref": "#/definitions/droplet-action/definitions/resize"
+              },
+              "snapshot": {
+                "$ref": "#/definitions/droplet-action/definitions/snapshot"
+              },
+              "rebuild": {
+                "$ref": "#/definitions/droplet-action/definitions/rebuild"
+              },
+              "restore": {
+                "$ref": "#/definitions/droplet-action/definitions/restore"
+              }
+            },
+            "optional": [
+              "reboot",
+              "shutdown",
+              "boot",
+              "resetpassword",
+              "resize",
+              "snapshot",
+              "rebuild",
+              "restore"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Info for existing droplet action.",
+          "href": "/droplet/{(%23%2Fdefinitions%2Fdroplet%2Fdefinitions%2Fidentity)}/actions/{(%23%2Fdefinitions%2Fdroplet-action%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/droplet-action/definitions/id"
+        },
+        "reboot": {
+          "$ref": "#/definitions/droplet-action/definitions/reboot"
+        },
+        "shutdown": {
+          "$ref": "#/definitions/droplet-action/definitions/shutdown"
+        },
+        "boot": {
+          "$ref": "#/definitions/droplet-action/definitions/boot"
+        },
+        "resetpassword": {
+          "$ref": "#/definitions/droplet-action/definitions/resetpassword"
+        },
+        "resize": {
+          "$ref": "#/definitions/droplet-action/definitions/resize"
+        },
+        "snapshot": {
+          "$ref": "#/definitions/droplet-action/definitions/snapshot"
+        },
+        "rebuild": {
+          "$ref": "#/definitions/droplet-action/definitions/rebuild"
+        },
+        "restore": {
+          "$ref": "#/definitions/droplet-action/definitions/restore"
+        }
+      },
+      "id": "schema/droplet-action"
+    },
+    "droplet-self": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "DigitalOcean API - Droplet Self",
+      "description": "Droplet meta-data reflection endpoint. This is only available from a droplet.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/droplet/definitions/id"
+            }
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Info for existing droplet.",
+          "href": "/droplets/self",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/droplet/definitions/id"
+        },
+        "name": {
+          "$ref": "#/definitions/droplet/definitions/name"
+        },
+        "region": {
+          "$ref": "#/definitions/droplet/definitions/region"
+        },
+        "image": {
+          "$ref": "#/definitions/droplet/definitions/image"
+        },
+        "size": {
+          "$ref": "#/definitions/droplet/definitions/size"
+        },
+        "backups": {
+          "$ref": "#/definitions/droplet/definitions/backups"
+        },
+        "snapshots": {
+          "$ref": "#/definitions/droplet/definitions/snapshots"
+        },
+        "locked": {
+          "$ref": "#/definitions/droplet/definitions/locked"
+        },
+        "status": {
+          "$ref": "#/definitions/droplet/definitions/status"
+        },
+        "public_ip": {
+          "$ref": "#/definitions/droplet/definitions/public_ip"
+        },
+        "private_ip": {
+          "$ref": "#/definitions/droplet/definitions/private_ip"
+        }
+      },
+      "id": "schema/droplet-self"
+    },
+    "droplet": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "DigitalOcean API - Droplet",
+      "description": "Droplets are VMs in the DigitalOcean cloud.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of droplet",
+          "example": 32,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/droplet/definitions/id"
+            }
+          ]
+        },
+        "name": {
+          "description": "name used to identify droplet",
+          "example": "my droplet",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "locked": {
+          "description": "???",
+          "example": false,
+          "format": "boolean",
+          "readOnly": true,
+          "type": [
+            "boolean"
+          ]
+        },
+        "status": {
+          "description": "current status of droplet",
+          "example": "active",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "public_ip": {
+          "description": "public IP address of droplet",
+          "example": "192.168.1.1",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "private_ip": {
+          "description": "private IP address or null",
+          "example": null,
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "image": {
+          "description": "image used for droplet",
+          "properties": {
+            "id": {
+              "$ref": "#/definitions/image/definitions/id"
+            },
+            "slug": {
+              "$ref": "#/definitions/image/definitions/slug"
+            },
+            "name": {
+              "$ref": "#/definitions/image/definitions/name"
+            },
+            "distribution": {
+              "$ref": "#/definitions/image/definitions/distribution"
+            },
+            "public": {
+              "$ref": "#/definitions/image/definitions/public"
+            }
+          },
+          "type": [
+            "object"
+          ]
+        },
+        "region": {
+          "description": "slug of region for this droplet",
+          "example": "nyc2",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "size": {
+          "description": "size used for droplet",
+          "properties": {
+            "slug": {
+              "$ref": "#/definitions/size/definitions/slug"
+            },
+            "memory": {
+              "$ref": "#/definitions/size/definitions/memory"
+            },
+            "cpus": {
+              "$ref": "#/definitions/size/definitions/cpus"
+            },
+            "disk": {
+              "$ref": "#/definitions/size/definitions/disk"
+            },
+            "transfer": {
+              "$ref": "#/definitions/size/definitions/transfer"
+            },
+            "price_monthly": {
+              "$ref": "#/definitions/size/definitions/price_monthly"
+            },
+            "price_hourly": {
+              "$ref": "#/definitions/size/definitions/price_hourly"
+            }
+          },
+          "type": [
+            "object"
+          ]
+        },
+        "snapshots": {
+          "description": "TODO",
+          "example": null,
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "backups": {
+          "description": "TODO",
+          "example": null,
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "key_ids": {
+          "description": "comma separated list of key ids for root access",
+          "example": "32,64",
+          "format": "numeric CSV",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "image_id": {
+          "description": "id of image to use",
+          "example": 32,
+          "format": "integer",
+          "type": [
+            "integer"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new droplet.",
+          "href": "/droplets",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+              "name": {
+                "$ref": "#/definitions/droplet/definitions/name"
+              },
+              "region": {
+                "$ref": "#/definitions/droplet/definitions/region"
+              },
+              "size": {
+                "description": "slug of size for this droplet",
+                "example": "512mb",
+                "format": "string",
+                "readOnly": true,
+                "type": [
+                  "string"
+                ]
+              },
+              "image_id": {
+                "$ref": "#/definitions/droplet/definitions/image_id"
+              },
+              "key_ids": {
+                "$ref": "#/definitions/droplet/definitions/key_ids"
+              },
+              "private_networking": {
+                "description": "enable private networking, if available in this region",
+                "example": false,
+                "format": "boolean",
+                "type": [
+                  "boolean"
+                ]
+              },
+              "backups": {
+                "description": "enable backups for this droplet",
+                "example": false,
+                "format": "boolean",
+                "type": [
+                  "boolean"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "size",
+              "image_id",
+              "region"
+            ],
+            "optional": [
+              "key_ids",
+              "private_networking",
+              "backups"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing droplet.",
+          "href": "/droplets/{(%23%2Fdefinitions%2Fdroplet%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing droplet.",
+          "href": "/droplets/{(%23%2Fdefinitions%2Fdroplet%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing droplet.",
+          "href": "/droplets",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        },
+        {
+          "description": "Update an existing droplet.",
+          "href": "/droplets/{(%23%2Fdefinitions%2Fdroplet%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+              "name": {
+                "$ref": "#/definitions/droplet/definitions/name"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/droplet/definitions/id"
+        },
+        "name": {
+          "$ref": "#/definitions/droplet/definitions/name"
+        },
+        "region": {
+          "$ref": "#/definitions/droplet/definitions/region"
+        },
+        "image": {
+          "$ref": "#/definitions/droplet/definitions/image"
+        },
+        "size": {
+          "$ref": "#/definitions/droplet/definitions/size"
+        },
+        "backups": {
+          "$ref": "#/definitions/droplet/definitions/backups"
+        },
+        "snapshots": {
+          "$ref": "#/definitions/droplet/definitions/snapshots"
+        },
+        "locked": {
+          "$ref": "#/definitions/droplet/definitions/locked"
+        },
+        "status": {
+          "$ref": "#/definitions/droplet/definitions/status"
+        },
+        "public_ip": {
+          "$ref": "#/definitions/droplet/definitions/public_ip"
+        },
+        "private_ip": {
+          "$ref": "#/definitions/droplet/definitions/private_ip"
+        }
+      },
+      "id": "schema/droplet"
+    },
+    "image-action": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "DigitalOcean API - Image Action",
+      "description": "Image actions are operations on images that may take a while to complete.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of image action",
+          "example": 32,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/image-action/definitions/id"
+            }
+          ]
+        },
+        "transfer": {
+          "description": "a region slug to transfer the image to",
+          "example": "nyc2",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new image action.",
+          "href": "/images/{(%23%2Fdefinitions%2Fimage%2Fdefinitions%2Fidentity)}/actions",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+              "transfer": {
+                "$ref": "#/definitions/image-action/definitions/transfer"
+              }
+            },
+            "optional": [
+              "transfer"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Info for existing image action.",
+          "href": "/images/{(%23%2Fdefinitions%2Fimage%2Fdefinitions%2Fidentity)}/actions/{(%23%2Fdefinitions%2Fimage-action%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/image-action/definitions/id"
+        },
+        "transfer": {
+          "$ref": "#/definitions/image-action/definitions/transfer"
+        }
+      },
+      "id": "schema/image-action"
+    },
+    "image": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "DigitalOcean API - Image",
+      "description": "Images are either snapshots or backups you've made, or public images of applications or base systems.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of image",
+          "example": 32,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/image/definitions/id"
+            }
+          ]
+        },
+        "name": {
+          "description": "display name of the image",
+          "example": "My first snapshot",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "distribution": {
+          "description": "name of the Linux distribution this image is based on",
+          "example": "Ubuntu",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "slug": {
+          "description": "url friendly name of the image",
+          "example": "ubuntu-12.10-x32",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "public": {
+          "description": "whether accessible by all accounts or just your account",
+          "example": false,
+          "format": "boolean",
+          "readOnly": true,
+          "type": [
+            "boolean"
+          ]
+        },
+        "private": {
+          "description": "only show images for your account",
+          "example": true,
+          "format": "boolean",
+          "readOnly": true,
+          "type": [
+            "boolean"
+          ]
+        },
+        "regions": {
+          "description": "slugs of regions this image is currently available in",
+          "example": [
+            "nyc2",
+            "sf1"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "readOnly": true,
+          "type": [
+            "array"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Delete an existing image.",
+          "href": "/images/{(%23%2Fdefinitions%2Fimage%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing image.",
+          "href": "/images/{(%23%2Fdefinitions%2Fimage%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing images.",
+          "href": "/images",
+          "method": "GET",
+          "rel": "instances",
+          "schema": {
+            "properties": {
+              "private": {
+                "$ref": "#/definitions/image/definitions/private"
+              }
+            },
+            "optional": [
+              "private"
+            ]
+          },
+          "title": "List"
+        },
+        {
+          "description": "Update an existing image.",
+          "href": "/images/{(%23%2Fdefinitions%2Fimage%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+              "name": {
+                "$ref": "#/definitions/image/definitions/name"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/image/definitions/id"
+        },
+        "name": {
+          "$ref": "#/definitions/image/definitions/name"
+        },
+        "distribution": {
+          "$ref": "#/definitions/image/definitions/distribution"
+        },
+        "slug": {
+          "$ref": "#/definitions/image/definitions/slug"
+        },
+        "public": {
+          "$ref": "#/definitions/image/definitions/public"
+        },
+        "regions": {
+          "$ref": "#/definitions/image/definitions/regions"
+        }
+      },
+      "id": "schema/image"
+    },
+    "key": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "id": "schema/key",
+      "title": "DigitalOcean API - Key",
+      "description": "Keys are your public SSH keys that you can use to access Droplets.",
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "id": {
+          "description": "unique identifier of key",
+          "example": 18,
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "fingerprint": {
+          "description": "a unique identifying string based on contents",
+          "example": "17:63:a4:ba:24:d3:7f:af:17:c8:94:82:7e:80:56:bf",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/key/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/key/definitions/fingerprint"
+            }
+          ]
+        },
+        "public_key": {
+          "description": "full public key string",
+          "example": "ssh-rsa AAAAB3NzaC1ycVc/../839Uv username@example.com",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "description": "user specified identifier",
+          "example": "primary-key",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new key.",
+          "href": "/account/keys",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+              "public_key": {
+                "$ref": "#/definitions/key/definitions/public_key"
+              },
+              "name": {
+                "$ref": "#/definitions/key/definitions/name"
+              }
+            },
+            "required": [
+              "public_key",
+              "name"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing key.",
+          "href": "/account/keys/{(%23%2Fdefinitions%2Fkey%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing key.",
+          "href": "/account/keys/{(%23%2Fdefinitions%2Fkey%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing keys.",
+          "href": "/account/keys",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/key/definitions/id"
+        },
+        "fingerprint": {
+          "$ref": "#/definitions/key/definitions/fingerprint"
+        },
+        "public_key": {
+          "$ref": "#/definitions/key/definitions/public_key"
+        },
+        "name": {
+          "$ref": "#/definitions/key/definitions/name"
+        }
+      }
+    },
     "region": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
       "id": "schema/region",
-      "title": "... - Region",
+      "title": "DigitalOcean API - Region",
       "description": "Regions are available datacenters within the DigitalOcean cloud.",
       "type": [
         "object"
@@ -35,12 +1269,38 @@
           ]
         },
         "slug": {
-          "description": "url friendly name",
+          "description": "unique string identifier of region",
           "example": "nyc1",
           "format": "string",
           "readOnly": true,
           "type": [
             "string"
+          ]
+        },
+        "available": {
+          "description": "if new droplets can currently be created",
+          "example": true,
+          "format": "bool",
+          "readOnly": true,
+          "type": [
+            "bool"
+          ]
+        },
+        "sizes": {
+          "description": "slugs of sizes this region currently has capacity for",
+          "example": [
+            "512mb",
+            "1gb",
+            "2gb",
+            "4gb",
+            "8gb"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "readOnly": true,
+          "type": [
+            "array"
           ]
         }
       },
@@ -54,26 +1314,38 @@
         }
       ],
       "properties": {
+        "slug": {
+          "$ref": "#/definitions/region/definitions/slug"
+        },
         "name": {
           "$ref": "#/definitions/region/definitions/name"
         },
-        "id": {
-          "$ref": "#/definitions/region/definitions/id"
+        "sizes": {
+          "$ref": "#/definitions/region/definitions/sizes"
         },
-        "slug": {
-          "$ref": "#/definitions/region/definitions/slug"
+        "available": {
+          "$ref": "#/definitions/region/definitions/available"
         }
       }
     },
     "size": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
       "id": "schema/size",
-      "title": "... - Size",
+      "title": "DigitalOcean API - Size",
       "description": "Sizes represent possible Droplet resources.",
       "type": [
         "object"
       ],
       "definitions": {
+        "slug": {
+          "description": "unique string identifier of size",
+          "example": "512mb",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
         "name": {
           "description": "display name of size",
           "example": "512MB",
@@ -95,17 +1367,76 @@
         "identity": {
           "anyOf": [
             {
-              "$ref": "#/definitions/size/definitions/id"
+              "$ref": "#/definitions/size/definitions/slug"
             }
           ]
         },
-        "slug": {
-          "description": "url friendly name",
+        "memory": {
+          "description": "amount of RAM provided",
           "example": "512mb",
           "format": "string",
           "readOnly": true,
           "type": [
             "string"
+          ]
+        },
+        "cpus": {
+          "description": "number of CPUs provided",
+          "example": "1",
+          "format": "integer",
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
+        "disk": {
+          "description": "amount of SSD disk storage provided",
+          "example": "20gb",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "transfer": {
+          "description": "amount of network transfer provided",
+          "example": "1tb",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "price_monthly": {
+          "description": "cost of running for a month",
+          "example": "5.00",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "price_hourly": {
+          "description": "cost of running for an hour",
+          "example": "0.007",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "regions": {
+          "description": "slugs of regions this size is currently available in",
+          "example": [
+            "nyc2",
+            "sf1"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "readOnly": true,
+          "type": [
+            "array"
           ]
         }
       },
@@ -119,19 +1450,58 @@
         }
       ],
       "properties": {
-        "name": {
-          "$ref": "#/definitions/size/definitions/name"
-        },
-        "id": {
-          "$ref": "#/definitions/size/definitions/id"
-        },
         "slug": {
           "$ref": "#/definitions/size/definitions/slug"
+        },
+        "memory": {
+          "$ref": "#/definitions/size/definitions/memory"
+        },
+        "cpus": {
+          "$ref": "#/definitions/size/definitions/cpus"
+        },
+        "disk": {
+          "$ref": "#/definitions/size/definitions/disk"
+        },
+        "transfer": {
+          "$ref": "#/definitions/size/definitions/transfer"
+        },
+        "price_monthly": {
+          "$ref": "#/definitions/size/definitions/price_monthly"
+        },
+        "price_hourly": {
+          "$ref": "#/definitions/size/definitions/price_hourly"
+        },
+        "regions": {
+          "$ref": "#/definitions/size/definitions/regions"
         }
       }
     }
   },
   "properties": {
+    "domain-record": {
+      "$ref": "#/definitions/domain-record"
+    },
+    "domain": {
+      "$ref": "#/definitions/domain"
+    },
+    "droplet-action": {
+      "$ref": "#/definitions/droplet-action"
+    },
+    "droplet-self": {
+      "$ref": "#/definitions/droplet-self"
+    },
+    "droplet": {
+      "$ref": "#/definitions/droplet"
+    },
+    "image-action": {
+      "$ref": "#/definitions/image-action"
+    },
+    "image": {
+      "$ref": "#/definitions/image"
+    },
+    "key": {
+      "$ref": "#/definitions/key"
+    },
     "region": {
       "$ref": "#/definitions/region"
     },
@@ -139,7 +1509,6 @@
       "$ref": "#/definitions/size"
     }
   },
-  "$schema": "http://json-schema.org/draft-04/hyper-schema",
   "type": [
     "object"
   ]

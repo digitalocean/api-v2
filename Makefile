@@ -5,4 +5,4 @@ doc:
 	prmd doc schemas > doc.md
 
 schema:
-	prmd combine schemas
+	prmd combine schemas > schema.json

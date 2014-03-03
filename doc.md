@@ -694,7 +694,7 @@ HTTP/1.1 200 OK
 ```
 
 ## Droplet Self
-Droplet meta-data reflection endpoint.
+Droplet meta-data reflection endpoint. This is only available from a droplet.
 
 ### Attributes
 <table>
