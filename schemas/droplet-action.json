@@ -139,6 +139,9 @@
           "snapshot",
           "rebuild",
           "restore"
+        ],
+        "type": [
+          "object"
         ]
       },
       "title": "Create"

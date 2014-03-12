@@ -1,5 +1,7 @@
 # DigitalOcean API Reference
 
+	This is a work-in-progress document representing the current "spec" for the DigitalOcean v2 API.
+
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -18,43 +20,115 @@
 
 ### Authentication
 
-TODO
+OAuth is used to authorize and revoke access to your account to yourself and third parties. *Full
+OAuth documentation will be available in a separate document.* There are three ways to use an OAuth
+access token once you have one.
+
+#### OAuth Token in Basic Authentication
+
+	$ curl -u "$ACCESS_TOKEN:x" https://api.digitalocean.com
+
+#### OAuth Token in Bearer Auth Header
+
+	$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
+
+#### OAuth Token in Query Parameter
+
+	$ curl "https://api.digitalocean.com/?access_token=$ACCESS_TOKEN"
+
+For personal and development purposes, you can create a personal access token in the API control
+panel and use it like a regular OAuth token.
 
 ### Schema
 
-TODO
+The API has a machine-readable JSON schema that describes what resources are available via the API,
+what their URLs are, how they are represented and what operations they support. You can access the
+schema using curl:
+
+	$ curl https://api.digialocean.com/v2/schema
+
+The schema format is based on the same JSON schema used by [Heroku for their API](https://blog.heroku.com/archives/2014/1/8/json_schema_for_heroku_platform_api).
 
 ### Errors
 
-TODO
+Failing responses will have an appropriate [HTTP status](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) and a JSON body containing more details about the error.
+
+#### Example Error Response
+
+```
+HTTP/1.1 403 Forbidden
+```
+```javascript
+{
+  "id":       "forbidden",
+  "message":  "Request not authorized, provided credentials do not provide access to specified resource"
+}
+```
 
 ### Methods
 
-TODO
+<table>
+<thead><tr>
+<th>Method</th>
+<th>Usage</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>DELETE</td>
+<td>used for destroying existing objects</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>used for retrieving lists and individual objects</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>used for retrieving metadata about existing objects</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>used for updating existing objects</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>used for creating new objects</td>
+</tr>
+</tbody>
+</table>
 
 ### Method Override
 
-TODO
+When using a client that does not support all of the [methods](#methods), you can override by using a `POST` and
+setting the `X-Http-Method-Override` header to the desired methed. For instance, to do a `PATCH`
+request, do a `POST` with header `X-Http-Method-Override: PATCH`.
 
 ### Parameters
 
-TODO
+Values that can be provided for an action are divided between optional and required values. The expected type for each value is specified. Parameters should be JSON encoded and passed in the request body, however, in many cases you can use regular query parameters or `application/x-www-form-urlencoded` or `multipart/form-data` parameters. For example, these two requests are equivalent:
+
+```
+$ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
+-H "Content-Type: application/json" \
+-d '{"type":"A","name":"www","data":"127.0.0.1"}'
+```
+```
+$ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
+-F "type=A"
+-F "name=www"
+-F "data=127.0.0.1"
+```
 
 ### Ranges
 
-TODO
+List requests will return a `Content-Range` header indicating the range of values returned. Large lists may require additional requests to retrieve. If a list response has been truncated you will receive a `206 Partial Content` status and one or both of `Next-Range` and `Prev-Range` headers if there are next and previous ranges respectively. To retrieve the next or previous range, repeat the request with the `Range` header set to either the `Next-Range` or `Prev-Range` value from the previous request.
 
-### Responses
-
-TODO
-
-### Statuses
-
-TODO
+The number of values returned in a range can be controlled using a `max` key in the `Range` header. For example, to get only the first 10 values, set this header: `Range: id ..; max=10;`. `max` can also be passed when iterating over `Next-Range` and `Prev-Range`. The default page size is 200 and maximum page size is 1000.
 
 ### Versioning
 
-TODO
+Major versions of the API are backwards incompatible and are available at different path endpoints. A major version may change
+in backwards compatible ways, such as adding new parameters, or if changing a parameter, the old parameter will still work.
+
 
 
 
@@ -76,7 +150,7 @@ Domain records are the DNS records for a domain.
     <td><code>32</code></td>
   </tr>
   <tr>
-    <td><strong>type</strong></td>
+    <td><strong>type_</strong></td>
     <td><em>string</em></td>
     <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
     <td><code>"CNAME"</code></td>
@@ -129,7 +203,7 @@ POST /domains/{domain_id}/records
     <th>Example</th>
   </tr>
   <tr>
-    <td><strong>type</strong></td>
+    <td><strong>type_</strong></td>
     <td><em>string</em></td>
     <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
     <td><code>"CNAME"</code></td>
@@ -180,9 +254,9 @@ POST /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records \
+$ curl -n -X POST /domains/$DOMAIN_ID/records \
 -H "Content-Type: application/json" \
--d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
+-d '{"type_":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
 
 #### Response Example
@@ -192,7 +266,7 @@ HTTP/1.1 201 Created
 ```javascript```
 {
   "id": 32,
-  "type": "CNAME",
+  "type_": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -211,7 +285,7 @@ DELETE /domains/{domain_id}/records/{domain-record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
+$ curl -n -X DELETE /domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
 ```
 
 #### Response Example
@@ -221,7 +295,7 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
-  "type": "CNAME",
+  "type_": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -240,7 +314,7 @@ GET /domains/{domain_id}/records/{domain-record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
+$ curl -n -X GET /domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
 ```
 
 #### Response Example
@@ -250,7 +324,7 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
-  "type": "CNAME",
+  "type_": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -269,7 +343,7 @@ GET /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records
+$ curl -n -X GET /domains/$DOMAIN_ID/records
 ```
 
 #### Response Example
@@ -282,7 +356,7 @@ Content-Range: id 23..342; max=200
 [
   {
     "id": 32,
-    "type": "CNAME",
+    "type_": "CNAME",
     "name": "subdomain",
     "data": "@",
     "priority": null,
@@ -308,7 +382,7 @@ PATCH /domains/{domain_id}/records/{domain-record_id}
     <th>Example</th>
   </tr>
   <tr>
-    <td><strong>type</strong></td>
+    <td><strong>type_</strong></td>
     <td><em>string</em></td>
     <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
     <td><code>"CNAME"</code></td>
@@ -359,9 +433,9 @@ PATCH /domains/{domain_id}/records/{domain-record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v1/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
+$ curl -n -X PATCH /domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
 -H "Content-Type: application/json" \
--d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
+-d '{"type_":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
 
 #### Response Example
@@ -371,7 +445,7 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
-  "type": "CNAME",
+  "type_": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -379,6 +453,7 @@ HTTP/1.1 200 OK
   "weight": null
 }
 ```
+
 
 ## Domain
 Domains are managed domain names that DigitalOcean provides DNS for.
@@ -456,7 +531,7 @@ POST /domains
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v1/domains \
+$ curl -n -X POST /domains \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -486,7 +561,7 @@ DELETE /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v1/domains/$DOMAIN_ID
+$ curl -n -X DELETE /domains/$DOMAIN_ID
 ```
 
 #### Response Example
@@ -514,7 +589,7 @@ GET /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/domains/$DOMAIN_ID
+$ curl -n -X GET /domains/$DOMAIN_ID
 ```
 
 #### Response Example
@@ -542,7 +617,7 @@ GET /domains
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/domains
+$ curl -n -X GET /domains
 ```
 
 #### Response Example
@@ -563,6 +638,7 @@ Content-Range: id 23..342; max=200
   }
 ]
 ```
+
 
 ## Droplet Action
 Droplet actions are operations on droplets that may take a while to complete.
@@ -699,7 +775,7 @@ POST /droplet/{droplet_id}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v1/droplet/$DROPLET_ID/actions \
+$ curl -n -X POST /droplet/$DROPLET_ID/actions \
 -H "Content-Type: application/json" \
 -d '{"reboot":null,"shutdown":null,"boot":null,"resetpassword":null,"resize":null,"snapshot":null,"rebuild":null,"restore":null}'
 ```
@@ -732,7 +808,7 @@ GET /droplet/{droplet_id}/actions/{droplet-action_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/droplet/$DROPLET_ID/actions/$DROPLET_ACTION_ID
+$ curl -n -X GET /droplet/$DROPLET_ID/actions/$DROPLET_ACTION_ID
 ```
 
 #### Response Example
@@ -752,6 +828,7 @@ HTTP/1.1 200 OK
   "restore": 32
 }
 ```
+
 
 ## Droplet Self
 Droplet meta-data reflection endpoint. This is only available from a droplet.
@@ -902,7 +979,7 @@ GET /droplets/self
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/droplets/self
+$ curl -n -X GET /droplets/self
 ```
 
 #### Response Example
@@ -924,6 +1001,7 @@ HTTP/1.1 200 OK
   "private_ip": null
 }
 ```
+
 
 ## Droplet
 Droplets are VMs in the DigitalOcean cloud.
@@ -1137,7 +1215,7 @@ POST /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v1/droplets \
+$ curl -n -X POST /droplets \
 -H "Content-Type: application/json" \
 -d '{"name":null,"region":null,"size":"512mb","image_id":null,"key_ids":null,"private_networking":false,"backups":false}'
 ```
@@ -1172,7 +1250,7 @@ DELETE /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v1/droplets/$DROPLET_ID
+$ curl -n -X DELETE /droplets/$DROPLET_ID
 ```
 
 #### Response Example
@@ -1205,7 +1283,7 @@ GET /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/droplets/$DROPLET_ID
+$ curl -n -X GET /droplets/$DROPLET_ID
 ```
 
 #### Response Example
@@ -1238,7 +1316,7 @@ GET /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/droplets
+$ curl -n -X GET /droplets
 ```
 
 #### Response Example
@@ -1292,7 +1370,7 @@ PATCH /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v1/droplets/$DROPLET_ID \
+$ curl -n -X PATCH /droplets/$DROPLET_ID \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1316,6 +1394,7 @@ HTTP/1.1 200 OK
   "private_ip": null
 }
 ```
+
 
 ## Image Action
 Image actions are operations on images that may take a while to complete.
@@ -1368,7 +1447,7 @@ POST /images/{image_id}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v1/images/$IMAGE_ID/actions \
+$ curl -n -X POST /images/$IMAGE_ID/actions \
 -H "Content-Type: application/json" \
 -d '{"transfer":null}'
 ```
@@ -1394,7 +1473,7 @@ GET /images/{image_id}/actions/{image-action_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/images/$IMAGE_ID/actions/$IMAGE_ACTION_ID
+$ curl -n -X GET /images/$IMAGE_ID/actions/$IMAGE_ACTION_ID
 ```
 
 #### Response Example
@@ -1407,6 +1486,7 @@ HTTP/1.1 200 OK
   "transfer": "nyc2"
 }
 ```
+
 
 ## Image
 Images are either snapshots or backups you've made, or public images of applications or base systems.
@@ -1467,7 +1547,7 @@ DELETE /images/{image_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v1/images/$IMAGE_ID
+$ curl -n -X DELETE /images/$IMAGE_ID
 ```
 
 #### Response Example
@@ -1498,7 +1578,7 @@ GET /images/{image_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/images/$IMAGE_ID
+$ curl -n -X GET /images/$IMAGE_ID
 ```
 
 #### Response Example
@@ -1545,7 +1625,7 @@ GET /images
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/images \
+$ curl -n -X GET /images \
 -H "Content-Type: application/json" \
 -d '{"private":null}'
 ```
@@ -1599,7 +1679,7 @@ PATCH /images/{image_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v1/images/$IMAGE_ID \
+$ curl -n -X PATCH /images/$IMAGE_ID \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1621,6 +1701,7 @@ HTTP/1.1 200 OK
   ]
 }
 ```
+
 
 ## Key
 Keys are your public SSH keys that you can use to access Droplets.
@@ -1692,7 +1773,7 @@ POST /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v1/account/keys \
+$ curl -n -X POST /account/keys \
 -H "Content-Type: application/json" \
 -d '{"public_key":null,"name":null}'
 ```
@@ -1720,7 +1801,7 @@ DELETE /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v1/account/keys/$KEY_ID_OR_FINGERPRINT
+$ curl -n -X DELETE /account/keys/$KEY_ID_OR_FINGERPRINT
 ```
 
 #### Response Example
@@ -1746,7 +1827,7 @@ GET /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/account/keys/$KEY_ID_OR_FINGERPRINT
+$ curl -n -X GET /account/keys/$KEY_ID_OR_FINGERPRINT
 ```
 
 #### Response Example
@@ -1772,7 +1853,7 @@ GET /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/account/keys
+$ curl -n -X GET /account/keys
 ```
 
 #### Response Example
@@ -1791,6 +1872,7 @@ Content-Range: id 23..342; max=200
   }
 ]
 ```
+
 
 ## Region
 Regions are available datacenters within the DigitalOcean cloud.
@@ -1839,7 +1921,7 @@ GET /regions
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/regions
+$ curl -n -X GET /regions
 ```
 
 #### Response Example
@@ -1864,6 +1946,7 @@ Content-Range: id 23..342; max=200
   }
 ]
 ```
+
 
 ## Size
 Sizes represent possible Droplet resources.
@@ -1936,7 +2019,7 @@ GET /sizes
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v1/sizes
+$ curl -n -X GET /sizes
 ```
 
 #### Response Example
@@ -1962,4 +2045,5 @@ Content-Range: id 23..342; max=200
   }
 ]
 ```
+
 

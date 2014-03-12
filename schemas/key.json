@@ -70,6 +70,9 @@
         "required": [
           "public_key",
           "name"
+        ],
+        "type": [
+          "object"
         ]
       },
       "title": "Create"

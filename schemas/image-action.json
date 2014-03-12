@@ -46,6 +46,9 @@
         },
         "optional": [
           "transfer"
+        ],
+        "type": [
+          "object"
         ]
       },
       "title": "Create"

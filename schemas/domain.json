@@ -85,6 +85,9 @@
         },
         "required": [
           "name"
+        ],
+        "type": [
+          "object"
         ]
       },
       "title": "Create"

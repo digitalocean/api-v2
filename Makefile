@@ -2,7 +2,7 @@
 all: doc schema
 
 doc:
-	prmd doc schemas > doc.md
+	prmd doc -m meta.json -p docs/overview.md schemas > doc.md
 
 schema:
 	prmd combine schemas > schema.json

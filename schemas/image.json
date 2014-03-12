@@ -108,6 +108,9 @@
         },
         "optional": [
           "private"
+        ],
+        "type": [
+          "object"
         ]
       },
       "title": "List"
@@ -125,6 +128,9 @@
         },
         "required": [
           "name"
+        ],
+        "type": [
+          "object"
         ]
       },
       "title": "Update"
