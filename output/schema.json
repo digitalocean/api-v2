@@ -1481,7 +1481,7 @@
           "description": "slugs of regions this size is currently available in",
           "example": [
             "nyc2",
-            "sf1"
+            "nyc1"
           ],
           "items": {
             "type": [

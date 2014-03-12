@@ -2,7 +2,7 @@
 all: doc schema
 
 doc:
-	prmd doc -m meta.json -p docs/overview.md schemas > doc.md
+	prmd doc -m meta.json -p docs/header.md,docs/overview.md schemas > output/doc.md
 
 schema:
-	prmd combine -m meta.json schemas > schema.json
+	prmd combine -m meta.json schemas > output/schema.json

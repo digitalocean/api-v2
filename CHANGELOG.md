@@ -6,9 +6,7 @@
 
  * Went from GET endpoints to RESTful resources
  * Modeled long-running operations as "action" sub-resources, dropped events endpoint
- * Added "Pragma: event-wait" header as option for deferred result resources
- * For debug/dev, Basic auth using email/api_key available
- * OAuth for all other use cases (OAuth endpoints not implemented yet)
+ * OAuth used for all authentication (Personal tokens available for dev/debugging)
  * Uses Range headers for managing and configuring pagination
 
 ### Size resource

@@ -1,21 +1,3 @@
-# DigitalOcean API Reference
-
-	This is a work-in-progress document representing the current "spec" for the DigitalOcean v2 API.
-
-## Table of Contents
-
-1. [Overview](#overview)
-1. [Droplets](#droplet)
-  * [Droplet Actions](#droplet-action)
-  * [Droplet Self](#droplet-self)
-1. [Images](#image)
-  * [Image Actions](#image-action)
-1. [Domains](#domain)
-  * [Domain Records](#domain-record)
-1. [Keys](#key)
-1. [Regions](#region)
-1. [Sizes](#size)
-
 ## Overview
 
 ### Authentication
@@ -28,7 +10,7 @@ access token once you have one.
 
 	$ curl -u "$ACCESS_TOKEN:x" https://api.digitalocean.com
 
-##### OAuth Token in Bearer Auth Header
+##### OAuth Token in Bearer Authorization Header
 
 	$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
 
@@ -53,9 +35,11 @@ The schema format is based on the same JSON schema used by [Heroku for their API
 
 Curl examples are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
 
-  machine api.digitalocean.com
-    login {your-oauth-token}
-    password x
+```
+machine api.digitalocean.com
+  login {your-oauth-token}
+  password x
+```
 
 ### Errors
 

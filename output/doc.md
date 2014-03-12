@@ -7,7 +7,6 @@
 1. [Overview](#overview)
 1. [Droplets](#droplet)
   * [Droplet Actions](#droplet-action)
-  * [Droplet Self](#droplet-self)
 1. [Images](#image)
   * [Image Actions](#image-action)
 1. [Domains](#domain)
@@ -28,7 +27,7 @@ access token once you have one.
 
 	$ curl -u "$ACCESS_TOKEN:x" https://api.digitalocean.com
 
-##### OAuth Token in Bearer Auth Header
+##### OAuth Token in Bearer Authorization Header
 
 	$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
 
@@ -53,9 +52,11 @@ The schema format is based on the same JSON schema used by [Heroku for their API
 
 Curl examples are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
 
-  machine api.digitalocean.com
-    login {your-oauth-token}
-    password x
+```
+machine api.digitalocean.com
+  login {your-oauth-token}
+  password x
+```
 
 ### Errors
 
@@ -2024,7 +2025,7 @@ Sizes represent possible Droplet resources.
     <td><strong>regions</strong></td>
     <td><em>array</em></td>
     <td>slugs of regions this size is currently available in</td>
-    <td><code>["nyc2","sf1"]</code></td>
+    <td><code>["nyc2","nyc1"]</code></td>
   </tr>
 </table>
 
@@ -2059,7 +2060,7 @@ Content-Range: id 23..342; max=200
     "price_hourly": "0.007",
     "regions": [
       "nyc2",
-      "sf1"
+      "nyc1"
     ]
   }
 ]
