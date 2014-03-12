@@ -24,15 +24,15 @@ OAuth is used to authorize and revoke access to your account to yourself and thi
 OAuth documentation will be available in a separate document.* There are three ways to use an OAuth
 access token once you have one.
 
-#### OAuth Token in Basic Authentication
+##### OAuth Token in Basic Authentication
 
 	$ curl -u "$ACCESS_TOKEN:x" https://api.digitalocean.com
 
-#### OAuth Token in Bearer Auth Header
+##### OAuth Token in Bearer Auth Header
 
 	$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
 
-#### OAuth Token in Query Parameter
+##### OAuth Token in Query Parameter
 
 	$ curl "https://api.digitalocean.com/?access_token=$ACCESS_TOKEN"
 
@@ -53,7 +53,7 @@ The schema format is based on the same JSON schema used by [Heroku for their API
 
 Failing responses will have an appropriate [HTTP status](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) and a JSON body containing more details about the error.
 
-#### Example Error Response
+##### Example Error Response
 
 ```
 HTTP/1.1 403 Forbidden
