@@ -7,7 +7,7 @@ This is a work in progress repository, currently focusing on the design of the n
 The `output/doc.md` file is generated documentation from the resource schemas found in `schemas`. The full schema is available
 in `output/schema.json`. 
 
-There is also a changelog available in `CHANGELOG.md`.
+There is also a changelog available in `CHANGELOG.md`. It currently focuses on changes from the v1 API.
 
 ## Todo
 
