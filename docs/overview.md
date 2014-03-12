@@ -49,6 +49,14 @@ schema using curl:
 
 The schema format is based on the same JSON schema used by [Heroku for their API](https://blog.heroku.com/archives/2014/1/8/json_schema_for_heroku_platform_api).
 
+### Curl Examples
+
+Curl examples are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
+
+  machine api.digitalocean.com
+    login {your-oauth-token}
+    password x
+
 ### Errors
 
 Failing responses will have an appropriate [HTTP status](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) and a JSON body containing more details about the error.

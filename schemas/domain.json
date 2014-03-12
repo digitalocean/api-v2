@@ -26,11 +26,7 @@
       ]
     },
     "identity": {
-      "anyOf": [
-        {
-          "$ref": "/schema/domain#/definitions/id"
-        }
-      ]
+      "$ref": "/schema/domain#/definitions/id"
     },
     "ttl": {
       "description": "time to live for records on this domain",

@@ -16,10 +16,15 @@
       ]
     },
     "identity": {
-      "anyOf": [
-        {
-          "$ref": "/schema/image-action#/definitions/id"
-        }
+      "$ref": "/schema/image-action#/definitions/id"
+    },
+    "status": {
+      "description": "current status of action",
+      "example": "in-progress",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
       ]
     },
     "transfer": {
@@ -67,6 +72,9 @@
     },
     "transfer": {
       "$ref": "/schema/image-action#/definitions/transfer"
+    },
+    "status": {
+      "$ref": "/schema/image-action#/definitions/status"
     }
   },
   "id": "schema/image-action"

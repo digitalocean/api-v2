@@ -19,6 +19,9 @@
       "anyOf": [
         {
           "$ref": "/schema/image#/definitions/id"
+        },
+        {
+          "$ref": "/schema/image#/definitions/slug"
         }
       ]
     },
@@ -48,6 +51,15 @@
       "type": [
         "string",
         "null"
+      ]
+    },
+    "size": {
+      "description": "minimum droplet size image is available for",
+      "example": "512mb",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
       ]
     },
     "public": {
@@ -148,6 +160,9 @@
     },
     "slug": {
       "$ref": "/schema/image#/definitions/slug"
+    },
+    "size": {
+      "$ref": "/schema/image#/definitions/size"
     },
     "public": {
       "$ref": "/schema/image#/definitions/public"

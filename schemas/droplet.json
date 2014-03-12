@@ -16,11 +16,7 @@
       ]
     },
     "identity": {
-      "anyOf": [
-        {
-          "$ref": "/schema/droplet#/definitions/id"
-        }
-      ]
+      "$ref": "/schema/droplet#/definitions/id"
     },
     "name": {
       "description": "name used to identify droplet",
@@ -49,27 +45,15 @@
         "string"
       ]
     },
-    "public_ip": {
-      "description": "public IP address of droplet",
-      "example": "192.168.1.1",
-      "format": "string",
-      "readOnly": true,
-      "type": [
-        "string"
-      ]
-    },
-    "private_ip": {
-      "description": "private IP address or null",
-      "example": null,
-      "format": "string",
-      "readOnly": true,
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "image": {
       "description": "image used for droplet",
+      "example": {
+        "id": 32,
+        "slug": "ubuntu-12.10-x32",
+        "name": "Ubuntu 12.10 x32",
+        "distribution": "Ubuntu",
+        "public": true
+      },
       "properties": {
         "id": {
           "$ref": "/schema/image#/definitions/id"
@@ -102,11 +86,16 @@
       ]
     },
     "size": {
-      "description": "size used for droplet",
+      "description": "size information for droplet",
+      "example": {
+        "memory": "512mb",
+        "cpus": 1,
+        "disk": "20gb",
+        "transfer": "1tb",
+        "price_monthly": "5.00",
+        "price_hourly": "0.007"
+      },
       "properties": {
-        "slug": {
-          "$ref": "/schema/size#/definitions/slug"
-        },
         "memory": {
           "$ref": "/schema/size#/definitions/memory"
         },
@@ -131,23 +120,93 @@
         "object"
       ]
     },
-    "snapshots": {
-      "description": "TODO",
-      "example": null,
-      "format": "string",
+    "network": {
+      "properties": {
+        "ip_address": {
+          "description": "network IP address",
+          "example": "162.243.68.122",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "netmask": {
+          "description": "network subnet mask",
+          "example": "255.255.255.0",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "gateway": {
+          "description": "network gateway",
+          "example": "162.243.68.1",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        }
+      },
       "readOnly": true,
       "type": [
-        "string",
-        "null"
+        "object"
+      ]
+    },
+    "networks": {
+      "example": {
+        "public": {
+          "ip_address": "162.243.68.122",
+          "netmask": "255.255.255.0",
+          "gateway": "162.243.68.1"
+        }
+      },
+      "description": "network information for droplet",
+      "properties": {
+        "public": {
+          "$ref": "/schema/droplet#/definitions/network"
+        },
+        "private": {
+          "$ref": "/schema/droplet#/definitions/network"
+        }
+      },
+      "readOnly": true,
+      "type": [
+        "object"
+      ]
+    },
+    "snapshots": {
+      "description": "snapshot images taken",
+      "example": [
+        {
+          "id": 32,
+          "name": "My snapshot"
+        }
+      ],
+      "readOnly": true,
+      "items": {
+        "type": "object"
+      },
+      "type": [
+        "array"
       ]
     },
     "backups": {
-      "description": "TODO",
-      "example": null,
-      "format": "string",
+      "description": "backup images taken, or null if disabled",
+      "example": [
+        {
+          "id": 32,
+          "name": "Backup taken 2014-01-01 12:00:00"
+        }
+      ],
       "readOnly": true,
+      "items": {
+        "type": "object"
+      },
       "type": [
-        "string",
+        "array",
         "null"
       ]
     },
@@ -161,13 +220,14 @@
         "null"
       ]
     },
-    "image_id": {
-      "description": "id of image to use",
+    "image_slug_or_id": {
+      "description": "id or slug of image to use",
       "example": 32,
-      "format": "integer",
+      "format": "integer/string",
       "readOnly": false,
       "type": [
-        "integer"
+        "integer",
+        "string"
       ]
     }
   },
@@ -194,8 +254,8 @@
               "string"
             ]
           },
-          "image_id": {
-            "$ref": "/schema/droplet#/definitions/image_id"
+          "image": {
+            "$ref": "/schema/droplet#/definitions/image_slug_or_id"
           },
           "key_ids": {
             "$ref": "/schema/droplet#/definitions/key_ids"
@@ -220,7 +280,7 @@
         "required": [
           "name",
           "size",
-          "image_id",
+          "image",
           "region"
         ],
         "optional": [
@@ -304,11 +364,8 @@
     "status": {
       "$ref": "/schema/droplet#/definitions/status"
     },
-    "public_ip": {
-      "$ref": "/schema/droplet#/definitions/public_ip"
-    },
-    "private_ip": {
-      "$ref": "/schema/droplet#/definitions/private_ip"
+    "networks": {
+      "$ref": "/schema/droplet#/definitions/networks"
     }
   },
   "id": "schema/droplet"

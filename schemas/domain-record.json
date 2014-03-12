@@ -17,11 +17,7 @@
       ]
     },
     "identity": {
-      "anyOf": [
-        {
-          "$ref": "/schema/domain-record#/definitions/id"
-        }
-      ]
+      "$ref": "/schema/domain-record#/definitions/id"
     },
     "type_": {
       "description": "type of DNS record (ex: A, CNAME, TXT, ...)",

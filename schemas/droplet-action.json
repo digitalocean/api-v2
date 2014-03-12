@@ -16,10 +16,15 @@
       ]
     },
     "identity": {
-      "anyOf": [
-        {
-          "$ref": "/schema/droplet-action#/definitions/id"
-        }
+      "$ref": "/schema/droplet-action#/definitions/id"
+    },
+    "status": {
+      "description": "current status of action",
+      "example": "in-progress",
+      "format": "string",
+      "readOnly": true,
+      "type": [
+        "string"
       ]
     },
     "reboot": {
@@ -157,6 +162,9 @@
   "properties": {
     "id": {
       "$ref": "/schema/droplet-action#/definitions/id"
+    },
+    "status": {
+      "$ref": "/schema/droplet-action#/definitions/status"
     },
     "reboot": {
       "$ref": "/schema/droplet-action#/definitions/reboot"

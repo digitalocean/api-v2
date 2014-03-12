@@ -33,13 +33,14 @@
 
  * Added regions the image is available in
  * Allow changing the image name
+ * Added image size
 
 ### Droplet resource
 
- * Renamed ip_address and private_ip_address to public_ip and private_ip for consistency and brevity
  * Changed region_id to just region as reference to region slug
  * Changed image_id and size_id to expanded embedded objects under image and size
  * Removed backups_active from attributes. Implied by null backups attribute
+ * Added networks field with named network objects including netmask and gateway fields
  * Renamed ssh_key_ids to key_ids
 
 ### Droplet Action resource
@@ -48,7 +49,4 @@
  * Rolled power_off into shutdown as "hard" shutdown. Default is "soft"
  * Renamed power_on to boot
  * Action to rename is not available. Edit droplet resource instead.
-
-### Droplet Self resource
-
- * Added initial resource for getting droplet information from droplet
+ * Action status is either "in-progress" or "finished"

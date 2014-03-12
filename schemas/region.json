@@ -26,11 +26,7 @@
       ]
     },
     "identity": {
-      "anyOf": [
-        {
-          "$ref": "/schema/region#/definitions/id"
-        }
-      ]
+      "$ref": "/schema/region#/definitions/slug"
     },
     "slug": {
       "description": "unique string identifier of region",

@@ -20,13 +20,9 @@
           ]
         },
         "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/domain-record/definitions/id"
-            }
-          ]
+          "$ref": "#/definitions/domain-record/definitions/id"
         },
-        "type": {
+        "type_": {
           "description": "type of DNS record (ex: A, CNAME, TXT, ...)",
           "example": "CNAME",
           "format": "string",
@@ -92,8 +88,8 @@
           "rel": "create",
           "schema": {
             "properties": {
-              "type": {
-                "$ref": "#/definitions/domain-record/definitions/type"
+              "type_": {
+                "$ref": "#/definitions/domain-record/definitions/type_"
               },
               "name": {
                 "$ref": "#/definitions/domain-record/definitions/name"
@@ -111,8 +107,11 @@
                 "$ref": "#/definitions/domain-record/definitions/weight"
               }
             },
+            "type": [
+              "object"
+            ],
             "required": [
-              "type",
+              "type_",
               "data"
             ],
             "optional": [
@@ -152,8 +151,8 @@
           "rel": "update",
           "schema": {
             "properties": {
-              "type": {
-                "$ref": "#/definitions/domain-record/definitions/type"
+              "type_": {
+                "$ref": "#/definitions/domain-record/definitions/type_"
               },
               "name": {
                 "$ref": "#/definitions/domain-record/definitions/name"
@@ -172,7 +171,7 @@
               }
             },
             "required": [
-              "type",
+              "type_",
               "data"
             ],
             "optional": [
@@ -180,6 +179,9 @@
               "priority",
               "port",
               "weight"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Update"
@@ -189,8 +191,8 @@
         "id": {
           "$ref": "#/definitions/domain-record/definitions/id"
         },
-        "type": {
-          "$ref": "#/definitions/domain-record/definitions/type"
+        "type_": {
+          "$ref": "#/definitions/domain-record/definitions/type_"
         },
         "name": {
           "$ref": "#/definitions/domain-record/definitions/name"
@@ -237,11 +239,7 @@
           ]
         },
         "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/domain/definitions/id"
-            }
-          ]
+          "$ref": "#/definitions/domain/definitions/id"
         },
         "ttl": {
           "description": "time to live for records on this domain",
@@ -296,6 +294,9 @@
             },
             "required": [
               "name"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Create"
@@ -361,10 +362,15 @@
           ]
         },
         "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/droplet-action/definitions/id"
-            }
+          "$ref": "#/definitions/droplet-action/definitions/id"
+        },
+        "status": {
+          "description": "current status of action",
+          "example": "in-progress",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
           ]
         },
         "reboot": {
@@ -484,6 +490,9 @@
               "snapshot",
               "rebuild",
               "restore"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Create"
@@ -499,6 +508,9 @@
       "properties": {
         "id": {
           "$ref": "#/definitions/droplet-action/definitions/id"
+        },
+        "status": {
+          "$ref": "#/definitions/droplet-action/definitions/status"
         },
         "reboot": {
           "$ref": "#/definitions/droplet-action/definitions/reboot"
@@ -527,68 +539,6 @@
       },
       "id": "schema/droplet-action"
     },
-    "droplet-self": {
-      "$schema": "http://json-schema.org/draft-04/hyper-schema",
-      "title": "DigitalOcean API - Droplet Self",
-      "description": "Droplet meta-data reflection endpoint. This is only available from a droplet.",
-      "type": [
-        "object"
-      ],
-      "definitions": {
-        "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/droplet/definitions/id"
-            }
-          ]
-        }
-      },
-      "links": [
-        {
-          "description": "Info for existing droplet.",
-          "href": "/droplets/self",
-          "method": "GET",
-          "rel": "self",
-          "title": "Info"
-        }
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/droplet/definitions/id"
-        },
-        "name": {
-          "$ref": "#/definitions/droplet/definitions/name"
-        },
-        "region": {
-          "$ref": "#/definitions/droplet/definitions/region"
-        },
-        "image": {
-          "$ref": "#/definitions/droplet/definitions/image"
-        },
-        "size": {
-          "$ref": "#/definitions/droplet/definitions/size"
-        },
-        "backups": {
-          "$ref": "#/definitions/droplet/definitions/backups"
-        },
-        "snapshots": {
-          "$ref": "#/definitions/droplet/definitions/snapshots"
-        },
-        "locked": {
-          "$ref": "#/definitions/droplet/definitions/locked"
-        },
-        "status": {
-          "$ref": "#/definitions/droplet/definitions/status"
-        },
-        "public_ip": {
-          "$ref": "#/definitions/droplet/definitions/public_ip"
-        },
-        "private_ip": {
-          "$ref": "#/definitions/droplet/definitions/private_ip"
-        }
-      },
-      "id": "schema/droplet-self"
-    },
     "droplet": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
       "title": "DigitalOcean API - Droplet",
@@ -607,17 +557,13 @@
           ]
         },
         "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/droplet/definitions/id"
-            }
-          ]
+          "$ref": "#/definitions/droplet/definitions/id"
         },
         "name": {
           "description": "name used to identify droplet",
           "example": "my droplet",
           "format": "string",
-          "readOnly": true,
+          "readOnly": false,
           "type": [
             "string"
           ]
@@ -640,27 +586,15 @@
             "string"
           ]
         },
-        "public_ip": {
-          "description": "public IP address of droplet",
-          "example": "192.168.1.1",
-          "format": "string",
-          "readOnly": true,
-          "type": [
-            "string"
-          ]
-        },
-        "private_ip": {
-          "description": "private IP address or null",
-          "example": null,
-          "format": "string",
-          "readOnly": true,
-          "type": [
-            "string",
-            "null"
-          ]
-        },
         "image": {
           "description": "image used for droplet",
+          "example": {
+            "id": 32,
+            "slug": "ubuntu-12.10-x32",
+            "name": "Ubuntu 12.10 x32",
+            "distribution": "Ubuntu",
+            "public": true
+          },
           "properties": {
             "id": {
               "$ref": "#/definitions/image/definitions/id"
@@ -678,6 +612,7 @@
               "$ref": "#/definitions/image/definitions/public"
             }
           },
+          "readOnly": false,
           "type": [
             "object"
           ]
@@ -686,17 +621,22 @@
           "description": "slug of region for this droplet",
           "example": "nyc2",
           "format": "string",
-          "readOnly": true,
+          "readOnly": false,
           "type": [
             "string"
           ]
         },
         "size": {
-          "description": "size used for droplet",
+          "description": "size information for droplet",
+          "example": {
+            "memory": "512mb",
+            "cpus": 1,
+            "disk": "20gb",
+            "transfer": "1tb",
+            "price_monthly": "5.00",
+            "price_hourly": "0.007"
+          },
           "properties": {
-            "slug": {
-              "$ref": "#/definitions/size/definitions/slug"
-            },
             "memory": {
               "$ref": "#/definitions/size/definitions/memory"
             },
@@ -716,27 +656,102 @@
               "$ref": "#/definitions/size/definitions/price_hourly"
             }
           },
+          "readOnly": false,
+          "type": [
+            "object"
+          ]
+        },
+        "network": {
+          "properties": {
+            "ip_address": {
+              "description": "network IP address",
+              "example": "162.243.68.122",
+              "format": "string",
+              "readOnly": true,
+              "type": [
+                "string"
+              ]
+            },
+            "netmask": {
+              "description": "network subnet mask",
+              "example": "255.255.255.0",
+              "format": "string",
+              "readOnly": true,
+              "type": [
+                "string"
+              ]
+            },
+            "gateway": {
+              "description": "network gateway",
+              "example": "162.243.68.1",
+              "format": "string",
+              "readOnly": true,
+              "type": [
+                "string"
+              ]
+            }
+          },
+          "readOnly": true,
+          "type": [
+            "object"
+          ]
+        },
+        "networks": {
+          "example": {
+            "public": {
+              "ip_address": "162.243.68.122",
+              "netmask": "255.255.255.0",
+              "gateway": "162.243.68.1"
+            }
+          },
+          "description": "network information for droplet",
+          "properties": {
+            "public": {
+              "$ref": "#/definitions/droplet/definitions/network"
+            },
+            "private": {
+              "$ref": "#/definitions/droplet/definitions/network"
+            }
+          },
+          "readOnly": true,
           "type": [
             "object"
           ]
         },
         "snapshots": {
-          "description": "TODO",
-          "example": null,
-          "format": "string",
+          "description": "snapshot images taken",
+          "example": [
+            {
+              "id": 32,
+              "name": "My snapshot"
+            }
+          ],
           "readOnly": true,
+          "items": {
+            "type": [
+              "object"
+            ]
+          },
           "type": [
-            "string",
-            "null"
+            "array"
           ]
         },
         "backups": {
-          "description": "TODO",
-          "example": null,
-          "format": "string",
+          "description": "backup images taken, or null if disabled",
+          "example": [
+            {
+              "id": 32,
+              "name": "Backup taken 2014-01-01 12:00:00"
+            }
+          ],
           "readOnly": true,
+          "items": {
+            "type": [
+              "object"
+            ]
+          },
           "type": [
-            "string",
+            "array",
             "null"
           ]
         },
@@ -744,17 +759,20 @@
           "description": "comma separated list of key ids for root access",
           "example": "32,64",
           "format": "numeric CSV",
+          "readOnly": false,
           "type": [
             "string",
             "null"
           ]
         },
-        "image_id": {
-          "description": "id of image to use",
+        "image_slug_or_id": {
+          "description": "id or slug of image to use",
           "example": 32,
-          "format": "integer",
+          "format": "integer/string",
+          "readOnly": false,
           "type": [
-            "integer"
+            "integer",
+            "string"
           ]
         }
       },
@@ -781,8 +799,8 @@
                   "string"
                 ]
               },
-              "image_id": {
-                "$ref": "#/definitions/droplet/definitions/image_id"
+              "image": {
+                "$ref": "#/definitions/droplet/definitions/image_slug_or_id"
               },
               "key_ids": {
                 "$ref": "#/definitions/droplet/definitions/key_ids"
@@ -807,13 +825,16 @@
             "required": [
               "name",
               "size",
-              "image_id",
+              "image",
               "region"
             ],
             "optional": [
               "key_ids",
               "private_networking",
               "backups"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Create"
@@ -852,6 +873,9 @@
             },
             "required": [
               "name"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Update"
@@ -885,11 +909,8 @@
         "status": {
           "$ref": "#/definitions/droplet/definitions/status"
         },
-        "public_ip": {
-          "$ref": "#/definitions/droplet/definitions/public_ip"
-        },
-        "private_ip": {
-          "$ref": "#/definitions/droplet/definitions/private_ip"
+        "networks": {
+          "$ref": "#/definitions/droplet/definitions/networks"
         }
       },
       "id": "schema/droplet"
@@ -912,10 +933,15 @@
           ]
         },
         "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/image-action/definitions/id"
-            }
+          "$ref": "#/definitions/image-action/definitions/id"
+        },
+        "status": {
+          "description": "current status of action",
+          "example": "in-progress",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
           ]
         },
         "transfer": {
@@ -942,6 +968,9 @@
             },
             "optional": [
               "transfer"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Create"
@@ -960,6 +989,9 @@
         },
         "transfer": {
           "$ref": "#/definitions/image-action/definitions/transfer"
+        },
+        "status": {
+          "$ref": "#/definitions/image-action/definitions/status"
         }
       },
       "id": "schema/image-action"
@@ -985,6 +1017,9 @@
           "anyOf": [
             {
               "$ref": "#/definitions/image/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/image/definitions/slug"
             }
           ]
         },
@@ -1016,6 +1051,15 @@
             "null"
           ]
         },
+        "size": {
+          "description": "minimum droplet size image is available for",
+          "example": "512mb",
+          "format": "string",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
         "public": {
           "description": "whether accessible by all accounts or just your account",
           "example": false,
@@ -1041,7 +1085,9 @@
             "sf1"
           ],
           "items": {
-            "type": "string"
+            "type": [
+              "string"
+            ]
           },
           "readOnly": true,
           "type": [
@@ -1077,6 +1123,9 @@
             },
             "optional": [
               "private"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "List"
@@ -1094,6 +1143,9 @@
             },
             "required": [
               "name"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Update"
@@ -1111,6 +1163,9 @@
         },
         "slug": {
           "$ref": "#/definitions/image/definitions/slug"
+        },
+        "size": {
+          "$ref": "#/definitions/image/definitions/size"
         },
         "public": {
           "$ref": "#/definitions/image/definitions/public"
@@ -1193,6 +1248,9 @@
             "required": [
               "public_key",
               "name"
+            ],
+            "type": [
+              "object"
             ]
           },
           "title": "Create"
@@ -1262,11 +1320,7 @@
           ]
         },
         "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/region/definitions/id"
-            }
-          ]
+          "$ref": "#/definitions/region/definitions/slug"
         },
         "slug": {
           "description": "unique string identifier of region",
@@ -1296,7 +1350,9 @@
             "8gb"
           ],
           "items": {
-            "type": "string"
+            "type": [
+              "string"
+            ]
           },
           "readOnly": true,
           "type": [
@@ -1365,11 +1421,7 @@
           ]
         },
         "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/size/definitions/slug"
-            }
-          ]
+          "$ref": "#/definitions/size/definitions/slug"
         },
         "memory": {
           "description": "amount of RAM provided",
@@ -1382,7 +1434,7 @@
         },
         "cpus": {
           "description": "number of CPUs provided",
-          "example": "1",
+          "example": 1,
           "format": "integer",
           "readOnly": true,
           "type": [
@@ -1432,7 +1484,9 @@
             "sf1"
           ],
           "items": {
-            "type": "string"
+            "type": [
+              "string"
+            ]
           },
           "readOnly": true,
           "type": [
@@ -1486,9 +1540,6 @@
     },
     "droplet-action": {
       "$ref": "#/definitions/droplet-action"
-    },
-    "droplet-self": {
-      "$ref": "#/definitions/droplet-self"
     },
     "droplet": {
       "$ref": "#/definitions/droplet"

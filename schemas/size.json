@@ -35,11 +35,7 @@
       ]
     },
     "identity": {
-      "anyOf": [
-        {
-          "$ref": "/schema/size#/definitions/slug"
-        }
-      ]
+      "$ref": "/schema/size#/definitions/slug"
     },
     "memory": {
       "description": "amount of RAM provided",
@@ -52,7 +48,7 @@
     },
     "cpus": {
       "description": "number of CPUs provided",
-      "example": "1",
+      "example": 1,
       "format": "integer",
       "readOnly": true,
       "type": [

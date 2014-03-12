@@ -49,6 +49,14 @@ schema using curl:
 
 The schema format is based on the same JSON schema used by [Heroku for their API](https://blog.heroku.com/archives/2014/1/8/json_schema_for_heroku_platform_api).
 
+### Curl Examples
+
+Curl examples are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
+
+  machine api.digitalocean.com
+    login {your-oauth-token}
+    password x
+
 ### Errors
 
 Failing responses will have an appropriate [HTTP status](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) and a JSON body containing more details about the error.
@@ -254,7 +262,7 @@ POST /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X POST /domains/$DOMAIN_ID/records \
+$ curl -n -X POST https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records \
 -H "Content-Type: application/json" \
 -d '{"type_":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
@@ -285,7 +293,7 @@ DELETE /domains/{domain_id}/records/{domain-record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE /domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
+$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
 ```
 
 #### Response Example
@@ -314,7 +322,7 @@ GET /domains/{domain_id}/records/{domain-record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET /domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
 ```
 
 #### Response Example
@@ -343,7 +351,7 @@ GET /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X GET /domains/$DOMAIN_ID/records
+$ curl -n -X GET https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records
 ```
 
 #### Response Example
@@ -433,7 +441,7 @@ PATCH /domains/{domain_id}/records/{domain-record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH /domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
+$ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
 -H "Content-Type: application/json" \
 -d '{"type_":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
@@ -531,7 +539,7 @@ POST /domains
 
 #### Curl Example
 ```term
-$ curl -n -X POST /domains \
+$ curl -n -X POST https://api.digitalocean.com/v2/domains \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -561,7 +569,7 @@ DELETE /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE /domains/$DOMAIN_ID
+$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$DOMAIN_ID
 ```
 
 #### Response Example
@@ -589,7 +597,7 @@ GET /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET /domains/$DOMAIN_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/domains/$DOMAIN_ID
 ```
 
 #### Response Example
@@ -617,7 +625,7 @@ GET /domains
 
 #### Curl Example
 ```term
-$ curl -n -X GET /domains
+$ curl -n -X GET https://api.digitalocean.com/v2/domains
 ```
 
 #### Response Example
@@ -656,6 +664,12 @@ Droplet actions are operations on droplets that may take a while to complete.
     <td><em>integer</em></td>
     <td>unique identifier of droplet action</td>
     <td><code>32</code></td>
+  </tr>
+  <tr>
+    <td><strong>status</strong></td>
+    <td><em>string</em></td>
+    <td>current status of action</td>
+    <td><code>"in-progress"</code></td>
   </tr>
   <tr>
     <td><strong>reboot</strong></td>
@@ -775,7 +789,7 @@ POST /droplet/{droplet_id}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST /droplet/$DROPLET_ID/actions \
+$ curl -n -X POST https://api.digitalocean.com/v2/droplet/$DROPLET_ID/actions \
 -H "Content-Type: application/json" \
 -d '{"reboot":null,"shutdown":null,"boot":null,"resetpassword":null,"resize":null,"snapshot":null,"rebuild":null,"restore":null}'
 ```
@@ -787,6 +801,7 @@ HTTP/1.1 201 Created
 ```javascript```
 {
   "id": 32,
+  "status": "in-progress",
   "reboot": "hard",
   "shutdown": "soft",
   "boot": null,
@@ -808,7 +823,7 @@ GET /droplet/{droplet_id}/actions/{droplet-action_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET /droplet/$DROPLET_ID/actions/$DROPLET_ACTION_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/droplet/$DROPLET_ID/actions/$DROPLET_ACTION_ID
 ```
 
 #### Response Example
@@ -818,6 +833,7 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
+  "status": "in-progress",
   "reboot": "hard",
   "shutdown": "soft",
   "boot": null,
@@ -826,179 +842,6 @@ HTTP/1.1 200 OK
   "snapshot": "My snapshot",
   "rebuild": 32,
   "restore": 32
-}
-```
-
-
-## Droplet Self
-Droplet meta-data reflection endpoint. This is only available from a droplet.
-
-### Attributes
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Example</th>
-  </tr>
-  <tr>
-    <td><strong>id</strong></td>
-    <td><em>integer</em></td>
-    <td>unique identifier of droplet</td>
-    <td><code>32</code></td>
-  </tr>
-  <tr>
-    <td><strong>name</strong></td>
-    <td><em>string</em></td>
-    <td>name used to identify droplet</td>
-    <td><code>"my droplet"</code></td>
-  </tr>
-  <tr>
-    <td><strong>region</strong></td>
-    <td><em>string</em></td>
-    <td>slug of region for this droplet</td>
-    <td><code>"nyc2"</code></td>
-  </tr>
-  <tr>
-    <td><strong>image:id</strong></td>
-    <td><em>integer</em></td>
-    <td>unique identifier of image</td>
-    <td><code>32</code></td>
-  </tr>
-  <tr>
-    <td><strong>image:slug</strong></td>
-    <td><em>nullable string</em></td>
-    <td>url friendly name of the image</td>
-    <td><code>"ubuntu-12.10-x32"</code></td>
-  </tr>
-  <tr>
-    <td><strong>image:name</strong></td>
-    <td><em>string</em></td>
-    <td>display name of the image</td>
-    <td><code>"My first snapshot"</code></td>
-  </tr>
-  <tr>
-    <td><strong>image:distribution</strong></td>
-    <td><em>string</em></td>
-    <td>name of the Linux distribution this image is based on</td>
-    <td><code>"Ubuntu"</code></td>
-  </tr>
-  <tr>
-    <td><strong>image:public</strong></td>
-    <td><em>boolean</em></td>
-    <td>whether accessible by all accounts or just your account</td>
-    <td><code>false</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:slug</strong></td>
-    <td><em>string</em></td>
-    <td>unique string identifier of size</td>
-    <td><code>"512mb"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:memory</strong></td>
-    <td><em>string</em></td>
-    <td>amount of RAM provided</td>
-    <td><code>"512mb"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:cpus</strong></td>
-    <td><em>integer</em></td>
-    <td>number of CPUs provided</td>
-    <td><code>"1"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:disk</strong></td>
-    <td><em>string</em></td>
-    <td>amount of SSD disk storage provided</td>
-    <td><code>"20gb"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:transfer</strong></td>
-    <td><em>string</em></td>
-    <td>amount of network transfer provided</td>
-    <td><code>"1tb"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:price_monthly</strong></td>
-    <td><em>string</em></td>
-    <td>cost of running for a month</td>
-    <td><code>"5.00"</code></td>
-  </tr>
-  <tr>
-    <td><strong>size:price_hourly</strong></td>
-    <td><em>string</em></td>
-    <td>cost of running for an hour</td>
-    <td><code>"0.007"</code></td>
-  </tr>
-  <tr>
-    <td><strong>backups</strong></td>
-    <td><em>nullable string</em></td>
-    <td>TODO</td>
-    <td><code>null</code></td>
-  </tr>
-  <tr>
-    <td><strong>snapshots</strong></td>
-    <td><em>nullable string</em></td>
-    <td>TODO</td>
-    <td><code>null</code></td>
-  </tr>
-  <tr>
-    <td><strong>locked</strong></td>
-    <td><em>boolean</em></td>
-    <td>???</td>
-    <td><code>false</code></td>
-  </tr>
-  <tr>
-    <td><strong>status</strong></td>
-    <td><em>string</em></td>
-    <td>current status of droplet</td>
-    <td><code>"active"</code></td>
-  </tr>
-  <tr>
-    <td><strong>public_ip</strong></td>
-    <td><em>string</em></td>
-    <td>public IP address of droplet</td>
-    <td><code>"192.168.1.1"</code></td>
-  </tr>
-  <tr>
-    <td><strong>private_ip</strong></td>
-    <td><em>nullable string</em></td>
-    <td>private IP address or null</td>
-    <td><code>null</code></td>
-  </tr>
-</table>
-
-### Droplet Self Info
-Info for existing droplet.
-
-```
-GET /droplets/self
-```
-
-
-#### Curl Example
-```term
-$ curl -n -X GET /droplets/self
-```
-
-#### Response Example
-```
-HTTP/1.1 200 OK
-```
-```javascript```
-{
-  "id": 32,
-  "name": "my droplet",
-  "region": "nyc2",
-  "image": null,
-  "size": null,
-  "backups": null,
-  "snapshots": null,
-  "locked": false,
-  "status": "active",
-  "public_ip": "192.168.1.1",
-  "private_ip": null
 }
 ```
 
@@ -1063,12 +906,6 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><code>false</code></td>
   </tr>
   <tr>
-    <td><strong>size:slug</strong></td>
-    <td><em>string</em></td>
-    <td>unique string identifier of size</td>
-    <td><code>"512mb"</code></td>
-  </tr>
-  <tr>
     <td><strong>size:memory</strong></td>
     <td><em>string</em></td>
     <td>amount of RAM provided</td>
@@ -1078,7 +915,7 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><strong>size:cpus</strong></td>
     <td><em>integer</em></td>
     <td>number of CPUs provided</td>
-    <td><code>"1"</code></td>
+    <td><code>1</code></td>
   </tr>
   <tr>
     <td><strong>size:disk</strong></td>
@@ -1106,15 +943,15 @@ Droplets are VMs in the DigitalOcean cloud.
   </tr>
   <tr>
     <td><strong>backups</strong></td>
-    <td><em>nullable string</em></td>
-    <td>TODO</td>
-    <td><code>null</code></td>
+    <td><em>nullable array</em></td>
+    <td>backup images taken, or null if disabled</td>
+    <td><code>[{"id":32,"name":"Backup taken 2014-01-01 12:00:00"}]</code></td>
   </tr>
   <tr>
     <td><strong>snapshots</strong></td>
-    <td><em>nullable string</em></td>
-    <td>TODO</td>
-    <td><code>null</code></td>
+    <td><em>array</em></td>
+    <td>snapshot images taken</td>
+    <td><code>[{"id":32,"name":"My snapshot"}]</code></td>
   </tr>
   <tr>
     <td><strong>locked</strong></td>
@@ -1129,16 +966,40 @@ Droplets are VMs in the DigitalOcean cloud.
     <td><code>"active"</code></td>
   </tr>
   <tr>
-    <td><strong>public_ip</strong></td>
+    <td><strong>networks:public:ip_address</strong></td>
     <td><em>string</em></td>
-    <td>public IP address of droplet</td>
-    <td><code>"192.168.1.1"</code></td>
+    <td>network IP address</td>
+    <td><code>"162.243.68.122"</code></td>
   </tr>
   <tr>
-    <td><strong>private_ip</strong></td>
-    <td><em>nullable string</em></td>
-    <td>private IP address or null</td>
-    <td><code>null</code></td>
+    <td><strong>networks:public:netmask</strong></td>
+    <td><em>string</em></td>
+    <td>network subnet mask</td>
+    <td><code>"255.255.255.0"</code></td>
+  </tr>
+  <tr>
+    <td><strong>networks:public:gateway</strong></td>
+    <td><em>string</em></td>
+    <td>network gateway</td>
+    <td><code>"162.243.68.1"</code></td>
+  </tr>
+  <tr>
+    <td><strong>networks:private:ip_address</strong></td>
+    <td><em>string</em></td>
+    <td>network IP address</td>
+    <td><code>"162.243.68.122"</code></td>
+  </tr>
+  <tr>
+    <td><strong>networks:private:netmask</strong></td>
+    <td><em>string</em></td>
+    <td>network subnet mask</td>
+    <td><code>"255.255.255.0"</code></td>
+  </tr>
+  <tr>
+    <td><strong>networks:private:gateway</strong></td>
+    <td><em>string</em></td>
+    <td>network gateway</td>
+    <td><code>"162.243.68.1"</code></td>
   </tr>
 </table>
 
@@ -1176,9 +1037,9 @@ POST /droplets
     <td><code>"512mb"</code></td>
   </tr>
   <tr>
-    <td><strong>image_id</strong></td>
-    <td><em>integer</em></td>
-    <td>id of image to use</td>
+    <td><strong>image</strong></td>
+    <td><em>integer/string</em></td>
+    <td>id or slug of image to use</td>
     <td><code>32</code></td>
   </tr>
 </table>
@@ -1215,9 +1076,9 @@ POST /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X POST /droplets \
+$ curl -n -X POST https://api.digitalocean.com/v2/droplets \
 -H "Content-Type: application/json" \
--d '{"name":null,"region":null,"size":"512mb","image_id":null,"key_ids":null,"private_networking":false,"backups":false}'
+-d '{"name":null,"region":null,"size":"512mb","image":null,"key_ids":null,"private_networking":false,"backups":false}'
 ```
 
 #### Response Example
@@ -1229,14 +1090,42 @@ HTTP/1.1 201 Created
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": null,
-  "size": null,
-  "backups": null,
-  "snapshots": null,
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "Ubuntu 12.10 x32",
+    "distribution": "Ubuntu",
+    "public": true
+  },
+  "size": {
+    "memory": "512mb",
+    "cpus": 1,
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
+  "backups": [
+    {
+      "id": 32,
+      "name": "Backup taken 2014-01-01 12:00:00"
+    }
+  ],
+  "snapshots": [
+    {
+      "id": 32,
+      "name": "My snapshot"
+    }
+  ],
   "locked": false,
   "status": "active",
-  "public_ip": "192.168.1.1",
-  "private_ip": null
+  "networks": {
+    "public": {
+      "ip_address": "162.243.68.122",
+      "netmask": "255.255.255.0",
+      "gateway": "162.243.68.1"
+    }
+  }
 }
 ```
 
@@ -1250,7 +1139,7 @@ DELETE /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE /droplets/$DROPLET_ID
+$ curl -n -X DELETE https://api.digitalocean.com/v2/droplets/$DROPLET_ID
 ```
 
 #### Response Example
@@ -1262,14 +1151,42 @@ HTTP/1.1 200 OK
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": null,
-  "size": null,
-  "backups": null,
-  "snapshots": null,
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "Ubuntu 12.10 x32",
+    "distribution": "Ubuntu",
+    "public": true
+  },
+  "size": {
+    "memory": "512mb",
+    "cpus": 1,
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
+  "backups": [
+    {
+      "id": 32,
+      "name": "Backup taken 2014-01-01 12:00:00"
+    }
+  ],
+  "snapshots": [
+    {
+      "id": 32,
+      "name": "My snapshot"
+    }
+  ],
   "locked": false,
   "status": "active",
-  "public_ip": "192.168.1.1",
-  "private_ip": null
+  "networks": {
+    "public": {
+      "ip_address": "162.243.68.122",
+      "netmask": "255.255.255.0",
+      "gateway": "162.243.68.1"
+    }
+  }
 }
 ```
 
@@ -1283,7 +1200,7 @@ GET /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET /droplets/$DROPLET_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/droplets/$DROPLET_ID
 ```
 
 #### Response Example
@@ -1295,14 +1212,42 @@ HTTP/1.1 200 OK
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": null,
-  "size": null,
-  "backups": null,
-  "snapshots": null,
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "Ubuntu 12.10 x32",
+    "distribution": "Ubuntu",
+    "public": true
+  },
+  "size": {
+    "memory": "512mb",
+    "cpus": 1,
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
+  "backups": [
+    {
+      "id": 32,
+      "name": "Backup taken 2014-01-01 12:00:00"
+    }
+  ],
+  "snapshots": [
+    {
+      "id": 32,
+      "name": "My snapshot"
+    }
+  ],
   "locked": false,
   "status": "active",
-  "public_ip": "192.168.1.1",
-  "private_ip": null
+  "networks": {
+    "public": {
+      "ip_address": "162.243.68.122",
+      "netmask": "255.255.255.0",
+      "gateway": "162.243.68.1"
+    }
+  }
 }
 ```
 
@@ -1316,7 +1261,7 @@ GET /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X GET /droplets
+$ curl -n -X GET https://api.digitalocean.com/v2/droplets
 ```
 
 #### Response Example
@@ -1331,14 +1276,42 @@ Content-Range: id 23..342; max=200
     "id": 32,
     "name": "my droplet",
     "region": "nyc2",
-    "image": null,
-    "size": null,
-    "backups": null,
-    "snapshots": null,
+    "image": {
+      "id": 32,
+      "slug": "ubuntu-12.10-x32",
+      "name": "Ubuntu 12.10 x32",
+      "distribution": "Ubuntu",
+      "public": true
+    },
+    "size": {
+      "memory": "512mb",
+      "cpus": 1,
+      "disk": "20gb",
+      "transfer": "1tb",
+      "price_monthly": "5.00",
+      "price_hourly": "0.007"
+    },
+    "backups": [
+      {
+        "id": 32,
+        "name": "Backup taken 2014-01-01 12:00:00"
+      }
+    ],
+    "snapshots": [
+      {
+        "id": 32,
+        "name": "My snapshot"
+      }
+    ],
     "locked": false,
     "status": "active",
-    "public_ip": "192.168.1.1",
-    "private_ip": null
+    "networks": {
+      "public": {
+        "ip_address": "162.243.68.122",
+        "netmask": "255.255.255.0",
+        "gateway": "162.243.68.1"
+      }
+    }
   }
 ]
 ```
@@ -1370,7 +1343,7 @@ PATCH /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH /droplets/$DROPLET_ID \
+$ curl -n -X PATCH https://api.digitalocean.com/v2/droplets/$DROPLET_ID \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1384,14 +1357,42 @@ HTTP/1.1 200 OK
   "id": 32,
   "name": "my droplet",
   "region": "nyc2",
-  "image": null,
-  "size": null,
-  "backups": null,
-  "snapshots": null,
+  "image": {
+    "id": 32,
+    "slug": "ubuntu-12.10-x32",
+    "name": "Ubuntu 12.10 x32",
+    "distribution": "Ubuntu",
+    "public": true
+  },
+  "size": {
+    "memory": "512mb",
+    "cpus": 1,
+    "disk": "20gb",
+    "transfer": "1tb",
+    "price_monthly": "5.00",
+    "price_hourly": "0.007"
+  },
+  "backups": [
+    {
+      "id": 32,
+      "name": "Backup taken 2014-01-01 12:00:00"
+    }
+  ],
+  "snapshots": [
+    {
+      "id": 32,
+      "name": "My snapshot"
+    }
+  ],
   "locked": false,
   "status": "active",
-  "public_ip": "192.168.1.1",
-  "private_ip": null
+  "networks": {
+    "public": {
+      "ip_address": "162.243.68.122",
+      "netmask": "255.255.255.0",
+      "gateway": "162.243.68.1"
+    }
+  }
 }
 ```
 
@@ -1419,13 +1420,19 @@ Image actions are operations on images that may take a while to complete.
     <td>a region slug to transfer the image to</td>
     <td><code>"nyc2"</code></td>
   </tr>
+  <tr>
+    <td><strong>status</strong></td>
+    <td><em>string</em></td>
+    <td>current status of action</td>
+    <td><code>"in-progress"</code></td>
+  </tr>
 </table>
 
 ### Image Action Create
 Create a new image action.
 
 ```
-POST /images/{image_id}/actions
+POST /images/{image_id_or_slug}/actions
 ```
 
 #### Optional Parameters
@@ -1447,7 +1454,7 @@ POST /images/{image_id}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST /images/$IMAGE_ID/actions \
+$ curl -n -X POST https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG/actions \
 -H "Content-Type: application/json" \
 -d '{"transfer":null}'
 ```
@@ -1459,7 +1466,8 @@ HTTP/1.1 201 Created
 ```javascript```
 {
   "id": 32,
-  "transfer": "nyc2"
+  "transfer": "nyc2",
+  "status": "in-progress"
 }
 ```
 
@@ -1467,13 +1475,13 @@ HTTP/1.1 201 Created
 Info for existing image action.
 
 ```
-GET /images/{image_id}/actions/{image-action_id}
+GET /images/{image_id_or_slug}/actions/{image-action_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET /images/$IMAGE_ID/actions/$IMAGE_ACTION_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG/actions/$IMAGE_ACTION_ID
 ```
 
 #### Response Example
@@ -1483,7 +1491,8 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
-  "transfer": "nyc2"
+  "transfer": "nyc2",
+  "status": "in-progress"
 }
 ```
 
@@ -1524,6 +1533,12 @@ Images are either snapshots or backups you've made, or public images of applicat
     <td><code>"ubuntu-12.10-x32"</code></td>
   </tr>
   <tr>
+    <td><strong>size</strong></td>
+    <td><em>string</em></td>
+    <td>minimum droplet size image is available for</td>
+    <td><code>"512mb"</code></td>
+  </tr>
+  <tr>
     <td><strong>public</strong></td>
     <td><em>boolean</em></td>
     <td>whether accessible by all accounts or just your account</td>
@@ -1541,13 +1556,13 @@ Images are either snapshots or backups you've made, or public images of applicat
 Delete an existing image.
 
 ```
-DELETE /images/{image_id}
+DELETE /images/{image_id_or_slug}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE /images/$IMAGE_ID
+$ curl -n -X DELETE https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG
 ```
 
 #### Response Example
@@ -1560,6 +1575,7 @@ HTTP/1.1 200 OK
   "name": "My first snapshot",
   "distribution": "Ubuntu",
   "slug": "ubuntu-12.10-x32",
+  "size": "512mb",
   "public": false,
   "regions": [
     "nyc2",
@@ -1572,13 +1588,13 @@ HTTP/1.1 200 OK
 Info for existing image.
 
 ```
-GET /images/{image_id}
+GET /images/{image_id_or_slug}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET /images/$IMAGE_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG
 ```
 
 #### Response Example
@@ -1591,6 +1607,7 @@ HTTP/1.1 200 OK
   "name": "My first snapshot",
   "distribution": "Ubuntu",
   "slug": "ubuntu-12.10-x32",
+  "size": "512mb",
   "public": false,
   "regions": [
     "nyc2",
@@ -1625,7 +1642,7 @@ GET /images
 
 #### Curl Example
 ```term
-$ curl -n -X GET /images \
+$ curl -n -X GET https://api.digitalocean.com/v2/images \
 -H "Content-Type: application/json" \
 -d '{"private":null}'
 ```
@@ -1633,7 +1650,7 @@ $ curl -n -X GET /images \
 #### Response Example
 ```
 HTTP/1.1 200 OK
-Accept-Range: id
+Accept-Range: id, slug
 Content-Range: id 23..342; max=200
 ```
 ```javascript```
@@ -1643,6 +1660,7 @@ Content-Range: id 23..342; max=200
     "name": "My first snapshot",
     "distribution": "Ubuntu",
     "slug": "ubuntu-12.10-x32",
+    "size": "512mb",
     "public": false,
     "regions": [
       "nyc2",
@@ -1656,7 +1674,7 @@ Content-Range: id 23..342; max=200
 Update an existing image.
 
 ```
-PATCH /images/{image_id}
+PATCH /images/{image_id_or_slug}
 ```
 
 #### Required Parameters
@@ -1679,7 +1697,7 @@ PATCH /images/{image_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH /images/$IMAGE_ID \
+$ curl -n -X PATCH https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1694,6 +1712,7 @@ HTTP/1.1 200 OK
   "name": "My first snapshot",
   "distribution": "Ubuntu",
   "slug": "ubuntu-12.10-x32",
+  "size": "512mb",
   "public": false,
   "regions": [
     "nyc2",
@@ -1773,7 +1792,7 @@ POST /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X POST /account/keys \
+$ curl -n -X POST https://api.digitalocean.com/v2/account/keys \
 -H "Content-Type: application/json" \
 -d '{"public_key":null,"name":null}'
 ```
@@ -1801,7 +1820,7 @@ DELETE /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE /account/keys/$KEY_ID_OR_FINGERPRINT
+$ curl -n -X DELETE https://api.digitalocean.com/v2/account/keys/$KEY_ID_OR_FINGERPRINT
 ```
 
 #### Response Example
@@ -1827,7 +1846,7 @@ GET /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X GET /account/keys/$KEY_ID_OR_FINGERPRINT
+$ curl -n -X GET https://api.digitalocean.com/v2/account/keys/$KEY_ID_OR_FINGERPRINT
 ```
 
 #### Response Example
@@ -1853,7 +1872,7 @@ GET /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X GET /account/keys
+$ curl -n -X GET https://api.digitalocean.com/v2/account/keys
 ```
 
 #### Response Example
@@ -1921,13 +1940,13 @@ GET /regions
 
 #### Curl Example
 ```term
-$ curl -n -X GET /regions
+$ curl -n -X GET https://api.digitalocean.com/v2/regions
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
-Accept-Range: id
+Accept-Range: slug
 Content-Range: id 23..342; max=200
 ```
 ```javascript```
@@ -1975,7 +1994,7 @@ Sizes represent possible Droplet resources.
     <td><strong>cpus</strong></td>
     <td><em>integer</em></td>
     <td>number of CPUs provided</td>
-    <td><code>"1"</code></td>
+    <td><code>1</code></td>
   </tr>
   <tr>
     <td><strong>disk</strong></td>
@@ -2019,7 +2038,7 @@ GET /sizes
 
 #### Curl Example
 ```term
-$ curl -n -X GET /sizes
+$ curl -n -X GET https://api.digitalocean.com/v2/sizes
 ```
 
 #### Response Example
@@ -2033,7 +2052,7 @@ Content-Range: id 23..342; max=200
   {
     "slug": "512mb",
     "memory": "512mb",
-    "cpus": "1",
+    "cpus": 1,
     "disk": "20gb",
     "transfer": "1tb",
     "price_monthly": "5.00",
