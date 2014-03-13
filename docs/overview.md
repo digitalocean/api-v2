@@ -1,20 +1,18 @@
-## Overview
-
 ### Authentication
 
-OAuth is used to authorize and revoke access to your account to yourself and third parties. *Full
+OAuth is used to authorize and revoke access to resources managed by the API. *Full
 OAuth documentation will be available in a separate document.* There are two ways to use an OAuth
 access token once you have one.
 
-##### OAuth Token in Bearer Authorization Header
+#### Bearer Authorization Header
 
-```shell
+```bash
 $ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
 ```
 
-##### OAuth Token in Basic Authentication
+#### Basic Authentication
 
-```shell
+```bash
 $ curl -u "$ACCESS_TOKEN:" https://api.digitalocean.com
 ```
 
@@ -27,7 +25,7 @@ The API has a machine-readable JSON schema that describes what resources are ava
 what their URLs are, how they are represented and what operations they support. You don't need to 
 authenticate to use the schema endpoint. You can access the schema using curl:
 
-```shell
+```bash
 $ curl https://api.digitalocean.com/v2/schema
 ```
 
@@ -35,7 +33,7 @@ The schema format is based on [JSON Schema](http://json-schema.org/) with the dr
 
 ### Curl Examples
 
-Curl examples are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
+Curl examples used in this documentation are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
 
 ```
 machine api.digitalocean.com
@@ -47,7 +45,7 @@ machine api.digitalocean.com
 
 Failing responses will have an appropriate [HTTP status](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) and a JSON body containing more details about the error.
 
-##### Example Error Response
+#### Example Error Response
 
 ```
 HTTP/1.1 403 Forbidden
@@ -100,12 +98,12 @@ request, do a `POST` with header `Http-Method-Override: PATCH`.
 
 Values that can be provided for an action are divided between optional and required values. The expected type for each value is specified. Parameters should be JSON encoded and passed in the request body, however, in many cases you can use regular query parameters or form parameters. For example, these two requests are equivalent:
 
-```shell
+```bash
 $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
 -H "Content-Type: application/json" \
 -d '{"type":"A","name":"www","data":"127.0.0.1"}'
 ```
-```shell
+```bash
 $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
 -F "type=A" \
 -F "name=www" \
