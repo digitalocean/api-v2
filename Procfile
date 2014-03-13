@@ -1,0 +1,1 @@
+web: node ./node_modules/aglio/bin/aglio.js -i output/blueprint.md -s -h 0.0.0.0 -p $PORT
