@@ -19,7 +19,7 @@
     "identity": {
       "$ref": "/schema/domain-record#/definitions/id"
     },
-    "type_": {
+    "type": {
       "description": "type of DNS record (ex: A, CNAME, TXT, ...)",
       "example": "CNAME",
       "format": "string",
@@ -85,8 +85,8 @@
       "rel": "create",
       "schema": {
         "properties": {
-          "type_": {
-            "$ref": "/schema/domain-record#/definitions/type_"
+          "type": {
+            "$ref": "/schema/domain-record#/definitions/type"
           },
           "name": {
             "$ref": "/schema/domain-record#/definitions/name"
@@ -108,7 +108,7 @@
           "object"
         ],
         "required": [
-          "type_",
+          "type",
           "data"
         ],
         "optional": [
@@ -148,8 +148,8 @@
       "rel": "update",
       "schema": {
         "properties": {
-          "type_": {
-            "$ref": "/schema/domain-record#/definitions/type_"
+          "type": {
+            "$ref": "/schema/domain-record#/definitions/type"
           },
           "name": {
             "$ref": "/schema/domain-record#/definitions/name"
@@ -168,7 +168,7 @@
           }
         },
         "required": [
-          "type_",
+          "type",
           "data"
         ],
         "optional": [
@@ -188,8 +188,8 @@
     "id": {
       "$ref": "/schema/domain-record#/definitions/id"
     },
-    "type_": {
-      "$ref": "/schema/domain-record#/definitions/type_"
+    "type": {
+      "$ref": "/schema/domain-record#/definitions/type"
     },
     "name": {
       "$ref": "/schema/domain-record#/definitions/name"

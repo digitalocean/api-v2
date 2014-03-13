@@ -3,20 +3,16 @@
 ### Authentication
 
 OAuth is used to authorize and revoke access to your account to yourself and third parties. *Full
-OAuth documentation will be available in a separate document.* There are three ways to use an OAuth
+OAuth documentation will be available in a separate document.* There are two ways to use an OAuth
 access token once you have one.
 
 ##### OAuth Token in Basic Authentication
 
-	$ curl -u "$ACCESS_TOKEN:x" https://api.digitalocean.com
+	$ curl -u "$ACCESS_TOKEN:" https://api.digitalocean.com
 
 ##### OAuth Token in Bearer Authorization Header
 
 	$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
-
-##### OAuth Token in Query Parameter
-
-	$ curl "https://api.digitalocean.com/?access_token=$ACCESS_TOKEN"
 
 For personal and development purposes, you can create a personal access token in the API control
 panel and use it like a regular OAuth token.
@@ -24,12 +20,12 @@ panel and use it like a regular OAuth token.
 ### Schema
 
 The API has a machine-readable JSON schema that describes what resources are available via the API,
-what their URLs are, how they are represented and what operations they support. You can access the
-schema using curl:
+what their URLs are, how they are represented and what operations they support. You don't need to 
+authenticate to use the schema endpoint. You can access the schema using curl:
 
-	$ curl https://api.digialocean.com/v2/schema
+	$ curl https://api.digitalocean.com/v2/schema
 
-The schema format is based on the same JSON schema used by [Heroku for their API](https://blog.heroku.com/archives/2014/1/8/json_schema_for_heroku_platform_api).
+The schema format is based on [JSON Schema](http://json-schema.org/) with the draft [Validation](http://tools.ietf.org/html/draft-fge-json-schema-validation-00) and [Hypertext](http://tools.ietf.org/html/draft-luff-json-hyper-schema-00) extensions.
 
 ### Curl Examples
 
@@ -91,12 +87,12 @@ HTTP/1.1 403 Forbidden
 ### Method Override
 
 When using a client that does not support all of the [methods](#methods), you can override by using a `POST` and
-setting the `X-Http-Method-Override` header to the desired methed. For instance, to do a `PATCH`
-request, do a `POST` with header `X-Http-Method-Override: PATCH`.
+setting the `Http-Method-Override` header to the desired methed. For instance, to do a `PATCH`
+request, do a `POST` with header `Http-Method-Override: PATCH`.
 
 ### Parameters
 
-Values that can be provided for an action are divided between optional and required values. The expected type for each value is specified. Parameters should be JSON encoded and passed in the request body, however, in many cases you can use regular query parameters or `application/x-www-form-urlencoded` or `multipart/form-data` parameters. For example, these two requests are equivalent:
+Values that can be provided for an action are divided between optional and required values. The expected type for each value is specified. Parameters should be JSON encoded and passed in the request body, however, in many cases you can use regular query parameters or form parameters. For example, these two requests are equivalent:
 
 ```
 $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \

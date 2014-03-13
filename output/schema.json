@@ -22,7 +22,7 @@
         "identity": {
           "$ref": "#/definitions/domain-record/definitions/id"
         },
-        "type_": {
+        "type": {
           "description": "type of DNS record (ex: A, CNAME, TXT, ...)",
           "example": "CNAME",
           "format": "string",
@@ -88,8 +88,8 @@
           "rel": "create",
           "schema": {
             "properties": {
-              "type_": {
-                "$ref": "#/definitions/domain-record/definitions/type_"
+              "type": {
+                "$ref": "#/definitions/domain-record/definitions/type"
               },
               "name": {
                 "$ref": "#/definitions/domain-record/definitions/name"
@@ -111,7 +111,7 @@
               "object"
             ],
             "required": [
-              "type_",
+              "type",
               "data"
             ],
             "optional": [
@@ -151,8 +151,8 @@
           "rel": "update",
           "schema": {
             "properties": {
-              "type_": {
-                "$ref": "#/definitions/domain-record/definitions/type_"
+              "type": {
+                "$ref": "#/definitions/domain-record/definitions/type"
               },
               "name": {
                 "$ref": "#/definitions/domain-record/definitions/name"
@@ -171,7 +171,7 @@
               }
             },
             "required": [
-              "type_",
+              "type",
               "data"
             ],
             "optional": [
@@ -191,8 +191,8 @@
         "id": {
           "$ref": "#/definitions/domain-record/definitions/id"
         },
-        "type_": {
-          "$ref": "#/definitions/domain-record/definitions/type_"
+        "type": {
+          "$ref": "#/definitions/domain-record/definitions/type"
         },
         "name": {
           "$ref": "#/definitions/domain-record/definitions/name"
@@ -1082,7 +1082,7 @@
           "description": "slugs of regions this image is currently available in",
           "example": [
             "nyc2",
-            "sf1"
+            "nyc1"
           ],
           "items": {
             "type": [

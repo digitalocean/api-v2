@@ -82,7 +82,7 @@
     },
     "regions": {
       "description": "slugs of regions this image is currently available in",
-      "example": ["nyc2", "sf1"],
+      "example": ["nyc2", "nyc1"],
       "items": {
         "type": "string"
       },

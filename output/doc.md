@@ -20,20 +20,16 @@
 ### Authentication
 
 OAuth is used to authorize and revoke access to your account to yourself and third parties. *Full
-OAuth documentation will be available in a separate document.* There are three ways to use an OAuth
+OAuth documentation will be available in a separate document.* There are two ways to use an OAuth
 access token once you have one.
 
 ##### OAuth Token in Basic Authentication
 
-	$ curl -u "$ACCESS_TOKEN:x" https://api.digitalocean.com
+	$ curl -u "$ACCESS_TOKEN:" https://api.digitalocean.com
 
 ##### OAuth Token in Bearer Authorization Header
 
 	$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
-
-##### OAuth Token in Query Parameter
-
-	$ curl "https://api.digitalocean.com/?access_token=$ACCESS_TOKEN"
 
 For personal and development purposes, you can create a personal access token in the API control
 panel and use it like a regular OAuth token.
@@ -41,12 +37,12 @@ panel and use it like a regular OAuth token.
 ### Schema
 
 The API has a machine-readable JSON schema that describes what resources are available via the API,
-what their URLs are, how they are represented and what operations they support. You can access the
-schema using curl:
+what their URLs are, how they are represented and what operations they support. You don't need to 
+authenticate to use the schema endpoint. You can access the schema using curl:
 
-	$ curl https://api.digialocean.com/v2/schema
+	$ curl https://api.digitalocean.com/v2/schema
 
-The schema format is based on the same JSON schema used by [Heroku for their API](https://blog.heroku.com/archives/2014/1/8/json_schema_for_heroku_platform_api).
+The schema format is based on [JSON Schema](http://json-schema.org/) with the draft [Validation](http://tools.ietf.org/html/draft-fge-json-schema-validation-00) and [Hypertext](http://tools.ietf.org/html/draft-luff-json-hyper-schema-00) extensions.
 
 ### Curl Examples
 
@@ -108,12 +104,12 @@ HTTP/1.1 403 Forbidden
 ### Method Override
 
 When using a client that does not support all of the [methods](#methods), you can override by using a `POST` and
-setting the `X-Http-Method-Override` header to the desired methed. For instance, to do a `PATCH`
-request, do a `POST` with header `X-Http-Method-Override: PATCH`.
+setting the `Http-Method-Override` header to the desired methed. For instance, to do a `PATCH`
+request, do a `POST` with header `Http-Method-Override: PATCH`.
 
 ### Parameters
 
-Values that can be provided for an action are divided between optional and required values. The expected type for each value is specified. Parameters should be JSON encoded and passed in the request body, however, in many cases you can use regular query parameters or `application/x-www-form-urlencoded` or `multipart/form-data` parameters. For example, these two requests are equivalent:
+Values that can be provided for an action are divided between optional and required values. The expected type for each value is specified. Parameters should be JSON encoded and passed in the request body, however, in many cases you can use regular query parameters or form parameters. For example, these two requests are equivalent:
 
 ```
 $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
@@ -159,7 +155,7 @@ Domain records are the DNS records for a domain.
     <td><code>32</code></td>
   </tr>
   <tr>
-    <td><strong>type_</strong></td>
+    <td><strong>type</strong></td>
     <td><em>string</em></td>
     <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
     <td><code>"CNAME"</code></td>
@@ -212,7 +208,7 @@ POST /domains/{domain_id}/records
     <th>Example</th>
   </tr>
   <tr>
-    <td><strong>type_</strong></td>
+    <td><strong>type</strong></td>
     <td><em>string</em></td>
     <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
     <td><code>"CNAME"</code></td>
@@ -263,9 +259,9 @@ POST /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records \
+$ curl -n -X POST https://api.digitalocean.com/v2/domains/$domain_id/records \
 -H "Content-Type: application/json" \
--d '{"type_":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
+-d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
 
 #### Response Example
@@ -275,7 +271,7 @@ HTTP/1.1 201 Created
 ```javascript```
 {
   "id": 32,
-  "type_": "CNAME",
+  "type": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -288,13 +284,13 @@ HTTP/1.1 201 Created
 Delete an existing domain record.
 
 ```
-DELETE /domains/{domain_id}/records/{domain-record_id}
+DELETE /domains/{domain_id}/records/{domain_record_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
+$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$domain_id/records/$domain_record_id
 ```
 
 #### Response Example
@@ -304,7 +300,7 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
-  "type_": "CNAME",
+  "type": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -317,13 +313,13 @@ HTTP/1.1 200 OK
 Info for existing domain records.
 
 ```
-GET /domains/{domain_id}/records/{domain-record_id}
+GET /domains/{domain_id}/records/{domain_record_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/domains/$domain_id/records/$domain_record_id
 ```
 
 #### Response Example
@@ -333,7 +329,7 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
-  "type_": "CNAME",
+  "type": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -352,7 +348,7 @@ GET /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records
+$ curl -n -X GET https://api.digitalocean.com/v2/domains/$domain_id/records
 ```
 
 #### Response Example
@@ -365,7 +361,7 @@ Content-Range: id 23..342; max=200
 [
   {
     "id": 32,
-    "type_": "CNAME",
+    "type": "CNAME",
     "name": "subdomain",
     "data": "@",
     "priority": null,
@@ -379,7 +375,7 @@ Content-Range: id 23..342; max=200
 Update an existing domain records.
 
 ```
-PATCH /domains/{domain_id}/records/{domain-record_id}
+PATCH /domains/{domain_id}/records/{domain_record_id}
 ```
 
 #### Required Parameters
@@ -391,7 +387,7 @@ PATCH /domains/{domain_id}/records/{domain-record_id}
     <th>Example</th>
   </tr>
   <tr>
-    <td><strong>type_</strong></td>
+    <td><strong>type</strong></td>
     <td><em>string</em></td>
     <td>type of DNS record (ex: A, CNAME, TXT, ...)</td>
     <td><code>"CNAME"</code></td>
@@ -442,9 +438,9 @@ PATCH /domains/{domain_id}/records/{domain-record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
+$ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$domain_id/records/$domain_record_id \
 -H "Content-Type: application/json" \
--d '{"type_":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
+-d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
 
 #### Response Example
@@ -454,7 +450,7 @@ HTTP/1.1 200 OK
 ```javascript```
 {
   "id": 32,
-  "type_": "CNAME",
+  "type": "CNAME",
   "name": "subdomain",
   "data": "@",
   "priority": null,
@@ -570,7 +566,7 @@ DELETE /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$DOMAIN_ID
+$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$domain_id
 ```
 
 #### Response Example
@@ -598,7 +594,7 @@ GET /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/domains/$DOMAIN_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/domains/$domain_id
 ```
 
 #### Response Example
@@ -790,7 +786,7 @@ POST /droplet/{droplet_id}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/droplet/$DROPLET_ID/actions \
+$ curl -n -X POST https://api.digitalocean.com/v2/droplet/$droplet_id/actions \
 -H "Content-Type: application/json" \
 -d '{"reboot":null,"shutdown":null,"boot":null,"resetpassword":null,"resize":null,"snapshot":null,"rebuild":null,"restore":null}'
 ```
@@ -818,13 +814,13 @@ HTTP/1.1 201 Created
 Info for existing droplet action.
 
 ```
-GET /droplet/{droplet_id}/actions/{droplet-action_id}
+GET /droplet/{droplet_id}/actions/{droplet_action_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/droplet/$DROPLET_ID/actions/$DROPLET_ACTION_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/droplet/$droplet_id/actions/$droplet_action_id
 ```
 
 #### Response Example
@@ -1140,7 +1136,7 @@ DELETE /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/droplets/$DROPLET_ID
+$ curl -n -X DELETE https://api.digitalocean.com/v2/droplets/$droplet_id
 ```
 
 #### Response Example
@@ -1201,7 +1197,7 @@ GET /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/droplets/$DROPLET_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/droplets/$droplet_id
 ```
 
 #### Response Example
@@ -1344,7 +1340,7 @@ PATCH /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v2/droplets/$DROPLET_ID \
+$ curl -n -X PATCH https://api.digitalocean.com/v2/droplets/$droplet_id \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1455,7 +1451,7 @@ POST /images/{image_id_or_slug}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG/actions \
+$ curl -n -X POST https://api.digitalocean.com/v2/images/$image_id_or_slug/actions \
 -H "Content-Type: application/json" \
 -d '{"transfer":null}'
 ```
@@ -1476,13 +1472,13 @@ HTTP/1.1 201 Created
 Info for existing image action.
 
 ```
-GET /images/{image_id_or_slug}/actions/{image-action_id}
+GET /images/{image_id_or_slug}/actions/{image_action_id}
 ```
 
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG/actions/$IMAGE_ACTION_ID
+$ curl -n -X GET https://api.digitalocean.com/v2/images/$image_id_or_slug/actions/$image_action_id
 ```
 
 #### Response Example
@@ -1549,7 +1545,7 @@ Images are either snapshots or backups you've made, or public images of applicat
     <td><strong>regions</strong></td>
     <td><em>array</em></td>
     <td>slugs of regions this image is currently available in</td>
-    <td><code>["nyc2","sf1"]</code></td>
+    <td><code>["nyc2","nyc1"]</code></td>
   </tr>
 </table>
 
@@ -1563,7 +1559,7 @@ DELETE /images/{image_id_or_slug}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG
+$ curl -n -X DELETE https://api.digitalocean.com/v2/images/$image_id_or_slug
 ```
 
 #### Response Example
@@ -1580,7 +1576,7 @@ HTTP/1.1 200 OK
   "public": false,
   "regions": [
     "nyc2",
-    "sf1"
+    "nyc1"
   ]
 }
 ```
@@ -1595,7 +1591,7 @@ GET /images/{image_id_or_slug}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG
+$ curl -n -X GET https://api.digitalocean.com/v2/images/$image_id_or_slug
 ```
 
 #### Response Example
@@ -1612,7 +1608,7 @@ HTTP/1.1 200 OK
   "public": false,
   "regions": [
     "nyc2",
-    "sf1"
+    "nyc1"
   ]
 }
 ```
@@ -1665,7 +1661,7 @@ Content-Range: id 23..342; max=200
     "public": false,
     "regions": [
       "nyc2",
-      "sf1"
+      "nyc1"
     ]
   }
 ]
@@ -1698,7 +1694,7 @@ PATCH /images/{image_id_or_slug}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v2/images/$IMAGE_ID_OR_SLUG \
+$ curl -n -X PATCH https://api.digitalocean.com/v2/images/$image_id_or_slug \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1717,7 +1713,7 @@ HTTP/1.1 200 OK
   "public": false,
   "regions": [
     "nyc2",
-    "sf1"
+    "nyc1"
   ]
 }
 ```
@@ -1821,7 +1817,7 @@ DELETE /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/account/keys/$KEY_ID_OR_FINGERPRINT
+$ curl -n -X DELETE https://api.digitalocean.com/v2/account/keys/$key_id_or_fingerprint
 ```
 
 #### Response Example
@@ -1847,7 +1843,7 @@ GET /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/account/keys/$KEY_ID_OR_FINGERPRINT
+$ curl -n -X GET https://api.digitalocean.com/v2/account/keys/$key_id_or_fingerprint
 ```
 
 #### Response Example
