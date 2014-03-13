@@ -26,13 +26,13 @@ access token once you have one.
 ##### OAuth Token in Bearer Authorization Header
 
 ```shell
-  $ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
+$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
 ```
 
 ##### OAuth Token in Basic Authentication
 
 ```shell
-	$ curl -u "$ACCESS_TOKEN:" https://api.digitalocean.com
+$ curl -u "$ACCESS_TOKEN:" https://api.digitalocean.com
 ```
 
 For personal and development purposes, you can create a personal access token in the API control
@@ -45,7 +45,7 @@ what their URLs are, how they are represented and what operations they support. 
 authenticate to use the schema endpoint. You can access the schema using curl:
 
 ```shell
-	$ curl https://api.digitalocean.com/v2/schema
+$ curl https://api.digitalocean.com/v2/schema
 ```
 
 The schema format is based on [JSON Schema](http://json-schema.org/) with the draft [Validation](http://tools.ietf.org/html/draft-fge-json-schema-validation-00) and [Hypertext](http://tools.ietf.org/html/draft-luff-json-hyper-schema-00) extensions.
