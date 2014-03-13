@@ -124,8 +124,8 @@ $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$D
 ```
 ```shell
 $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
--F "type=A"
--F "name=www"
+-F "type=A" \
+-F "name=www" \
 -F "data=127.0.0.1"
 ```
 
