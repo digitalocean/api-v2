@@ -28,7 +28,7 @@
       ]
     },
     "locked": {
-      "description": "???",
+      "description": "whether operations are currently permitted",
       "example": false,
       "format": "boolean",
       "readOnly": true,
