@@ -23,13 +23,13 @@ OAuth is used to authorize and revoke access to your account to yourself and thi
 OAuth documentation will be available in a separate document.* There are two ways to use an OAuth
 access token once you have one.
 
+##### OAuth Token in Bearer Authorization Header
+
+  $ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
+
 ##### OAuth Token in Basic Authentication
 
 	$ curl -u "$ACCESS_TOKEN:" https://api.digitalocean.com
-
-##### OAuth Token in Bearer Authorization Header
-
-	$ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
 
 For personal and development purposes, you can create a personal access token in the API control
 panel and use it like a regular OAuth token.
