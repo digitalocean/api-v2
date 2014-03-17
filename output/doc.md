@@ -19,19 +19,19 @@
 
 ### Authentication
 
-OAuth is used to authorize and revoke access to your account to yourself and third parties. *Full
+OAuth is used to authorize and revoke access to resources managed by the API. *Full
 OAuth documentation will be available in a separate document.* There are two ways to use an OAuth
 access token once you have one.
 
-##### OAuth Token in Bearer Authorization Header
+#### Bearer Authorization Header
 
-```shell
+```bash
 $ curl -H "Authorization: Bearer $ACCESS_TOKEN" https://api.digitalocean.com
 ```
 
-##### OAuth Token in Basic Authentication
+#### Basic Authentication
 
-```shell
+```bash
 $ curl -u "$ACCESS_TOKEN:" https://api.digitalocean.com
 ```
 
@@ -44,7 +44,7 @@ The API has a machine-readable JSON schema that describes what resources are ava
 what their URLs are, how they are represented and what operations they support. You don't need to 
 authenticate to use the schema endpoint. You can access the schema using curl:
 
-```shell
+```bash
 $ curl https://api.digitalocean.com/v2/schema
 ```
 
@@ -52,7 +52,7 @@ The schema format is based on [JSON Schema](http://json-schema.org/) with the dr
 
 ### Curl Examples
 
-Curl examples are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
+Curl examples used in this documentation are provided to facilitate experimentation. Variable values are represented as `$SOMETHING` so that you can manipulate them using environment variables. Examples use the `-n` option to fetch credentials from a `~/.netrc` file, which should include an entry for api.digitalocean.com similar to the following:
 
 ```
 machine api.digitalocean.com
@@ -64,7 +64,7 @@ machine api.digitalocean.com
 
 Failing responses will have an appropriate [HTTP status](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) and a JSON body containing more details about the error.
 
-##### Example Error Response
+#### Example Error Response
 
 ```
 HTTP/1.1 403 Forbidden
@@ -117,12 +117,12 @@ request, do a `POST` with header `Http-Method-Override: PATCH`.
 
 Values that can be provided for an action are divided between optional and required values. The expected type for each value is specified. Parameters should be JSON encoded and passed in the request body, however, in many cases you can use regular query parameters or form parameters. For example, these two requests are equivalent:
 
-```shell
+```bash
 $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
 -H "Content-Type: application/json" \
 -d '{"type":"A","name":"www","data":"127.0.0.1"}'
 ```
-```shell
+```bash
 $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$DOMAIN_ID/records/$DOMAIN_RECORD_ID \
 -F "type=A" \
 -F "name=www" \
@@ -265,7 +265,7 @@ POST /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/domains/$domain_id/records \
+$ curl -n -X POST /domains/$domain_id/records \
 -H "Content-Type: application/json" \
 -d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
@@ -273,6 +273,8 @@ $ curl -n -X POST https://api.digitalocean.com/v2/domains/$domain_id/records \
 #### Response Example
 ```
 HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -296,12 +298,14 @@ DELETE /domains/{domain_id}/records/{domain_record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$domain_id/records/$domain_record_id
+$ curl -n -X DELETE /domains/$domain_id/records/$domain_record_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -325,12 +329,14 @@ GET /domains/{domain_id}/records/{domain_record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/domains/$domain_id/records/$domain_record_id
+$ curl -n -X GET /domains/$domain_id/records/$domain_record_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -354,14 +360,16 @@ GET /domains/{domain_id}/records
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/domains/$domain_id/records
+$ curl -n -X GET /domains/$domain_id/records
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 23..342; max=200
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 [
@@ -444,7 +452,7 @@ PATCH /domains/{domain_id}/records/{domain_record_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$domain_id/records/$domain_record_id \
+$ curl -n -X PATCH /domains/$domain_id/records/$domain_record_id \
 -H "Content-Type: application/json" \
 -d '{"type":null,"name":null,"data":null,"priority":null,"port":null,"weight":null}'
 ```
@@ -452,6 +460,8 @@ $ curl -n -X PATCH https://api.digitalocean.com/v2/domains/$domain_id/records/$d
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -542,7 +552,7 @@ POST /domains
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/domains \
+$ curl -n -X POST /domains \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -550,6 +560,8 @@ $ curl -n -X POST https://api.digitalocean.com/v2/domains \
 #### Response Example
 ```
 HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -572,12 +584,14 @@ DELETE /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/domains/$domain_id
+$ curl -n -X DELETE /domains/$domain_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -600,12 +614,14 @@ GET /domains/{domain_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/domains/$domain_id
+$ curl -n -X GET /domains/$domain_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -628,14 +644,16 @@ GET /domains
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/domains
+$ curl -n -X GET /domains
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 23..342; max=200
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 [
@@ -792,7 +810,7 @@ POST /droplet/{droplet_id}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/droplet/$droplet_id/actions \
+$ curl -n -X POST /droplet/$droplet_id/actions \
 -H "Content-Type: application/json" \
 -d '{"reboot":null,"shutdown":null,"boot":null,"resetpassword":null,"resize":null,"snapshot":null,"rebuild":null,"restore":null}'
 ```
@@ -800,6 +818,8 @@ $ curl -n -X POST https://api.digitalocean.com/v2/droplet/$droplet_id/actions \
 #### Response Example
 ```
 HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -826,12 +846,14 @@ GET /droplet/{droplet_id}/actions/{droplet_action_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/droplet/$droplet_id/actions/$droplet_action_id
+$ curl -n -X GET /droplet/$droplet_id/actions/$droplet_action_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1079,7 +1101,7 @@ POST /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/droplets \
+$ curl -n -X POST /droplets \
 -H "Content-Type: application/json" \
 -d '{"name":null,"region":null,"size":"512mb","image":null,"key_ids":null,"private_networking":false,"backups":false}'
 ```
@@ -1087,6 +1109,8 @@ $ curl -n -X POST https://api.digitalocean.com/v2/droplets \
 #### Response Example
 ```
 HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1142,12 +1166,14 @@ DELETE /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/droplets/$droplet_id
+$ curl -n -X DELETE /droplets/$droplet_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1203,12 +1229,14 @@ GET /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/droplets/$droplet_id
+$ curl -n -X GET /droplets/$droplet_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1264,14 +1292,16 @@ GET /droplets
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/droplets
+$ curl -n -X GET /droplets
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id
-Content-Range: id 23..342; max=200
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 [
@@ -1346,7 +1376,7 @@ PATCH /droplets/{droplet_id}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v2/droplets/$droplet_id \
+$ curl -n -X PATCH /droplets/$droplet_id \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1354,6 +1384,8 @@ $ curl -n -X PATCH https://api.digitalocean.com/v2/droplets/$droplet_id \
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1457,7 +1489,7 @@ POST /images/{image_id_or_slug}/actions
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/images/$image_id_or_slug/actions \
+$ curl -n -X POST /images/$image_id_or_slug/actions \
 -H "Content-Type: application/json" \
 -d '{"transfer":null}'
 ```
@@ -1465,6 +1497,8 @@ $ curl -n -X POST https://api.digitalocean.com/v2/images/$image_id_or_slug/actio
 #### Response Example
 ```
 HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1484,12 +1518,14 @@ GET /images/{image_id_or_slug}/actions/{image_action_id}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/images/$image_id_or_slug/actions/$image_action_id
+$ curl -n -X GET /images/$image_id_or_slug/actions/$image_action_id
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1565,12 +1601,14 @@ DELETE /images/{image_id_or_slug}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/images/$image_id_or_slug
+$ curl -n -X DELETE /images/$image_id_or_slug
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1597,12 +1635,14 @@ GET /images/{image_id_or_slug}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/images/$image_id_or_slug
+$ curl -n -X GET /images/$image_id_or_slug
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1645,7 +1685,7 @@ GET /images
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/images \
+$ curl -n -X GET /images \
 -H "Content-Type: application/json" \
 -d '{"private":null}'
 ```
@@ -1654,7 +1694,9 @@ $ curl -n -X GET https://api.digitalocean.com/v2/images \
 ```
 HTTP/1.1 200 OK
 Accept-Range: id, slug
-Content-Range: id 23..342; max=200
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 [
@@ -1700,7 +1742,7 @@ PATCH /images/{image_id_or_slug}
 
 #### Curl Example
 ```term
-$ curl -n -X PATCH https://api.digitalocean.com/v2/images/$image_id_or_slug \
+$ curl -n -X PATCH /images/$image_id_or_slug \
 -H "Content-Type: application/json" \
 -d '{"name":null}'
 ```
@@ -1708,6 +1750,8 @@ $ curl -n -X PATCH https://api.digitalocean.com/v2/images/$image_id_or_slug \
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1795,7 +1839,7 @@ POST /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X POST https://api.digitalocean.com/v2/account/keys \
+$ curl -n -X POST /account/keys \
 -H "Content-Type: application/json" \
 -d '{"public_key":null,"name":null}'
 ```
@@ -1803,6 +1847,8 @@ $ curl -n -X POST https://api.digitalocean.com/v2/account/keys \
 #### Response Example
 ```
 HTTP/1.1 201 Created
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1823,12 +1869,14 @@ DELETE /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X DELETE https://api.digitalocean.com/v2/account/keys/$key_id_or_fingerprint
+$ curl -n -X DELETE /account/keys/$key_id_or_fingerprint
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1849,12 +1897,14 @@ GET /account/keys/{key_id_or_fingerprint}
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/account/keys/$key_id_or_fingerprint
+$ curl -n -X GET /account/keys/$key_id_or_fingerprint
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 {
@@ -1875,14 +1925,16 @@ GET /account/keys
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/account/keys
+$ curl -n -X GET /account/keys
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: id, fingerprint
-Content-Range: id 23..342; max=200
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 [
@@ -1943,14 +1995,16 @@ GET /regions
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/regions
+$ curl -n -X GET /regions
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: slug
-Content-Range: id 23..342; max=200
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 [
@@ -2041,14 +2095,16 @@ GET /sizes
 
 #### Curl Example
 ```term
-$ curl -n -X GET https://api.digitalocean.com/v2/sizes
+$ curl -n -X GET /sizes
 ```
 
 #### Response Example
 ```
 HTTP/1.1 200 OK
 Accept-Range: slug
-Content-Range: id 23..342; max=200
+Content-Range: id 01234567-89ab-cdef-0123-456789abcdef..01234567-89ab-cdef-0123-456789abcdef; max=200
+ETag: "0123456789abcdef0123456789abcdef"
+RateLimit-Remaining: 1200
 ```
 ```javascript```
 [
