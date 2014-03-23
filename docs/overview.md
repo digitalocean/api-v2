@@ -52,8 +52,8 @@ HTTP/1.1 403 Forbidden
 ```
 ```javascript
 {
-  "id":       "forbidden",
-  "message":  "Request not authorized, provided credentials do not provide access to specified resource"
+  "error":       "forbidden",
+  "description": "Request not authorized, provided credentials do not provide access to specified resource"
 }
 ```
 
