@@ -1,1 +1,0 @@
-# Group REST API Reference
