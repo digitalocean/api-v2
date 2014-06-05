@@ -91,6 +91,7 @@ Values that can be provided for an action are divided between optional and requi
 
 # Domain Records
 
+
 Domain records are the DNS records for a domain.
 
 <table>
@@ -150,19 +151,17 @@ Domain records are the DNS records for a domain.
 
 ## Domain Records Collection [/v2/domains/{domain_name}/records]
 
-
-### Domain Records List [GET]
+### Domain Records List all Domain Records [GET]
 
 Lists all Domain Records for a Domain
-
-
 
 **Example:**
 
   - **cURL**
+
     ```bash
     curl "https://api.digitalocean.com/v2/domains/example.com/records" -X GET \
-    	-H "Authorization: Bearer e0e45f8e01d2b8bc59825c9ac4691c2c6760d65ccdf69bfce0ef379c98e214b9"
+	-H "Authorization: Bearer 9e93325e40510c30d142ffaf0756d0f4a50aa401dd20d097897e81f75b73b961"
     ```
 
   - **Request**
@@ -170,8 +169,9 @@ Lists all Domain Records for a Domain
     - Headers
 
       ```
-      Authorization: Bearer e0e45f8e01d2b8bc59825c9ac4691c2c6760d65ccdf69bfce0ef379c98e214b9
+      Authorization: Bearer 9e93325e40510c30d142ffaf0756d0f4a50aa401dd20d097897e81f75b73b961
       ```
+
   
 
   - **Response**
@@ -180,80 +180,79 @@ Lists all Domain Records for a Domain
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927300
-      Content-Length: 508
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994788
+Content-Length: 750
       ```
+
   
     - Body
 
       ```json
       [
-        {
-          "id": 21,
-          "type": "A",
-          "name": "@",
-          "data": "8.8.8.8",
-          "priority": null,
-          "port": null,
-          "weight": null
-        },
-        {
-          "id": 22,
-          "type": "NS",
-          "name": null,
-          "data": "NS1.DIGITALOCEAN.COM.",
-          "priority": null,
-          "port": null,
-          "weight": null
-        },
-        {
-          "id": 23,
-          "type": "NS",
-          "name": null,
-          "data": "NS2.DIGITALOCEAN.COM.",
-          "priority": null,
-          "port": null,
-          "weight": null
-        },
-        {
-          "id": 24,
-          "type": "NS",
-          "name": null,
-          "data": "NS3.DIGITALOCEAN.COM.",
-          "priority": null,
-          "port": null,
-          "weight": null
-        },
-        {
-          "id": 25,
-          "type": "CNAME",
-          "name": "example",
-          "data": "@",
-          "priority": null,
-          "port": null,
-          "weight": null
-        }
-      ]
+  {
+    "id": 27,
+    "type": "A",
+    "name": "@",
+    "data": "8.8.8.8",
+    "priority": null,
+    "port": null,
+    "weight": null
+  },
+  {
+    "id": 28,
+    "type": "NS",
+    "name": null,
+    "data": "NS1.DIGITALOCEAN.COM.",
+    "priority": null,
+    "port": null,
+    "weight": null
+  },
+  {
+    "id": 29,
+    "type": "NS",
+    "name": null,
+    "data": "NS2.DIGITALOCEAN.COM.",
+    "priority": null,
+    "port": null,
+    "weight": null
+  },
+  {
+    "id": 30,
+    "type": "NS",
+    "name": null,
+    "data": "NS3.DIGITALOCEAN.COM.",
+    "priority": null,
+    "port": null,
+    "weight": null
+  },
+  {
+    "id": 31,
+    "type": "CNAME",
+    "name": "example",
+    "data": "@",
+    "priority": null,
+    "port": null,
+    "weight": null
+  }
+]
       ```
   
 
 ## Domain Records Member [/v2/domains/{domain_name}/records/{record_id}]
 
-
-### Domain Records Show [GET]
+### Domain Records Retrieve an existing Domain Record [GET]
 
 Shows a Domain Record
 
-
-
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records/5" -X GET \
-    	-H "Authorization: Bearer 1a8b514507445fb1ac319ed54f1858f3b51758051b93f46c11da93dc366b341f"
+    curl "https://api.digitalocean.com/v2/domains/example.com/records/21" -X GET \
+	-H "Authorization: Bearer 63abf6f6fac5b90bf02534e8f5de25deb5bca9b51878ba63a9734681ad6e5af4"
     ```
 
   - **Request**
@@ -261,8 +260,9 @@ Shows a Domain Record
     - Headers
 
       ```
-      Authorization: Bearer 1a8b514507445fb1ac319ed54f1858f3b51758051b93f46c11da93dc366b341f
+      Authorization: Bearer 63abf6f6fac5b90bf02534e8f5de25deb5bca9b51878ba63a9734681ad6e5af4
       ```
+
   
 
   - **Response**
@@ -271,116 +271,31 @@ Shows a Domain Record
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927299
-      Content-Length: 93
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994787
+Content-Length: 124
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 5,
-        "type": "CNAME",
-        "name": "example",
-        "data": "@",
-        "priority": null,
-        "port": null,
-        "weight": null
-      }
+  "id": 21,
+  "type": "CNAME",
+  "name": "example",
+  "data": "@",
+  "priority": null,
+  "port": null,
+  "weight": null
+}
       ```
   
 
-
-### Domain Records Update [PUT]
-
-Updating a Domain Record
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>name</strong></td>
-      <td>New name</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records/10" -d '{
-      "name": "new_name"
-    }' -X PUT \
-    	-H "Authorization: Bearer 9f41fddd1bfe2602afbf83d3c79ca1b5c99002b34fd78ff167ef9b2ba3f149a8" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 9f41fddd1bfe2602afbf83d3c79ca1b5c99002b34fd78ff167ef9b2ba3f149a8
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "name": "new_name"
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927299
-      Content-Length: 95
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "id": 10,
-        "type": "CNAME",
-        "name": "new_name",
-        "data": "@",
-        "priority": null,
-        "port": null,
-        "weight": null
-      }
-      ```
-  
-
-
-### Domain Records Create [POST]
+### Domain Records Create a new Domain Record [POST]
 
 Creating a Domain Record for a Domain
-
-
 **Parameters:**
 <table>
   <thead>
@@ -431,18 +346,18 @@ Creating a Domain Record for a Domain
   </tbody>
 </table>
 
-
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records/15" -d '{
-      "name": "subdomain",
-      "data": "2001:db8::ff00:42:8329",
-      "type": "AAAA"
-    }' -X POST \
-    	-H "Authorization: Bearer de17dfb014270e7e67f4ea657649176f3a9ae9398968be8678d4c606de720f59" \
-    	-H "Content-Type: application/json"
+    curl "https://api.digitalocean.com/v2/domains/example.com/records/26" -d '{
+  "name": "subdomain",
+  "data": "2001:db8::ff00:42:8329",
+  "type": "AAAA"
+}' -X POST \
+	-H "Authorization: Bearer 688df124e33bbe30b270434f461b7cdb2a0a8efa1f9ca99a90c0c9f1dd64e5e7" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -450,18 +365,19 @@ Creating a Domain Record for a Domain
     - Headers
 
       ```
-      Authorization: Bearer de17dfb014270e7e67f4ea657649176f3a9ae9398968be8678d4c606de720f59
-      Content-Type: application/json
+      Authorization: Bearer 688df124e33bbe30b270434f461b7cdb2a0a8efa1f9ca99a90c0c9f1dd64e5e7
+Content-Type: application/json
       ```
+
   
     - Body
 
       ```json
       {
-        "name": "subdomain",
-        "data": "2001:db8::ff00:42:8329",
-        "type": "AAAA"
-      }
+  "name": "subdomain",
+  "data": "2001:db8::ff00:42:8329",
+  "type": "AAAA"
+}
       ```
   
 
@@ -471,36 +387,32 @@ Creating a Domain Record for a Domain
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927300
-      Content-Length: 82
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994787
+Content-Length: 82
       ```
+
   
     - Body
 
       ```json
-      {
-        "id": "not_found",
-        "message": "The resource you were accessing could not be found."
-      }
+      {"id":"not_found","message":"The resource you were accessing could not be found."}
       ```
   
 
-
-### Domain Records Destroy [DELETE]
+### Domain Records Delete a Domain Record [DELETE]
 
 Destroying a Domain Record
 
-
-
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records/20" -d '' -X DELETE \
-    	-H "Authorization: Bearer 50faa3183c4b99a823a16b23bd9c25d65196140c3a113b4ad9823e2e9d0481a3" \
-    	-H "Content-Type: application/x-www-form-urlencoded"
+    curl "https://api.digitalocean.com/v2/domains/example.com/records/36" -d '' -X DELETE \
+	-H "Authorization: Bearer 3303b0ad67c036fb5c43018475e789f8a4b2b4ba7f7cff69f366f3ebb4aaf668" \
+	-H "Content-Type: application/x-www-form-urlencoded"
     ```
 
   - **Request**
@@ -508,8 +420,75 @@ Destroying a Domain Record
     - Headers
 
       ```
-      Authorization: Bearer 50faa3183c4b99a823a16b23bd9c25d65196140c3a113b4ad9823e2e9d0481a3
-      Content-Type: application/x-www-form-urlencoded
+      Authorization: Bearer 3303b0ad67c036fb5c43018475e789f8a4b2b4ba7f7cff69f366f3ebb4aaf668
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994788
+      ```
+
+  
+
+### Domain Records Update a Domain Record [PUT]
+
+Updating a Domain Record
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>name</strong></td>
+      <td>New name</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/domains/example.com/records/41" -d '{
+  "name": "new_name"
+}' -X PUT \
+	-H "Authorization: Bearer 0b33b32071c00a9e9482e1b8880e8940f24ca28c421de84eb4c0bfeac6d16bc9" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 0b33b32071c00a9e9482e1b8880e8940f24ca28c421de84eb4c0bfeac6d16bc9
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "name": "new_name"
+}
       ```
   
 
@@ -519,27 +498,285 @@ Destroying a Domain Record
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927300
-      Content-Length: 94
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994788
+Content-Length: 125
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 20,
-        "type": "CNAME",
-        "name": "example",
-        "data": "@",
-        "priority": null,
-        "port": null,
-        "weight": null
-      }
+  "id": 41,
+  "type": "CNAME",
+  "name": "new_name",
+  "data": "@",
+  "priority": null,
+  "port": null,
+  "weight": null
+}
+      ```
+  
+# Domains
+
+
+Domains are managed domain names that DigitalOcean provides DNS for.
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>name</strong></td>
+      <td><em>string</em></td>
+      <td>name of the domain</td>
+      <td><code>example.com</code></td>
+    </tr>
+    <tr>
+      <td><strong>ttl</strong></td>
+      <td><em>integer</em></td>
+      <td>time to live for records on this domain</td>
+      <td><code>1800</code></td>
+    </tr>
+    <tr>
+      <td><strong>zone_file</strong></td>
+      <td><em>string</em></td>
+      <td>contents of the zone file used by the DNS server</td>
+      <td><code>$TTL\t600\n@\t\tIN\tSOA ...</code></td>
+    </tr>
+  </tbody>
+</table>
+
+## Domains Collection [/v2/domains]
+
+### Domains Create a new Domain [POST]
+
+Creates a Domain
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>name</strong></td>
+      <td>Name of the domain</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>ip_address</strong></td>
+      <td>IP Address for the www entry.</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/domains" -d '{"name":"example.com","ip_address":"127.0.0.1"}' -X POST \
+	-H "Authorization: Bearer 871bb31b2a4cb3389039887d9b50c1f224f609d5a48f5fbe57ca9bee024f75b2" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 871bb31b2a4cb3389039887d9b50c1f224f609d5a48f5fbe57ca9bee024f75b2
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "name": "example.com",
+  "ip_address": "127.0.0.1"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994787
+Content-Length: 64
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "name": "example.com",
+  "ttl": 1800,
+  "zone_file": null
+}
+      ```
+  
+
+### Domains List all Domains [GET]
+
+Lists all Domains
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/domains" -X GET \
+	-H "Authorization: Bearer eb2111266e0d8ceb8faeb45fc5a456aac6d06ce40e560c2e9f7c97761893bdb3"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer eb2111266e0d8ceb8faeb45fc5a456aac6d06ce40e560c2e9f7c97761893bdb3
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994787
+Total: 1
+Content-Length: 101
+      ```
+
+  
+    - Body
+
+      ```json
+      [
+  {
+    "name": "example.com",
+    "ttl": 1800,
+    "zone_file": "Example zone file text..."
+  }
+]
+      ```
+  
+
+## Domains Member [/v2/domains/{domain_name}]
+
+### Domains Delete a Domain [DELETE]
+
+Permanently deletes the Domain
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/domains/example.com" -d '' -X DELETE \
+	-H "Authorization: Bearer c00e8e70eec65834768b80cb66d0bbe2b460f9230f69d9372237532e2ac71ba3" \
+	-H "Content-Type: application/x-www-form-urlencoded"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer c00e8e70eec65834768b80cb66d0bbe2b460f9230f69d9372237532e2ac71ba3
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994787
+      ```
+
+  
+
+### Domains Show [GET]
+
+Retrieve an existing Domain
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/domains/example.com" -X GET \
+	-H "Authorization: Bearer ba08be5a5ab9d76d5a1278b5c6cd2e30d2d3dc296629cab01687585ea0474f75"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer ba08be5a5ab9d76d5a1278b5c6cd2e30d2d3dc296629cab01687585ea0474f75
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994787
+Content-Length: 87
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "name": "example.com",
+  "ttl": 1800,
+  "zone_file": "Example zone file text..."
+}
       ```
   
 # Droplet
+
 
 Droplets are VMs in the DigitalOcean cloud.
 
@@ -585,9 +822,9 @@ Droplets are VMs in the DigitalOcean cloud.
     </tr>
     <tr>
       <td><strong>networks</strong></td>
-      <td><em>array</em></td>
-      <td>networks of the droplet</td>
-      <td><code>[{"ip_address":"192.168.1.2", "netmask":"192.168.1.1", "gateway":"255.255.255.0"}]</code></td>
+      <td><em>object</em></td>
+      <td>v4 and v6 seperated networks</td>
+      <td><code>{"v4":[{"ip_address":"127.0.0.2","netmask":"255.255.255.0","gateway":"127.0.0.1","type":"public"}],"v6":[]}</code></td>
     </tr>
     <tr>
       <td><strong>backups</strong></td>
@@ -618,12 +855,9 @@ Droplets are VMs in the DigitalOcean cloud.
 
 ## Droplet Collection [/v2/droplets]
 
-
-### Droplet Create [POST]
+### Droplet Create a new Droplet [POST]
 
 Creates a Droplet
-
-
 **Parameters:**
 <table>
   <thead>
@@ -659,22 +893,46 @@ Creates a Droplet
       <td>true</td>
     </tr>
   
+    <tr>
+      <td><strong>ssh_keys</strong></td>
+      <td>An array of ssh key or fingerprints</td>
+      <td>false</td>
+    </tr>
+  
+    <tr>
+      <td><strong>backups</strong></td>
+      <td>Boolean field for enabling automatic backups</td>
+      <td>false</td>
+    </tr>
+  
+    <tr>
+      <td><strong>ipv6</strong></td>
+      <td>Boolean field for enabling ipv6 support</td>
+      <td>false</td>
+    </tr>
+  
+    <tr>
+      <td><strong>private_networking</strong></td>
+      <td>Boolean field for enabling private networking</td>
+      <td>false</td>
+    </tr>
+  
   </tbody>
 </table>
 
-
 **Example:**
 
   - **cURL**
+
     ```bash
     curl "https://api.digitalocean.com/v2/droplets" -d '{
-      "name": "My-Droplet",
-      "region": "nyc1",
-      "size": "512mb",
-      "image": 119192818
-    }' -X POST \
-    	-H "Authorization: Bearer a84b351c9945260b789343fa3ba3b4da102fee72081fbbefebf4858dbdff72d2" \
-    	-H "Content-Type: application/json"
+  "name": "My-Droplet",
+  "region": "nyc1",
+  "size": "512mb",
+  "image": 119192838
+}' -X POST \
+	-H "Authorization: Bearer acde17a1456875d9bd4f7b088799c94eb02170d9625edd7c5175ca813b3bdedb" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -682,19 +940,20 @@ Creates a Droplet
     - Headers
 
       ```
-      Authorization: Bearer a84b351c9945260b789343fa3ba3b4da102fee72081fbbefebf4858dbdff72d2
-      Content-Type: application/json
+      Authorization: Bearer acde17a1456875d9bd4f7b088799c94eb02170d9625edd7c5175ca813b3bdedb
+Content-Type: application/json
       ```
+
   
     - Body
 
       ```json
       {
-        "name": "My-Droplet",
-        "region": "nyc1",
-        "size": "512mb",
-        "image": 119192818
-      }
+  "name": "My-Droplet",
+  "region": "nyc1",
+  "size": "512mb",
+  "image": 119192838
+}
       ```
   
 
@@ -704,80 +963,78 @@ Creates a Droplet
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927300
-      Link: <http://example.org/v2/droplets/1/actions/1>; rel="monitor"
-      Content-Length: 456
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994788
+Link: <http://example.org/v2/droplets/13/actions/16>; rel="monitor"
+Content-Length: 684
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 1,
-        "name": "My-Droplet",
-        "region": {
-          "slug": "nyc1",
-          "name": "New York",
-          "sizes": [
-            "1024mb",
-            "512mb"
-          ],
-          "available": true
-        },
-        "image": {
-          "id": 119192818,
-          "name": "Ubuntu 13.04",
-          "distribution": "ubuntu",
-          "slug": null,
-          "public": true,
-          "regions": [
-            "nyc1"
-          ]
-        },
-        "size": {
-          "slug": "512mb",
-          "memory": 512,
-          "vcpus": 1,
-          "disk": 20,
-          "transfer": null,
-          "price_monthly": "5.0",
-          "price_hourly": "0.00744",
-          "regions": [
-            "nyc1",
-            "sfo1",
-            "ams4"
-          ]
-        },
-        "backups": [
-      
-        ],
-        "snapshots": [
-      
-        ],
-        "locked": false,
-        "status": "new",
-        "networks": [
-      
-        ]
-      }
+  "id": 13,
+  "name": "My-Droplet",
+  "region": {
+    "slug": "nyc1",
+    "name": "New York",
+    "sizes": [
+      "1024mb",
+      "512mb"
+    ],
+    "available": true
+  },
+  "image": {
+    "id": 119192838,
+    "name": "Ubuntu 13.04",
+    "distribution": "ubuntu",
+    "slug": null,
+    "public": true,
+    "regions": [
+      "nyc1"
+    ]
+  },
+  "size": {
+    "slug": "512mb",
+    "memory": 512,
+    "vcpus": 1,
+    "disk": 20,
+    "transfer": null,
+    "price_monthly": "5.0",
+    "price_hourly": "0.00744",
+    "regions": [
+      "nyc1",
+      "sfo1",
+      "ams4"
+    ]
+  },
+  "backups": [
+
+  ],
+  "snapshots": [
+
+  ],
+  "locked": false,
+  "status": "new",
+  "networks": {
+  }
+}
       ```
   
 
-
-### Droplet List [GET]
+### Droplet List all Droplets [GET]
 
 Lists all Droplets
 
-
-
 **Example:**
 
   - **cURL**
+
     ```bash
     curl "https://api.digitalocean.com/v2/droplets" -X GET \
-    	-H "Authorization: Bearer 8229535986103aba5f220f779a7b7e36b25cda1157acd70db15d949efb04c62c"
+	-H "Authorization: Bearer 696febe5ee442798d5fac780036cc227493817a5d8740d957cfb8acdf3aa5081"
     ```
 
   - **Request**
@@ -785,8 +1042,9 @@ Lists all Droplets
     - Headers
 
       ```
-      Authorization: Bearer 8229535986103aba5f220f779a7b7e36b25cda1157acd70db15d949efb04c62c
+      Authorization: Bearer 696febe5ee442798d5fac780036cc227493817a5d8740d957cfb8acdf3aa5081
       ```
+
   
 
   - **Response**
@@ -795,85 +1053,101 @@ Lists all Droplets
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927300
-      Total: 1
-      Content-Length: 475
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994789
+Total: 1
+Content-Length: 1199
       ```
+
   
     - Body
 
       ```json
       [
-        {
-          "id": 2,
-          "name": "test.example.com",
-          "region": {
-            "slug": "nyc1",
-            "name": "New York",
-            "sizes": [
-              "1024mb",
-              "512mb"
-            ],
-            "available": true
-          },
-          "image": {
-            "id": 119192817,
-            "name": "Ubuntu 13.04",
-            "distribution": "ubuntu",
-            "slug": "ubuntu1304",
-            "public": true,
-            "regions": [
-              "nyc1"
-            ]
-          },
-          "size": {
-            "slug": "512mb",
-            "memory": 512,
-            "vcpus": 1,
-            "disk": 20,
-            "transfer": null,
-            "price_monthly": "5.0",
-            "price_hourly": "0.00744",
-            "regions": [
-              "nyc1",
-              "sfo1",
-              "ams4"
-            ]
-          },
-          "backups": [
-      
-          ],
-          "snapshots": [
-      
-          ],
-          "locked": false,
-          "status": "active",
-          "networks": [
-      
-          ]
-        }
+  {
+    "id": 15,
+    "name": "test.example.com",
+    "region": {
+      "slug": "nyc1",
+      "name": "New York",
+      "sizes": [
+        "1024mb",
+        "512mb"
+      ],
+      "available": true
+    },
+    "image": {
+      "id": 119192817,
+      "name": "Ubuntu 13.04",
+      "distribution": "ubuntu",
+      "slug": "ubuntu1304",
+      "public": true,
+      "regions": [
+        "nyc1"
       ]
+    },
+    "size": {
+      "slug": "512mb",
+      "memory": 512,
+      "vcpus": 1,
+      "disk": 20,
+      "transfer": null,
+      "price_monthly": "5.0",
+      "price_hourly": "0.00744",
+      "regions": [
+        "nyc1",
+        "ams4",
+        "sfo1"
+      ]
+    },
+    "backups": [
+
+    ],
+    "snapshots": [
+
+    ],
+    "locked": false,
+    "status": "active",
+    "networks": {
+      "v4": [
+        {
+          "ip_address": "127.0.0.3",
+          "netmask": "255.255.255.0",
+          "gateway": "127.0.0.4",
+          "type": "public"
+        }
+
+      ],
+      "v6": [
+        {
+          "ip_address": "2400:6180:0000:00D0:0000:0000:0009:7003",
+          "cidr": 124,
+          "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
+          "type": "public"
+        }
+
+      ]
+    }
+  }
+]
       ```
   
 
 ## Droplet Member [/v2/droplets/{droplet_id}]
 
+### Droplet Delete a Droplet [DELETE]
 
-### Droplet Destroy [DELETE]
-
-Destroys a given Droplet
-
-
+Deletes a given Droplet
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/3" -d '' -X DELETE \
-    	-H "Authorization: Bearer e1c9e0fd39202bda8ab2af3abb04e4c9fe2867eae90671c94e206da4d83034d2" \
-    	-H "Content-Type: application/x-www-form-urlencoded"
+    curl "https://api.digitalocean.com/v2/droplets/12" -d '' -X DELETE \
+	-H "Authorization: Bearer 9ba53a8e1482353c28d035031c3d7f26b35208f07859c84746ecc1136d1c356d" \
+	-H "Content-Type: application/x-www-form-urlencoded"
     ```
 
   - **Request**
@@ -881,9 +1155,10 @@ Destroys a given Droplet
     - Headers
 
       ```
-      Authorization: Bearer e1c9e0fd39202bda8ab2af3abb04e4c9fe2867eae90671c94e206da4d83034d2
-      Content-Type: application/x-www-form-urlencoded
+      Authorization: Bearer 9ba53a8e1482353c28d035031c3d7f26b35208f07859c84746ecc1136d1c356d
+Content-Type: application/x-www-form-urlencoded
       ```
+
   
 
   - **Response**
@@ -891,16 +1166,123 @@ Destroys a given Droplet
     - Headers
 
       ```
-      Content-Type: text/html; charset=utf-8
       X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927301
-      Content-Length: 1
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994788
+      ```
+
+  
+
+### Droplet Retrieve an existing Droplet by id [GET]
+
+Shows all of the info for a given Droplet.
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/14" -X GET \
+	-H "Authorization: Bearer ae8f7c006e8823de4428c6bdd74539f25fcc39c540c50bd03df97a3fd1894ee9"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer ae8f7c006e8823de4428c6bdd74539f25fcc39c540c50bd03df97a3fd1894ee9
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994789
+Content-Length: 1073
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 14,
+  "name": "test.example.com",
+  "region": {
+    "slug": "nyc1",
+    "name": "New York",
+    "sizes": [
+      "1024mb",
+      "512mb"
+    ],
+    "available": true
+  },
+  "image": {
+    "id": 119192817,
+    "name": "Ubuntu 13.04",
+    "distribution": "ubuntu",
+    "slug": "ubuntu1304",
+    "public": true,
+    "regions": [
+      "nyc1"
+    ]
+  },
+  "size": {
+    "slug": "512mb",
+    "memory": 512,
+    "vcpus": 1,
+    "disk": 20,
+    "transfer": null,
+    "price_monthly": "5.0",
+    "price_hourly": "0.00744",
+    "regions": [
+      "nyc1",
+      "sfo1",
+      "ams4"
+    ]
+  },
+  "backups": [
+
+  ],
+  "snapshots": [
+
+  ],
+  "locked": false,
+  "status": "active",
+  "networks": {
+    "v4": [
+      {
+        "ip_address": "127.0.0.2",
+        "netmask": "255.255.255.0",
+        "gateway": "127.0.0.3",
+        "type": "public"
+      }
+
+    ],
+    "v6": [
+      {
+        "ip_address": "2400:6180:0000:00D0:0000:0000:0009:7002",
+        "cidr": 124,
+        "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
+        "type": "public"
+      }
+
+    ]
+  }
+}
       ```
   
-# Keys
+# Droplet Actions
 
-Keys are your public SSH keys that you can use to access Droplets.
+
+Droplet actions are actions that can be executed on a droplet.
 
 <table>
   <thead>
@@ -915,88 +1297,35 @@ Keys are your public SSH keys that you can use to access Droplets.
     <tr>
       <td><strong>id</strong></td>
       <td><em>integer</em></td>
-      <td>unique identifier of keys</td>
+      <td>unique identifier for droplet actions</td>
       <td><code>1234</code></td>
     </tr>
     <tr>
-      <td><strong>name</strong></td>
+      <td><strong>progress</strong></td>
       <td><em>string</em></td>
-      <td>display name of the key</td>
-      <td><code>my key</code></td>
+      <td>current progress of the action (in-progress or completed)</td>
+      <td><code>in-progress</code></td>
     </tr>
     <tr>
-      <td><strong>fingerprint</strong></td>
+      <td><strong>type</strong></td>
       <td><em>string</em></td>
-      <td>fingerprint generated from the key</td>
-      <td><code>f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2</code></td>
+      <td>action type (EX: reboot, power_off, power_on ...)</td>
+      <td><code>reboot</code></td>
     </tr>
     <tr>
-      <td><strong>public_key</strong></td>
-      <td><em>string</em></td>
-      <td>full public key string </td>
-      <td><code>ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com</code></td>
+      <td><strong>started_at</strong></td>
+      <td><em>datetime</em></td>
+      <td>date time of when the action started</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
     </tr>
   </tbody>
 </table>
 
-## Keys Collection [/v2/account/keys]
+## Droplet Actions Collection [/v2/droplets/{droplet_id}/actions]
 
+### Droplet Actions Rename a Droplet [POST]
 
-### Keys List [GET]
-
-Lists all Keys
-
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/account/keys" -X GET \
-    	-H "Authorization: Bearer d70f9ede460f17c5ab058fe35d8b406d096e3941d6a666af91a88dab4ecc7c5b"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer d70f9ede460f17c5ab058fe35d8b406d096e3941d6a666af91a88dab4ecc7c5b
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927301
-      Content-Length: 508
-      ```
-  
-    - Body
-
-      ```json
-      [
-        {
-          "id": 2,
-          "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
-          "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
-          "name": "Example Key"
-        }
-      ]
-      ```
-  
-
-
-### Keys Create [POST]
-
-Creates a Key
-
-
+Used to rename an droplet.
 **Parameters:**
 <table>
   <thead>
@@ -1009,31 +1338,28 @@ Creates a Key
   <tbody>
   
     <tr>
-      <td><strong>name</strong></td>
-      <td>User assigned identifier</td>
+      <td><strong>type</strong></td>
+      <td>Must be 'rename'</td>
       <td>true</td>
     </tr>
   
     <tr>
-      <td><strong>public_key</strong></td>
-      <td>Public SSH Key</td>
+      <td><strong>params</strong></td>
+      <td>Is JSON, that includes a key 'name' that contains the new name.</td>
       <td>true</td>
     </tr>
   
   </tbody>
 </table>
 
-
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/account/keys" -d '{
-      "name": "Example Key",
-      "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com"
-    }' -X POST \
-    	-H "Authorization: Bearer 1fc555df694876faf25391f7fbbbff32cefe313e3ecccb46cd17be7cc84650e6" \
-    	-H "Content-Type: application/json"
+    curl "https://api.digitalocean.com/v2/droplets/1/actions" -d '{"type":"rename","params":{"name":"Droplet-Name"}}' -X POST \
+	-H "Authorization: Bearer 4caf32a8e1f4ac5064c766d4249a0167cb179da7a0f0b51d41bcbd4070c273ba" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -1041,17 +1367,20 @@ Creates a Key
     - Headers
 
       ```
-      Authorization: Bearer 1fc555df694876faf25391f7fbbbff32cefe313e3ecccb46cd17be7cc84650e6
-      Content-Type: application/json
+      Authorization: Bearer 4caf32a8e1f4ac5064c766d4249a0167cb179da7a0f0b51d41bcbd4070c273ba
+Content-Type: application/json
       ```
+
   
     - Body
 
       ```json
       {
-        "name": "Example Key",
-        "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com"
-      }
+  "type": "rename",
+  "params": {
+    "name": "Droplet-Name"
+  }
+}
       ```
   
 
@@ -1061,39 +1390,62 @@ Creates a Key
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927301
-      Content-Length: 506
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994785
+Content-Length: 103
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 4,
-        "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
-        "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
-        "name": "Example Key"
-      }
+  "id": 4,
+  "progress": "in-progress",
+  "type": "rename",
+  "started_at": "2014-06-05T17:59:45Z"
+}
       ```
   
 
-## Keys Member [/v2/account/keys/{id_or_fingerprint}]
+### Droplet Actions Rebuild a Droplet [POST]
 
-
-### Keys Show [GET]
-
-Shows a Key
-
-
+Used to rebuild a droplet from a given image id.
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'rebuild'</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>params</strong></td>
+      <td>Is JSON, that includes a key 'image' that contains an image id.</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" -X GET \
-    	-H "Authorization: Bearer 5e01408df76467e169c3770ca9a1e844e890cebcc817f371e915b8b04e851fb8"
+    curl "https://api.digitalocean.com/v2/droplets/2/actions" -d '{"type":"rebuild","params":{"image":119192827}}' -X POST \
+	-H "Authorization: Bearer 347e89f0a2a90a8d6033cb285353afb009224a53803e69292298c0d4e40e48d2" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -1101,7 +1453,20 @@ Shows a Key
     - Headers
 
       ```
-      Authorization: Bearer 5e01408df76467e169c3770ca9a1e844e890cebcc817f371e915b8b04e851fb8
+      Authorization: Bearer 347e89f0a2a90a8d6033cb285353afb009224a53803e69292298c0d4e40e48d2
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "rebuild",
+  "params": {
+    "image": 119192827
+  }
+}
       ```
   
 
@@ -1111,38 +1476,62 @@ Shows a Key
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927301
-      Content-Length: 506
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994785
+Content-Length: 104
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 1,
-        "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
-        "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
-        "name": "Example Key"
-      }
+  "id": 5,
+  "progress": "in-progress",
+  "type": "rebuild",
+  "started_at": "2014-06-05T17:59:45Z"
+}
       ```
   
 
+### Droplet Actions Restore a Droplet [POST]
 
-### Keys Destroy [DELETE]
-
-Permanently destroys a Key
-
-
+Used to restore a droplet from a given snapshot id.
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'restore'</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>params</strong></td>
+      <td>Is JSON, that includes a key 'image' that contains an image id.</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" -d '' -X DELETE \
-    	-H "Authorization: Bearer 61b201aba729a90482b363fc283cae3670e4c9b4ed4dabe3cf35e250c0068d1e" \
-    	-H "Content-Type: application/x-www-form-urlencoded"
+    curl "https://api.digitalocean.com/v2/droplets/3/actions" -d '{"type":"restore","params":{"image":119192829}}' -X POST \
+	-H "Authorization: Bearer c6f8a809c05da80a8335aaec378951008455fd4af69c8d7917f2abe4a6fad544" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -1150,8 +1539,20 @@ Permanently destroys a Key
     - Headers
 
       ```
-      Authorization: Bearer 61b201aba729a90482b363fc283cae3670e4c9b4ed4dabe3cf35e250c0068d1e
-      Content-Type: application/x-www-form-urlencoded
+      Authorization: Bearer c6f8a809c05da80a8335aaec378951008455fd4af69c8d7917f2abe4a6fad544
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "restore",
+  "params": {
+    "image": 119192829
+  }
+}
       ```
   
 
@@ -1161,26 +1562,626 @@ Permanently destroys a Key
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927301
-      Content-Length: 506
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994785
+Content-Length: 104
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 5,
-        "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
-        "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
-        "name": "Example Key"
-      }
+  "id": 6,
+  "progress": "in-progress",
+  "type": "restore",
+  "started_at": "2014-06-05T17:59:45Z"
+}
       ```
   
-# Domains
 
-Domains are managed domain names that DigitalOcean provides DNS for.
+### Droplet Actions Power On a Droplet [POST]
+
+Used to power on a powered off droplet.
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'power_on'</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/4/actions" -d '{"type":"power_on"}' -X POST \
+	-H "Authorization: Bearer 9910f13fc392e46f43802b211d7d23f12318b79e162ad51d990553bfb0412ed3" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 9910f13fc392e46f43802b211d7d23f12318b79e162ad51d990553bfb0412ed3
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "power_on"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994785
+Content-Length: 105
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 7,
+  "progress": "in-progress",
+  "type": "power_on",
+  "started_at": "2014-06-05T17:59:45Z"
+}
+      ```
+  
+
+### Droplet Actions Power Cycle a Droplet [POST]
+
+Used to power cycle a droplet.
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'power_cycle'</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/5/actions" -d '{"type":"power_cycle"}' -X POST \
+	-H "Authorization: Bearer 57809603d8c0d13adcac69b9c4e034e3dde2825e6904109512a04a5a794f9dec" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 57809603d8c0d13adcac69b9c4e034e3dde2825e6904109512a04a5a794f9dec
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "power_cycle"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994785
+Content-Length: 108
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 8,
+  "progress": "in-progress",
+  "type": "power_cycle",
+  "started_at": "2014-06-05T17:59:45Z"
+}
+      ```
+  
+
+### Droplet Actions Reboot a Droplet [POST]
+
+Used to reboot a droplet.
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'reboot'</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/6/actions" -d '{"type":"reboot"}' -X POST \
+	-H "Authorization: Bearer 1d5d2039f0201d483b9588a1bcf62d1e3f5ceb65bae9758ab1e3ab4143d408db" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 1d5d2039f0201d483b9588a1bcf62d1e3f5ceb65bae9758ab1e3ab4143d408db
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "reboot"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994786
+Content-Length: 103
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 9,
+  "progress": "in-progress",
+  "type": "reboot",
+  "started_at": "2014-06-05T17:59:46Z"
+}
+      ```
+  
+
+### Droplet Actions Resize a Droplet [POST]
+
+Used to resize a droplet to a given size slug
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'resize'</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>params</strong></td>
+      <td>Is JSON, that includes a key 'size' that contains a size slug.</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/8/actions" -d '{"type":"resize","params":{"size":"1024mb"}}' -X POST \
+	-H "Authorization: Bearer feb77ba228187647882c0f731093d9f480ef23b7e9f29d37c2f1abcec33a4a38" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer feb77ba228187647882c0f731093d9f480ef23b7e9f29d37c2f1abcec33a4a38
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "resize",
+  "params": {
+    "size": "1024mb"
+  }
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994786
+Content-Length: 104
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 11,
+  "progress": "in-progress",
+  "type": "resize",
+  "started_at": "2014-06-05T17:59:46Z"
+}
+      ```
+  
+
+### Droplet Actions Password Reset a Droplet [POST]
+
+Used to reset a droplet's password
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'password_reset'</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/9/actions" -d '{"type":"password_reset"}' -X POST \
+	-H "Authorization: Bearer c0e76023d2a581465a5d32c0c94f91a05f40e1edf1349cc3db9b05e4fb3f4947" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer c0e76023d2a581465a5d32c0c94f91a05f40e1edf1349cc3db9b05e4fb3f4947
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "password_reset"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994786
+Content-Length: 112
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 12,
+  "progress": "in-progress",
+  "type": "password_reset",
+  "started_at": "2014-06-05T17:59:46Z"
+}
+      ```
+  
+
+### Droplet Actions Shutdown a Droplet [POST]
+
+Used to shutdown a droplet.
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'shutdown'</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/10/actions" -d '{"type":"shutdown"}' -X POST \
+	-H "Authorization: Bearer 51274b81133758fc409db912eb09ac943b080e44d02aa57f1899d845afbf8a19" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 51274b81133758fc409db912eb09ac943b080e44d02aa57f1899d845afbf8a19
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "shutdown"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994786
+Content-Length: 106
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 13,
+  "progress": "in-progress",
+  "type": "shutdown",
+  "started_at": "2014-06-05T17:59:46Z"
+}
+      ```
+  
+
+### Droplet Actions Power Off a Droplet [POST]
+
+Used to power off a droplet.
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>Must be 'power_off'</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/11/actions" -d '{"type":"power_off"}' -X POST \
+	-H "Authorization: Bearer b8cf67bde5abc9ffd3992a1683dd02ffe585a6c45cb7496090493342b0575396" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer b8cf67bde5abc9ffd3992a1683dd02ffe585a6c45cb7496090493342b0575396
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "power_off"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994786
+Content-Length: 107
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 14,
+  "progress": "in-progress",
+  "type": "power_off",
+  "started_at": "2014-06-05T17:59:46Z"
+}
+      ```
+  
+
+## Droplet Actions Member [/v2/droplets/{droplet_id}/actions/{droplet_action_id}]
+
+### Droplet Actions Retrieve a Droplet Action [GET]
+
+
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/droplets/7/actions/10" -X GET \
+	-H "Authorization: Bearer 44435f01f059dd4a6cd5939bdf3c57da3eb4cae279d85815f92c39e62121b2a9"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 44435f01f059dd4a6cd5939bdf3c57da3eb4cae279d85815f92c39e62121b2a9
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994786
+Content-Length: 104
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 10,
+  "progress": "in-progress",
+  "type": "create",
+  "started_at": "2014-06-05T17:59:46Z"
+}
+      ```
+  
+# Image Actions
+
+
+Image actions are actions that can be executed on an image.
 
 <table>
   <thead>
@@ -1193,41 +2194,46 @@ Domains are managed domain names that DigitalOcean provides DNS for.
   </thead>
   <tbody>
     <tr>
-      <td><strong>name</strong></td>
-      <td><em>string</em></td>
-      <td>name of the domain</td>
-      <td><code>example.com</code></td>
-    </tr>
-    <tr>
-      <td><strong>ttl</strong></td>
+      <td><strong>id</strong></td>
       <td><em>integer</em></td>
-      <td>time to live for records on this domain</td>
-      <td><code>1800</code></td>
+      <td>unique identifier for image actions</td>
+      <td><code>1234</code></td>
     </tr>
     <tr>
-      <td><strong>zone_file</strong></td>
+      <td><strong>progress</strong></td>
       <td><em>string</em></td>
-      <td>contents of the zone file used by the DNS server</td>
-      <td><code>$TTL\t600\n@\t\tIN\tSOA ...</code></td>
+      <td>current progress of the action (in-progress or completed)</td>
+      <td><code>in-progress</code></td>
+    </tr>
+    <tr>
+      <td><strong>type</strong></td>
+      <td><em>string</em></td>
+      <td>action type (EX: image_transfer)</td>
+      <td><code>image_transfer</code></td>
+    </tr>
+    <tr>
+      <td><strong>started_at</strong></td>
+      <td><em>datetime</em></td>
+      <td>date time of when the action started</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
     </tr>
   </tbody>
 </table>
 
-## Domains Collection [/v2/domains]
+## Image Actions Collection [/v2/images/{image_id}/actions]
 
-
-### Domains List [GET]
-
-Lists all Domains
+### Image Actions Transfer an Image [POST]
 
 
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/domains" -X GET \
-    	-H "Authorization: Bearer 564f523d380b03a485b78b3985601b71c8e180ed7cb40e2f74d6e98c9f8a6530"
+    curl "https://api.digitalocean.com/v2/images/119192819/actions" -d '{"type":"transfer","params":{"region":"sfo1"}}' -X POST \
+	-H "Authorization: Bearer ea0471d88884020c617073e36f05a12da5611aebf2c2c92313c1a25f48631761" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -1235,7 +2241,20 @@ Lists all Domains
     - Headers
 
       ```
-      Authorization: Bearer 564f523d380b03a485b78b3985601b71c8e180ed7cb40e2f74d6e98c9f8a6530
+      Authorization: Bearer ea0471d88884020c617073e36f05a12da5611aebf2c2c92313c1a25f48631761
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "transfer",
+  "params": {
+    "region": "sfo1"
+  }
+}
       ```
   
 
@@ -1245,66 +2264,38 @@ Lists all Domains
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927302
-      Total: 1
-      Content-Length: 75
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994784
+Content-Length: 105
       ```
+
   
     - Body
 
       ```json
-      [
-        {
-          "name": "example.com",
-          "ttl": 1800,
-          "zone_file": "Example zone file text..."
-        }
-      ]
+      {
+  "id": 2,
+  "progress": "in-progress",
+  "type": "transfer",
+  "started_at": "2014-06-05T17:59:44Z"
+}
       ```
   
 
+## Image Actions Member [/v2/images/{image_id}/actions/{image_action_id}]
 
-### Domains Create [POST]
+### Image Actions Retrieve an existing Image Action [GET]
 
-Creates a Domain
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>name</strong></td>
-      <td>Name of the domain</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>ip_address</strong></td>
-      <td>IP Address for the www entry.</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
 
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/domains" -d '{"name":"example.com","ip_address":"127.0.0.1"}' -X POST \
-    	-H "Authorization: Bearer 2070bfcccf5c47a126f88f808cdc0a51a696e3b1babc781476d549fdd759a34c" \
-    	-H "Content-Type: application/json"
+    curl "https://api.digitalocean.com/v2/images/119192818/actions/1" -X GET \
+	-H "Authorization: Bearer 1fe0e68d071eb257d0b4e7cd35e4fa1bf76993d0f236b11e4c656a625bfbcb8b"
     ```
 
   - **Request**
@@ -1312,18 +2303,9 @@ Creates a Domain
     - Headers
 
       ```
-      Authorization: Bearer 2070bfcccf5c47a126f88f808cdc0a51a696e3b1babc781476d549fdd759a34c
-      Content-Type: application/json
+      Authorization: Bearer 1fe0e68d071eb257d0b4e7cd35e4fa1bf76993d0f236b11e4c656a625bfbcb8b
       ```
-  
-    - Body
 
-      ```json
-      {
-        "name": "example.com",
-        "ip_address": "127.0.0.1"
-      }
-      ```
   
 
   - **Response**
@@ -1332,121 +2314,26 @@ Creates a Domain
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927302
-      Content-Length: 50
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994784
+Content-Length: 105
       ```
+
   
     - Body
 
       ```json
       {
-        "name": "example.com",
-        "ttl": 1800,
-        "zone_file": null
-      }
-      ```
-  
-
-## Domains Member [/v2/domains/{domain_name}]
-
-
-### Domains Show [GET]
-
-Shows the Domain
-
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com" -X GET \
-    	-H "Authorization: Bearer 0b3fa718d15d87d377305d0e516e8f6e285db132003b75bb071501a6a5371652"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 0b3fa718d15d87d377305d0e516e8f6e285db132003b75bb071501a6a5371652
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927301
-      Content-Length: 73
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "name": "example.com",
-        "ttl": 1800,
-        "zone_file": "Example zone file text..."
-      }
-      ```
-  
-
-
-### Domains Delete [DELETE]
-
-Permanently deletes the Domain
-
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com" -d '' -X DELETE \
-    	-H "Authorization: Bearer a1177aef153e537500a6b478f17618af5c7d6ceb2ffcc3d301a59513d15ce4e7" \
-    	-H "Content-Type: application/x-www-form-urlencoded"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer a1177aef153e537500a6b478f17618af5c7d6ceb2ffcc3d301a59513d15ce4e7
-      Content-Type: application/x-www-form-urlencoded
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927302
-      Content-Length: 73
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "name": "example.com",
-        "ttl": 1800,
-        "zone_file": "Example zone file text..."
-      }
+  "id": 1,
+  "progress": "in-progress",
+  "type": "transfer",
+  "started_at": "2014-06-05T17:59:44Z"
+}
       ```
   
 # Images
+
 
 Images are either snapshots or backups you've made, or public images of applications or base systems.
 
@@ -1501,19 +2388,17 @@ Images are either snapshots or backups you've made, or public images of applicat
 
 ## Images Collection [/v2/images]
 
-
-### Images List [GET]
+### Images List all Images [GET]
 
 Lists all images a user has access to.
-
-
 
 **Example:**
 
   - **cURL**
+
     ```bash
     curl "https://api.digitalocean.com/v2/images/" -X GET \
-    	-H "Authorization: Bearer 806691a47bcea850522cc78b0293a01ff7e126a492dac45c34c8705b3b4fd6eb"
+	-H "Authorization: Bearer b1653b2c8a44cc6150f7c18702f1b30ce80056bfbbf82e78551238c3bb19c603"
     ```
 
   - **Request**
@@ -1521,8 +2406,9 @@ Lists all images a user has access to.
     - Headers
 
       ```
-      Authorization: Bearer 806691a47bcea850522cc78b0293a01ff7e126a492dac45c34c8705b3b4fd6eb
+      Authorization: Bearer b1653b2c8a44cc6150f7c18702f1b30ce80056bfbbf82e78551238c3bb19c603
       ```
+
   
 
   - **Response**
@@ -1531,56 +2417,55 @@ Lists all images a user has access to.
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927303
-      Total: 2
-      Content-Length: 222
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994784
+Total: 2
+Content-Length: 332
       ```
+
   
     - Body
 
       ```json
       [
-        {
-          "id": 119192817,
-          "name": "Ubuntu 13.04",
-          "distribution": "ubuntu",
-          "slug": "ubuntu1304",
-          "public": true,
-          "regions": [
-            "nyc1"
-          ]
-        },
-        {
-          "id": 119192823,
-          "name": "Ubuntu 13.04",
-          "distribution": null,
-          "slug": null,
-          "public": false,
-          "regions": [
-            "nyc1"
-          ]
-        }
-      ]
+  {
+    "id": 119192817,
+    "name": "Ubuntu 13.04",
+    "distribution": "ubuntu",
+    "slug": "ubuntu1304",
+    "public": true,
+    "regions": [
+      "nyc1"
+    ]
+  },
+  {
+    "id": 119192822,
+    "name": "Ubuntu 13.04",
+    "distribution": null,
+    "slug": null,
+    "public": false,
+    "regions": [
+      "nyc1"
+    ]
+  }
+]
       ```
   
 
 ## Images Member [/v2/images/{image_id}]
 
-
-### Images Show with ID [GET]
+### Images Retrieve an existing Image by id [GET]
 
 Shows all of the info for a given image.
-
-
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192819" -X GET \
-    	-H "Authorization: Bearer a7552611e90f9884921515543dfcbd1adffb17f19ef91adfa8e0e5f9067bb373"
+    curl "https://api.digitalocean.com/v2/images/119192820" -X GET \
+	-H "Authorization: Bearer 0ead286c67d9a2022b44f1a8ade5614bfe17b1ba7527619b6ea82ecd941bc6bf"
     ```
 
   - **Request**
@@ -1588,8 +2473,9 @@ Shows all of the info for a given image.
     - Headers
 
       ```
-      Authorization: Bearer a7552611e90f9884921515543dfcbd1adffb17f19ef91adfa8e0e5f9067bb373
+      Authorization: Bearer 0ead286c67d9a2022b44f1a8ade5614bfe17b1ba7527619b6ea82ecd941bc6bf
       ```
+
   
 
   - **Response**
@@ -1598,34 +2484,121 @@ Shows all of the info for a given image.
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927302
-      Content-Length: 104
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994784
+Content-Length: 138
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 119192819,
-        "name": "Ubuntu 13.04",
-        "distribution": null,
-        "slug": null,
-        "public": false,
-        "regions": [
-          "nyc1"
-        ]
-      }
+  "id": 119192820,
+  "name": "Ubuntu 13.04",
+  "distribution": null,
+  "slug": null,
+  "public": false,
+  "regions": [
+    "nyc1"
+  ]
+}
       ```
   
 
+### Images Retrieve an existing Image by slug [GET]
 
-### Images Update [PUT]
+Shows all of the info for a given public image.
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/images/ubuntu1304" -X GET \
+	-H "Authorization: Bearer 5f74b56afd2c68bf469d4e61af5d3c778b99aeb914e5f649419f9b5b180e487b"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 5f74b56afd2c68bf469d4e61af5d3c778b99aeb914e5f649419f9b5b180e487b
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994784
+Content-Length: 149
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "id": 119192817,
+  "name": "Ubuntu 13.04",
+  "distribution": "ubuntu",
+  "slug": "ubuntu1304",
+  "public": true,
+  "regions": [
+    "nyc1"
+  ]
+}
+      ```
+  
+
+### Images Delete an Image [DELETE]
+
+Permanently deletes an image.
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/images/119192823" -d '' -X DELETE \
+	-H "Authorization: Bearer 6da90fe34c965658820c2598c39ed0cff1f0d7081e6a177adb2eb10ba73b05b0" \
+	-H "Content-Type: application/x-www-form-urlencoded"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 6da90fe34c965658820c2598c39ed0cff1f0d7081e6a177adb2eb10ba73b05b0
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994784
+      ```
+
+  
+
+### Images Update an Image [PUT]
 
 Updates an image with the provided parameters.
-
-
 **Parameters:**
 <table>
   <thead>
@@ -1646,14 +2619,14 @@ Updates an image with the provided parameters.
   </tbody>
 </table>
 
-
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192820" -d '{"name":"New Image Name"}' -X PUT \
-    	-H "Authorization: Bearer 550962b4f9e6fbc5e82e8ebf0860744c6f358f896f6c8c0f052007e74e9c56e1" \
-    	-H "Content-Type: application/json"
+    curl "https://api.digitalocean.com/v2/images/119192824" -d '{"name":"New Image Name"}' -X PUT \
+	-H "Authorization: Bearer 83d774d1015fdcdaf3dae490fdb3372c95efc129ce981406dada47f11dd046cd" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -1661,16 +2634,17 @@ Updates an image with the provided parameters.
     - Headers
 
       ```
-      Authorization: Bearer 550962b4f9e6fbc5e82e8ebf0860744c6f358f896f6c8c0f052007e74e9c56e1
-      Content-Type: application/json
+      Authorization: Bearer 83d774d1015fdcdaf3dae490fdb3372c95efc129ce981406dada47f11dd046cd
+Content-Type: application/json
       ```
+
   
     - Body
 
       ```json
       {
-        "name": "New Image Name"
-      }
+  "name": "New Image Name"
+}
       ```
   
 
@@ -1680,136 +2654,32 @@ Updates an image with the provided parameters.
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927302
-      Content-Length: 106
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994784
+Content-Length: 140
       ```
+
   
     - Body
 
       ```json
       {
-        "id": 119192820,
-        "name": "New Image Name",
-        "distribution": null,
-        "slug": null,
-        "public": false,
-        "regions": [
-          "nyc1"
-        ]
-      }
+  "id": 119192824,
+  "name": "New Image Name",
+  "distribution": null,
+  "slug": null,
+  "public": false,
+  "regions": [
+    "nyc1"
+  ]
+}
       ```
   
+# Keys
 
 
-### Images Show with Slug [GET]
-
-Shows all of the info for a given public image.
-
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/images/ubuntu1304" -X GET \
-    	-H "Authorization: Bearer f893f62493e3f0b47310153bbf5253cd7d16da17b1d05072587dade778e18467"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer f893f62493e3f0b47310153bbf5253cd7d16da17b1d05072587dade778e18467
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927302
-      Content-Length: 115
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "id": 119192817,
-        "name": "Ubuntu 13.04",
-        "distribution": "ubuntu",
-        "slug": "ubuntu1304",
-        "public": true,
-        "regions": [
-          "nyc1"
-        ]
-      }
-      ```
-  
-
-
-### Images Delete [DELETE]
-
-Permanently deletes an image.
-
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/images/119192822" -d '' -X DELETE \
-    	-H "Authorization: Bearer 8b91adeee3dfecf6ad67edc0bb7744a9f621c0ba908245ff8b0359a8fd794100" \
-    	-H "Content-Type: application/x-www-form-urlencoded"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 8b91adeee3dfecf6ad67edc0bb7744a9f621c0ba908245ff8b0359a8fd794100
-      Content-Type: application/x-www-form-urlencoded
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927302
-      Content-Length: 104
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "id": 119192822,
-        "name": "Ubuntu 13.04",
-        "distribution": null,
-        "slug": null,
-        "public": false,
-        "regions": [
-          "nyc1"
-        ]
-      }
-      ```
-  
-# Image Actions
-
-Image actions are actions that can be executed on an image.
+Keys are your public SSH keys that you can use to access Droplets.
 
 <table>
   <thead>
@@ -1822,42 +2692,74 @@ Image actions are actions that can be executed on an image.
   </thead>
   <tbody>
     <tr>
-      <td><strong>progress</strong></td>
-      <td><em>string</em></td>
-      <td>current progress of the action (in-progress or completed)</td>
-      <td><code>in-progress</code></td>
+      <td><strong>id</strong></td>
+      <td><em>integer</em></td>
+      <td>unique identifier of keys</td>
+      <td><code>1234</code></td>
     </tr>
     <tr>
-      <td><strong>type</strong></td>
+      <td><strong>name</strong></td>
       <td><em>string</em></td>
-      <td>action type (EX: image_transfer)</td>
-      <td><code>image_transfer</code></td>
+      <td>display name of the key</td>
+      <td><code>my key</code></td>
     </tr>
     <tr>
-      <td><strong>started_at</strong></td>
-      <td><em>datetime</em></td>
-      <td>date time of when the action started</td>
-      <td><code>2014-05-08T19:11:41Z</code></td>
+      <td><strong>fingerprint</strong></td>
+      <td><em>string</em></td>
+      <td>fingerprint generated from the key</td>
+      <td><code>f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2</code></td>
+    </tr>
+    <tr>
+      <td><strong>public_key</strong></td>
+      <td><em>string</em></td>
+      <td>full public key string </td>
+      <td><code>ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com</code></td>
     </tr>
   </tbody>
 </table>
 
-## Image Actions Collection [/v2/images/{image_id}/actions]
+## Keys Collection [/v2/account/keys]
 
+### Keys Create a new Key [POST]
 
-### Image Actions Image Transfer [POST]
-
-
-
-
+Creates a Key
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>name</strong></td>
+      <td>User assigned identifier</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>public_key</strong></td>
+      <td>Public SSH Key</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192825/actions" -d '{"type":"transfer","params":{"region":"sfo1"}}' -X POST \
-    	-H "Authorization: Bearer 70571fd4a632073ba0ea86090a26fe8385eaa83ac108d34cc48f6f3511deceef" \
-    	-H "Content-Type: application/json"
+    curl "https://api.digitalocean.com/v2/account/keys" -d '{
+  "name": "Example Key",
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com"
+}' -X POST \
+	-H "Authorization: Bearer 75b43fa7154f32c1d0a208eb3f7fc27ba14419eeda3ecd86468d9d39139bf454" \
+	-H "Content-Type: application/json"
     ```
 
   - **Request**
@@ -1865,19 +2767,18 @@ Image actions are actions that can be executed on an image.
     - Headers
 
       ```
-      Authorization: Bearer 70571fd4a632073ba0ea86090a26fe8385eaa83ac108d34cc48f6f3511deceef
-      Content-Type: application/json
+      Authorization: Bearer 75b43fa7154f32c1d0a208eb3f7fc27ba14419eeda3ecd86468d9d39139bf454
+Content-Type: application/json
       ```
+
   
     - Body
 
       ```json
       {
-        "type": "transfer",
-        "params": {
-          "region": "sfo1"
-        }
-      }
+  "name": "Example Key",
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com"
+}
       ```
   
 
@@ -1887,38 +2788,36 @@ Image actions are actions that can be executed on an image.
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927303
-      Content-Length: 80
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994789
+Content-Length: 524
       ```
+
   
     - Body
 
       ```json
       {
-        "progress": "in-progress",
-        "type": "transfer",
-        "started_at": "2014-05-12T19:41:43Z"
-      }
+  "id": 4,
+  "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
+  "name": "Example Key"
+}
       ```
   
 
-## Image Actions Member [/v2/images/{image_id}/actions/{image_action_id}]
+### Keys List all Keys [GET]
 
-
-### Image Actions Show Image Action [GET]
-
-
-
-
+Lists all Keys
 
 **Example:**
 
   - **cURL**
+
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192824/actions/4" -X GET \
-    	-H "Authorization: Bearer ac4d647d9814b2a3ef67e8877941d1b931aa4d1d6941b95c358611346b01c57d"
+    curl "https://api.digitalocean.com/v2/account/keys" -X GET \
+	-H "Authorization: Bearer 3f86ef9d77e9af7f35629108cc9474de96cea3d2856f92268e53172376e157e8"
     ```
 
   - **Request**
@@ -1926,8 +2825,9 @@ Image actions are actions that can be executed on an image.
     - Headers
 
       ```
-      Authorization: Bearer ac4d647d9814b2a3ef67e8877941d1b931aa4d1d6941b95c358611346b01c57d
+      Authorization: Bearer 3f86ef9d77e9af7f35629108cc9474de96cea3d2856f92268e53172376e157e8
       ```
+
   
 
   - **Response**
@@ -1936,23 +2836,229 @@ Image actions are actions that can be executed on an image.
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927303
-      Content-Length: 80
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994789
+Content-Length: 540
       ```
+
+  
+    - Body
+
+      ```json
+      [
+  {
+    "id": 5,
+    "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
+    "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
+    "name": "Example Key"
+  }
+]
+      ```
+  
+
+## Keys Member [/v2/account/keys/{id_or_fingerprint}]
+
+### Keys Destroy [DELETE]
+
+Delete a Key
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" -d '' -X DELETE \
+	-H "Authorization: Bearer 43a4441ace1e57a5a971e362fb8f768fb1a5494016a29a3628be2c7ad67abf67" \
+	-H "Content-Type: application/x-www-form-urlencoded"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 43a4441ace1e57a5a971e362fb8f768fb1a5494016a29a3628be2c7ad67abf67
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994789
+      ```
+
+  
+
+### Keys Show [GET]
+
+Retrieve an existing Key
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" -X GET \
+	-H "Authorization: Bearer be28f50dfba0c224adc12d7f9e51ff8d2f5ecffaa50b52ceb996031421305740"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer be28f50dfba0c224adc12d7f9e51ff8d2f5ecffaa50b52ceb996031421305740
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994789
+Content-Length: 524
+      ```
+
   
     - Body
 
       ```json
       {
-        "progress": "in-progress",
-        "type": "transfer",
-        "started_at": "2014-05-12T19:41:43Z"
-      }
+  "id": 2,
+  "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
+  "name": "Example Key"
+}
       ```
   
+# Regions
+
+
+Sizes represent possible Droplet resources.
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>slug</strong></td>
+      <td><em>string</em></td>
+      <td>unique identifier of region</td>
+      <td><code>nyc1</code></td>
+    </tr>
+    <tr>
+      <td><strong>name</strong></td>
+      <td><em>string</em></td>
+      <td>display name of region</td>
+      <td><code>New York 1</code></td>
+    </tr>
+    <tr>
+      <td><strong>sizes</strong></td>
+      <td><em>array</em></td>
+      <td>array of sizes availabie in the region</td>
+      <td><code>["512mb", "1024mb"]</code></td>
+    </tr>
+    <tr>
+      <td><strong>available</strong></td>
+      <td><em>boolean</em></td>
+      <td>if new droplets can currently be created</td>
+      <td><code>true</code></td>
+    </tr>
+  </tbody>
+</table>
+
+## Regions Collection [/v2/regions]
+
+### Regions List all Regions [GET]
+
+List all regions.
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl "https://api.digitalocean.com/v2/regions" -X GET \
+	-H "Authorization: Bearer 4e2e346413c8c2f63ec4f0ceb15d56f4d73e1a0139b92f4a238f4c681367b529"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 4e2e346413c8c2f63ec4f0ceb15d56f4d73e1a0139b92f4a238f4c681367b529
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994783
+Content-Length: 362
+      ```
+
+  
+    - Body
+
+      ```json
+      [
+  {
+    "slug": "nyc1",
+    "name": "New York",
+    "sizes": [
+
+    ],
+    "available": false
+  },
+  {
+    "slug": "sfo1",
+    "name": "San Francisco",
+    "sizes": [
+      "512mb",
+      "1024mb"
+    ],
+    "available": true
+  },
+  {
+    "slug": "ams4",
+    "name": "Amsterdam",
+    "sizes": [
+      "512mb",
+      "1024mb"
+    ],
+    "available": true
+  }
+]
+      ```
+  
+
 # Sizes
+
 
 Sizes represent possible Droplet resources.
 
@@ -2019,19 +3125,17 @@ Sizes represent possible Droplet resources.
 
 ## Sizes Collection [/v2/sizes]
 
-
-### Sizes List [GET]
+### Sizes List all Sizes [GET]
 
 Lists all sizes.
 
-
-
 **Example:**
 
   - **cURL**
+
     ```bash
     curl "https://api.digitalocean.com/v2/sizes" -X GET \
-    	-H "Authorization: Bearer 874471963e708603f7d6394ca774547f8bccd0e620cefd172e28916c7a94760e"
+	-H "Authorization: Bearer 034ecb5514c90ca2263e994ca24a99d3ddb52dc5fd9c16ef54176ce81c9d2fc6"
     ```
 
   - **Request**
@@ -2039,8 +3143,9 @@ Lists all sizes.
     - Headers
 
       ```
-      Authorization: Bearer 874471963e708603f7d6394ca774547f8bccd0e620cefd172e28916c7a94760e
+      Authorization: Bearer 034ecb5514c90ca2263e994ca24a99d3ddb52dc5fd9c16ef54176ce81c9d2fc6
       ```
+
   
 
   - **Response**
@@ -2049,1073 +3154,46 @@ Lists all sizes.
 
       ```
       Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927303
-      Content-Length: 296
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1401994789
+Content-Length: 458
       ```
+
   
     - Body
 
       ```json
       [
-        {
-          "slug": "512mb",
-          "memory": 512,
-          "vcpus": 1,
-          "disk": 20,
-          "transfer": null,
-          "price_monthly": "5.0",
-          "price_hourly": "0.00744",
-          "regions": [
-            "nyc1",
-            "sfo1",
-            "ams4"
-          ]
-        },
-        {
-          "slug": "1024mb",
-          "memory": 1024,
-          "vcpus": 2,
-          "disk": 30,
-          "transfer": null,
-          "price_monthly": "10.0",
-          "price_hourly": "0.01488",
-          "regions": [
-            "nyc1",
-            "sfo1",
-            "ams4"
-          ]
-        }
-      ]
+  {
+    "slug": "512mb",
+    "memory": 512,
+    "vcpus": 1,
+    "disk": 20,
+    "transfer": null,
+    "price_monthly": "5.0",
+    "price_hourly": "0.00744",
+    "regions": [
+      "nyc1",
+      "sfo1",
+      "ams4"
+    ]
+  },
+  {
+    "slug": "1024mb",
+    "memory": 1024,
+    "vcpus": 2,
+    "disk": 30,
+    "transfer": null,
+    "price_monthly": "10.0",
+    "price_hourly": "0.01488",
+    "regions": [
+      "nyc1",
+      "sfo1",
+      "ams4"
+    ]
+  }
+]
       ```
   
 
-# Regions
-
-Sizes represent possible Droplet resources.
-
-<table>
-  <thead>
-    <tr>
-      <th>Attribute</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Example</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>slug</strong></td>
-      <td><em>string</em></td>
-      <td>unique identifier of region</td>
-      <td><code>nyc1</code></td>
-    </tr>
-    <tr>
-      <td><strong>name</strong></td>
-      <td><em>string</em></td>
-      <td>display name of region</td>
-      <td><code>New York 1</code></td>
-    </tr>
-    <tr>
-      <td><strong>sizes</strong></td>
-      <td><em>array</em></td>
-      <td>array of sizes availabie in the region</td>
-      <td><code>["512mb", "1024mb"]</code></td>
-    </tr>
-    <tr>
-      <td><strong>available</strong></td>
-      <td><em>boolean</em></td>
-      <td>if new droplets can currently be created</td>
-      <td><code>true</code></td>
-    </tr>
-    <tr>
-      <td><strong>transfer</strong></td>
-      <td><em>integer</em></td>
-      <td>transfer bandwidth available to this size in TB</td>
-      <td><code>5</code></td>
-    </tr>
-    <tr>
-      <td><strong>price_monthly</strong></td>
-      <td><em>string</em></td>
-      <td>price of this size per month in USD</td>
-      <td><code>5</code></td>
-    </tr>
-    <tr>
-      <td><strong>price_hourly</strong></td>
-      <td><em>string</em></td>
-      <td>price of this size per hour in USD</td>
-      <td><code>.00744</code></td>
-    </tr>
-    <tr>
-      <td><strong>regions</strong></td>
-      <td><em>array</em></td>
-      <td>list of regions this size is available for create in</td>
-      <td><code>["nyc1", "sfo1"]</code></td>
-    </tr>
-  </tbody>
-</table>
-
-## Regions Collection [/v2/regions]
-
-
-### Regions List [GET]
-
-List all regions.
-
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/regions" -X GET \
-    	-H "Authorization: Bearer 5b6c37b053719f63ce7c1308e63b0a1b546a8d6f246be0f1ae9b1e7cdc09a168"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 5b6c37b053719f63ce7c1308e63b0a1b546a8d6f246be0f1ae9b1e7cdc09a168
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927303
-      Content-Length: 226
-      ```
-  
-    - Body
-
-      ```json
-      [
-        {
-          "slug": "nyc1",
-          "name": "New York",
-          "sizes": [
-      
-          ],
-          "available": false
-        },
-        {
-          "slug": "sfo1",
-          "name": "San Francisco",
-          "sizes": [
-            "1024mb",
-            "512mb"
-          ],
-          "available": true
-        },
-        {
-          "slug": "ams4",
-          "name": "Amsterdam",
-          "sizes": [
-            "1024mb",
-            "512mb"
-          ],
-          "available": true
-        }
-      ]
-      ```
-  
-
-# Droplet Actions
-
-Droplet actions are actions that can be executed on a droplet.
-
-<table>
-  <thead>
-    <tr>
-      <th>Attribute</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Example</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>progress</strong></td>
-      <td><em>string</em></td>
-      <td>current progress of the action (in-progress or completed)</td>
-      <td><code>in-progress</code></td>
-    </tr>
-    <tr>
-      <td><strong>type</strong></td>
-      <td><em>string</em></td>
-      <td>action type (EX: reboot, power_off, power_on ...)</td>
-      <td><code>reboot</code></td>
-    </tr>
-    <tr>
-      <td><strong>started_at</strong></td>
-      <td><em>datetime</em></td>
-      <td>date time of when the action started</td>
-      <td><code>2014-05-08T19:11:41Z</code></td>
-    </tr>
-  </tbody>
-</table>
-
-## Droplet Actions Collection [/v2/droplets/{droplet_id}/actions]
-
-
-### Droplet Actions Rename [POST]
-
-Used to rename an droplet.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'rename'</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>params</strong></td>
-      <td>Is JSON, that includes a key 'name' that contains the new name.</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/4/actions" -d '{"type":"rename","params":{"name":"Droplet-Name"}}' -X POST \
-    	-H "Authorization: Bearer 0994b0deda30360111b0c7a4affed5ec30c68ddb04d79ee46565929e4a5c65b6" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 0994b0deda30360111b0c7a4affed5ec30c68ddb04d79ee46565929e4a5c65b6
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "rename",
-        "params": {
-          "name": "Droplet-Name"
-        }
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927303
-      Content-Length: 78
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "rename",
-        "started_at": "2014-05-12T19:41:43Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Reboot [POST]
-
-Used to reboot a droplet.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'reboot'</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/5/actions" -d '{"type":"reboot"}' -X POST \
-    	-H "Authorization: Bearer 4e7f5944191ca163d2ad172685008399b963af28335edd73d587d29e35a80734" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 4e7f5944191ca163d2ad172685008399b963af28335edd73d587d29e35a80734
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "reboot"
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927303
-      Content-Length: 78
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "reboot",
-        "started_at": "2014-05-12T19:41:43Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Power Off [POST]
-
-Used to power off a droplet.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'power_off'</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/6/actions" -d '{"type":"power_off"}' -X POST \
-    	-H "Authorization: Bearer 5c90d2fea8347a868e988d8642774035e81491b0f5d212fed46bb5e92838e0c0" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 5c90d2fea8347a868e988d8642774035e81491b0f5d212fed46bb5e92838e0c0
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "power_off"
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927304
-      Content-Length: 81
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "power_off",
-        "started_at": "2014-05-12T19:41:44Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Power Cycle [POST]
-
-Used to power cycle a droplet.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'power_cycle'</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/7/actions" -d '{"type":"power_cycle"}' -X POST \
-    	-H "Authorization: Bearer 77b29ffca6eb8344ad5c3105deee08c69f899b84fbf75047ae0227152fe2c38a" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 77b29ffca6eb8344ad5c3105deee08c69f899b84fbf75047ae0227152fe2c38a
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "power_cycle"
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927304
-      Content-Length: 83
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "power_cycle",
-        "started_at": "2014-05-12T19:41:44Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Resize [POST]
-
-Used to resize a droplet to a given size slug
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'resize'</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>params</strong></td>
-      <td>Is JSON, that includes a key 'size' that contains a size slug.</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/9/actions" -d '{"type":"resize","params":{"size":"1024mb"}}' -X POST \
-    	-H "Authorization: Bearer 2387b5c2f7ea40c97699d584ef5192edc5e3f7a4f00dde1d05420a59d78fcb3f" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 2387b5c2f7ea40c97699d584ef5192edc5e3f7a4f00dde1d05420a59d78fcb3f
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "resize",
-        "params": {
-          "size": "1024mb"
-        }
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927304
-      Content-Length: 78
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "resize",
-        "started_at": "2014-05-12T19:41:44Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Rebuild [POST]
-
-Used to rebuild a droplet from a given image id.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'rebuild'</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>params</strong></td>
-      <td>Is JSON, that includes a key 'image' that contains an image id.</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/10/actions" -d '{"type":"rebuild","params":{"image":119192833}}' -X POST \
-    	-H "Authorization: Bearer e14389603a8b65183d928c64be7132d33ad3c1f1644e5b0c0d361013c7e1338e" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer e14389603a8b65183d928c64be7132d33ad3c1f1644e5b0c0d361013c7e1338e
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "rebuild",
-        "params": {
-          "image": 119192833
-        }
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927304
-      Content-Length: 79
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "rebuild",
-        "started_at": "2014-05-12T19:41:44Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Power On [POST]
-
-Used to power on a powered off droplet.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'power_on'</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/11/actions" -d '{"type":"power_on"}' -X POST \
-    	-H "Authorization: Bearer 4433def1b614495a5a9f5931842261b1e13b8636893c48c02f5a760447f2d6c6" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 4433def1b614495a5a9f5931842261b1e13b8636893c48c02f5a760447f2d6c6
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "power_on"
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927304
-      Content-Length: 80
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "power_on",
-        "started_at": "2014-05-12T19:41:44Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Restore [POST]
-
-Used to restore a droplet from a given snapshot id.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'restore'</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>params</strong></td>
-      <td>Is JSON, that includes a key 'image' that contains an image id.</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/12/actions" -d '{"type":"restore","params":{"image":119192836}}' -X POST \
-    	-H "Authorization: Bearer efbcde759ddaf5ae1bcbe42b71ad1b80f579eeee6568240f9a5f7265d5a3d71e" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer efbcde759ddaf5ae1bcbe42b71ad1b80f579eeee6568240f9a5f7265d5a3d71e
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "restore",
-        "params": {
-          "image": 119192836
-        }
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927305
-      Content-Length: 79
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "restore",
-        "started_at": "2014-05-12T19:41:45Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Shutdown [POST]
-
-Used to shutdown a droplet.
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'shutdown'</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/13/actions" -d '{"type":"shutdown"}' -X POST \
-    	-H "Authorization: Bearer 933b60310680ff8869438aa08d16ee82d4bc444d84fa22affeac34ac4e713cf5" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 933b60310680ff8869438aa08d16ee82d4bc444d84fa22affeac34ac4e713cf5
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "shutdown"
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927305
-      Content-Length: 80
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "shutdown",
-        "started_at": "2014-05-12T19:41:45Z"
-      }
-      ```
-  
-
-
-### Droplet Actions Password Reset [POST]
-
-Used to reset a droplet's password
-
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>Must be 'password_reset'</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/14/actions" -d '{"type":"password_reset"}' -X POST \
-    	-H "Authorization: Bearer 42802ddf4b3c06315817e059451d85eafb1ec156882f1225aab70a432701ee56" \
-    	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 42802ddf4b3c06315817e059451d85eafb1ec156882f1225aab70a432701ee56
-      Content-Type: application/json
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "type": "password_reset"
-      }
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927305
-      Content-Length: 86
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "password_reset",
-        "started_at": "2014-05-12T19:41:45Z"
-      }
-      ```
-  
-
-## Droplet Actions Member [/v2/droplets/{droplet_id}/actions/{droplet_action_id}]
-
-
-### Droplet Actions Show Action Status [GET]
-
-
-
-
-
-**Example:**
-
-  - **cURL**
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/8/actions/10" -X GET \
-    	-H "Authorization: Bearer 904ff1729880fbd41709fb14a4ac46b6add2ec6a92c655897e9a9c521c79edca"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 904ff1729880fbd41709fb14a4ac46b6add2ec6a92c655897e9a9c521c79edca
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-      X-RateLimit-Limit: 1200
-      X-RateLimit-Remaining: 1199
-      X-RateLimit-Reset: 1399927304
-      Content-Length: 78
-      ```
-  
-    - Body
-
-      ```json
-      {
-        "progress": "in-progress",
-        "type": "create",
-        "started_at": "2014-05-12T19:41:44Z"
-      }
-      ```
-  
