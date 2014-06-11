@@ -90,17 +90,140 @@ If you receive a status in the 500 range, this generally indicates a server-side
       "description": "You do not have access for the attempted action."
     }
 
+### Responses
+
+Upon a successful request, a response body will typically be sent back in the form of a JSON object.  An exception to this is when a DELETE request is processed, which will result in a successful HTTP 204 status and an empty response body.
+
+Inside of this JSON object, the resource type that was the target of the request will be set as the key.  This will be the singular form of the word if the request operated on a single object, and the plural form of the word if a collection was processed.
+
+For example, if you send a GET request to `/v2/droplets/$DROPLET_ID` you will get back an object with a key called "`droplet`".  However, if you send the GET request to the general collection at `/v2/droplets`, you will get back an object with a key called "`droplets`".
+
+The value of these keys will generally be a JSON object for a request on a single object and an array of objects for a request on a collection of objects.
+
+#### Example Responses
+
+For a single object:
+
+    {
+        "droplet": {
+            "name": "example.com"
+            . . .
+        }
+    }
+
+For an object collection:
+
+    {
+        "droplets": [
+            {
+                "name": "example.com"
+                . . .
+            },
+            {
+                "name": "second.com"
+                . . .
+            }
+        ]
+    }
+
+### Pagination
+
+In order to handle large numbers of objects, the returned response will be paginated.  By default, the pagination function is configured to return 25 objects at a time.
+
+The pagination information is included in the headers of the response when more than one object is being returned.  The relevant pieces of information are:
+
+* **Total**: The total number of results for the request.
+* **Link**: This provides information about additional pages.  Check the [links] section for more information.
+
+You can adjust the number of results per page by passing a `per_page` query parameter.  This can be used to specify the number of results returned per page.
+
+To get the information from any of the additional pages, you should pass a `page` query parameter.  For instance, if you have 60 total results and are using the default pagination rules, you could get results 26-50 by adding `?page=2` to your request.
+
+The [links] header will give you much better information about the relationship of the pages to one another and what the last of information will be.
+
+#### Sample Pagination Header Information
+
+    . . .
+    Link: <https://api.digitalocean.com/v2/images?page=11&per_page=5>; rel="last", <https://api.digitalocean.com/v2/images?page=2&per_page=5>; rel="next"
+    Total: 51
+    . . .
+
+### Rate Limit
+
+The number of requests that can be made through the API is currently limited to 1200 per hour.
+
+The rate limiting information is contained within the response headers of each request.  The relevant headers are:
+
+* **X-RateLimit-Limit**: The number of requests that can be made per hour.
+* **X-RateLimit-Remaining**: The number of requests that remain before you hit your request limit.  See the information below for how the request limits expire.
+* **X-RateLimit-Reset**: This represents the time when the oldest request will expire.  The value is given in [UTC epoch seconds](http://en.wikipedia.org/wiki/Unix_time).  See below for more information about how request limits expire.
+
+As long as the `X-RateLimit-Remaining` count is above zero, you will be able to make additional requests.
+
+The way that a request expires and is removed from the current limit count is important to understand.  Rather than counting all of the requests for an hour and resetting the `X-RateLimit-Remaining` value at the end of the hour, each request instead has its own timer.
+
+This means that each request contributes toward the `X-RateLimit-Remaining` count for one complete hour after the request is made.  When that request's timer runs out, it is no longer counted towards the request limit.
+
+This has implications on the meaning of the `X-RateLimit-Reset` header as well.  Because the entire rate limit is not reset at one time, the value of this header is set to the time when the *oldest* request will expire.
+
+Keep this in mind if you see your `X-RateLimit-Reset` value change, but not move an entire hour into the future.
+
+If the `X-RateLimit-Remaining` reaches zero, subsequent requests will receive a 429 error code until the request reset has been reached.  You can see the format of the response in the examples.
+
+#### Sample Rate Limit Headers
+
+    . . .
+    X-RateLimit-Limit: 1200
+    X-RateLimit-Remaining: 1193
+    X-RateLimit-Reset: 1402425459
+    . . .
+
+#### Sample Rate Exceeded Response
+
+    429 Too Many Requests
+    {
+            id: "too_many_requests",
+            message: "API Rate limit exceeded."
+    }
+
+### Link Headers
+
+Link headers are used to provide information about the remaining, paginated portions of the requested information.
+
+For instance, if you request a listing of all available images at 5 results per page (as discussed in the last section), a link header will be set in the response that will contain the URIs of the related pages.
+
+The related pages will be defined as a URI and a `rel` attribute, which defines the relationship of the URI to the response that is being sent back.  The `rel` attribute may be any of the following:
+
+* **first**: The URI of the first page of results.
+* **prev**: The URI of the previous sequential page of results.
+* **next**: The URI of the next sequential page of results.
+* **last**: The URI of the last page of results.
+
+The link headers will only include the links that make sense.  So if the `Total` is less than the `per_page` value, then no link header will be set.  For the first page of results, no `first` or `prev` links will ever be set.  This convention holds true in other situations where a link would not make sense.
+
+#### Link Header Example
+
+    Link: <https://api.digitalocean.com/v2/images?page=1&per_page=5>; rel="first", <https://api.digitalocean.com/v2/images?page=1&per_page=5>; rel="prev", <https://api.digitalocean.com/v2/images?page=11&per_page=5>; rel="last", <https://api.digitalocean.com/v2/images?page=3&per_page=5>; rel="next"</code></pre>
+
 ### Curl Examples
 
 Throughout this document, some example API requests will be given using the `curl` command.  This will allow us to demonstrate the various endpoints in a simple, textual format.
 
 The names of account-specific resources (like Droplet IDs, for instance) will be represented by variables.  For instance, a Droplet ID may be represented by a variable called `$DROPLET_ID`  You can set the associated variables in your environment if you wish to use the examples without modification.
 
-If you are working from the command line, the previously mentioned environmental variable could be set by setting and exporting the variables, as we show in the example.
+The first variable that you should set to get started is your OAuth authorization token.  The next section will go over the details of this, but you can set an environmental variable for it now.
+
+Generate a token by going to the [Apps & API](https://cloud.digitalocean.com/settings/applications) section of the DigitalOcean control panel.  Use an existing token if you have saved one, or generate a new token with the "Generate new token" button.  Copy the generated token and use it to set and export the TOKEN variable in your environment as the example shows.
+
+You may also wish to set some other variables now or as you go along.  For example, you may wish to set the `DROPLET_ID` variable to one of your droplet IDs since this will be used frequently in the API.
 
 If you are following along, make sure you use a Droplet ID that you control for so that your commands will execute correctly.
 
-#### Set and Export a Variable</h4>
+#### Set and Export your OAuth Token
+
+    export TOKEN={your_token_here}
+
+#### Set and Export a Variable
 
     export DROPLET_ID=1111111
 
@@ -170,10 +293,47 @@ You could also use a standard query string if that would be easier in our applic
     curl -H "Authorization: Bearer $AUTH_TOKEN" \
          -X POST \
          "https://api.digitalocean.com/v2/domains?name=example.com&ip_address=127.0.0.1"
+
+### Cross Origin Resource Sharing
+
+In order to make requests to the API from other domains, the API implements Cross Origin Resource Sharing (CORS).
+
+CORS support is generally used to create AJAX requests outside of the domain that the request originated from.  This is necessary to implement projects like control panels utilizing the API.  This tells the browser that it can send requests to an outside domain.
+
+The procedure that the browser undertakes to perform actions other than GET requests is to send a "preflight" request that sets the `Origin` header and uses the `OPTIONS` method.  The server will reply back with the methods it allows and some of the limits it imposes.  The client then sends the actual request if it falls within the allowed constraints.
+
+This process is usually done in the background by the browser, but you can use curl to emulate this process using the example provided.  The headers that will be set to show the constraints are:
+
+* **Access-Control-Allow-Origin**: This is the domain that is sent by the client or browser as the origin of the request.  It is set through an `Origin` header.
+* **Access-Control-Allow-Methods**: This specifies the allowed options for requests from that domain.  This will generally be all available methods.
+* **Access-Control-Expose-Headers**: This will contain the headers that will be available to requests from the origin domain.
+* **Access-Control-Max-Age**: This is the length of time that the access is considered valid.  After this expires, a new preflight should be sent.
+* **Access-Control-Allow-Credentials**: This will be set to `true`.  It basically allows you to send your OAuth token for authentication.
+
+You should not need to be concerned with the details of these headers, because the browser will typically do all of the work for you.
+
+#### Example Preflight Request
+
+    curl -I -H "Origin: https://example.com" -X OPTIONS "https://api.digitalocean.com/v2/droplets"
+
+#### Example Preflight Response
+
+    . . .
+    Access-Control-Allow-Origin: https://example.com
+    Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+    Access-Control-Expose-Headers: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Total, Link
+    Access-Control-Max-Age: 86400
+    Access-Control-Allow-Credentials: true
+    . . .
 # Actions
 
 
-Actions are a user's way of interacting with our cloud, from renaming a droplet to transferring an image from region to region.
+<p>Actions are records of events that have occurred on the resources in your account.  These can be things like rebooting a Droplet, or transferring an image to a new region.</p>
+
+<p>An action object is created every time one of these actions is initiated.  The action object contains information about the current status of the action, start and complete timestamps, and the associated resource type and ID.</p>
+
+<p>Every action that creates an action object is available through this endpoint.  Completed actions are not removed from this list and are always available for querying.</p>
+
 
 <table>
   <thead>
@@ -188,37 +348,43 @@ Actions are a user's way of interacting with our cloud, from renaming a droplet 
     <tr>
       <td><strong>id</strong></td>
       <td><em>integer</em></td>
-      <td>This is a unique identification number for the aciton.</td>
+      <td>A unique numeric ID that can be used to identify and reference an action.</td>
       <td><code>1234</code></td>
     </tr>
     <tr>
       <td><strong>status</strong></td>
       <td><em>string</em></td>
-      <td>The current status of the action.</td>
+      <td>The current status of the action.  This can be "in-progress", "completed", or "errored".</td>
       <td><code>completed</code></td>
+    </tr>
+    <tr>
+      <td><strong>type</strong></td>
+      <td><em>string</em></td>
+      <td>This is the type of action that the JSON object represents.  For example, this could be "transfer" to represent the state of an image transfer action.</td>
+      <td><code>image_transfer</code></td>
     </tr>
     <tr>
       <td><strong>started_at</strong></td>
       <td><em>integer</em></td>
-      <td>unix timestamp of when the action started</td>
+      <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
       <td><code>1402421904</code></td>
     </tr>
     <tr>
       <td><strong>completed_at</strong></td>
       <td><em>integer</em></td>
-      <td>unix timestamp of when the action completed</td>
+      <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
       <td><code>1402421904</code></td>
     </tr>
     <tr>
       <td><strong>resource_id</strong></td>
       <td><em>integer</em></td>
-      <td>Unique identifier for the resource this action is associated with</td>
+      <td>A unique identifier for the resource that the action is associated with.</td>
       <td><code>1234</code></td>
     </tr>
     <tr>
       <td><strong>resource_type</strong></td>
       <td><em>string</em></td>
-      <td>Resource name of the type this action is associate with</td>
+      <td>The type of resource that the action is associated with.</td>
       <td><code>droplet</code></td>
     </tr>
   </tbody>
@@ -235,8 +401,8 @@ Lists all Actions for the currently authenticated user.
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/actions" -X GET \
-	-H "Authorization: Bearer 7e28ca12e029cb9fc24c67da6c39595c3d0cf569b7c3adb04498c046a5f2b38e"
+    curl -X GET "https://api.digitalocean.com/v2/actions" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -244,7 +410,7 @@ Lists all Actions for the currently authenticated user.
     - Headers
 
       ```
-      Authorization: Bearer 7e28ca12e029cb9fc24c67da6c39595c3d0cf569b7c3adb04498c046a5f2b38e
+      Authorization: Bearer b82a9f7e1e96927d064751ebb1977210f4c648d32aab5b6795992fdeffc60b06
       ```
 
   
@@ -257,9 +423,9 @@ Lists all Actions for the currently authenticated user.
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429604
+X-RateLimit-Reset: 1402516409
 Total: 1
-Content-Length: 231
+Content-Length: 230
       ```
 
   
@@ -269,10 +435,10 @@ Content-Length: 231
       {
   "actions": [
     {
-      "id": 17,
+      "id": 1,
       "status": "in-progress",
       "type": "test",
-      "started_at": "2014-06-10T18:46:44Z",
+      "started_at": "2014-06-11T18:53:29Z",
       "completed_at": null,
       "resource_id": null,
       "resource_type": null
@@ -293,8 +459,8 @@ Shows the details for a single Action
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/actions/18" -X GET \
-	-H "Authorization: Bearer b31e04f6544c4746531572d22d5e79dfd7a6eea012800fbf3ce9e8bb2be3c906"
+    curl -X GET "https://api.digitalocean.com/v2/actions/2" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -302,7 +468,7 @@ Shows the details for a single Action
     - Headers
 
       ```
-      Authorization: Bearer b31e04f6544c4746531572d22d5e79dfd7a6eea012800fbf3ce9e8bb2be3c906
+      Authorization: Bearer 3ae72a1b9a1fe3ac682bcc53333b7e1b29c3f51eeebfface90698610bc50a692
       ```
 
   
@@ -315,8 +481,8 @@ Shows the details for a single Action
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429605
-Content-Length: 204
+X-RateLimit-Reset: 1402516410
+Content-Length: 203
       ```
 
   
@@ -325,10 +491,10 @@ Content-Length: 204
       ```json
       {
   "action": {
-    "id": 18,
+    "id": 2,
     "status": "in-progress",
     "type": "test",
-    "started_at": "2014-06-10T18:46:45Z",
+    "started_at": "2014-06-11T18:53:30Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": null
@@ -343,7 +509,7 @@ Content-Length: 204
 
 <p>The DigitalOcean DNS management interface allows you to configure the following DNS records:</p>
 
-<ul>
+<ul class="nested">
     <li><strong>A</strong>
     <ul>
         <li><strong>Description</strong>: The address record is used to map a host to a specific IPv4 address.  This is used to define subdomain specifications so that hosts are mapped correctly and can receive requests in an intelligent way.</li>
@@ -602,8 +768,8 @@ Content-Length: 204
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records" -X GET \
-	-H "Authorization: Bearer 2b9da5d90efb036bd13e81f07b0c8045275bc37ec4561c15eb5b3a224adc3e37"
+    curl -X GET "https://api.digitalocean.com/v2/domains/example.com/records" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -611,7 +777,7 @@ Content-Length: 204
     - Headers
 
       ```
-      Authorization: Bearer 2b9da5d90efb036bd13e81f07b0c8045275bc37ec4561c15eb5b3a224adc3e37
+      Authorization: Bearer 3a398d43d48ff80724e35ab1b27421aaa0eb24d4d2116199e428d889bdcc44cb
       ```
 
   
@@ -624,7 +790,7 @@ Content-Length: 204
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429598
+X-RateLimit-Reset: 1402516410
 Content-Length: 861
       ```
 
@@ -843,12 +1009,9 @@ Content-Length: 861
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records" -d '{
-  "name": "subdomain",
-  "data": "2001:db8::ff00:42:8329",
-  "type": "AAAA"
-}' -X POST \
-	-H "Authorization: Bearer fd28dec61d8f833ddb8406431d5b7381e22141f0965ab1faa8dde9ba584960cb" \
+    curl -X POST "https://api.digitalocean.com/v2/domains/example.com/records" \
+	-d '{"name":"subdomain","data":"2001:db8::ff00:42:8329","type":"AAAA"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -857,7 +1020,7 @@ Content-Length: 861
     - Headers
 
       ```
-      Authorization: Bearer fd28dec61d8f833ddb8406431d5b7381e22141f0965ab1faa8dde9ba584960cb
+      Authorization: Bearer 47cf5b4a2986deefe2ab82de237bb4556cf3a6e3cb880f782652600660fca9e1
 Content-Type: application/json
       ```
 
@@ -881,7 +1044,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429598
+X-RateLimit-Reset: 1402516410
 Content-Length: 185
       ```
 
@@ -964,8 +1127,8 @@ The request will be an object that contains all of the standard domain record at
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records/10" -X GET \
-	-H "Authorization: Bearer 87f43bb4af27c01bd6e1b8b93f1a370ba57912a4b0c37b68064ca85f4d235c92"
+    curl -X GET "https://api.digitalocean.com/v2/domains/example.com/records/10" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -973,7 +1136,7 @@ The request will be an object that contains all of the standard domain record at
     - Headers
 
       ```
-      Authorization: Bearer 87f43bb4af27c01bd6e1b8b93f1a370ba57912a4b0c37b68064ca85f4d235c92
+      Authorization: Bearer dd328de576a8e30002c93003dd733111739506e2c928da3dfb6c40d220cc5dd5
       ```
 
   
@@ -986,7 +1149,7 @@ The request will be an object that contains all of the standard domain record at
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429598
+X-RateLimit-Reset: 1402516410
 Content-Length: 163
       ```
 
@@ -1006,6 +1169,46 @@ Content-Length: 163
   }
 }
       ```
+  
+
+### Domain Records Delete a Domain Record [DELETE]
+
+<p>To delete a record for a domain, send a DELETE request to <code>/v2/domains/$DOMAIN_NAME/records/$RECORD_ID</code>.</p>
+
+<p>The record will be deleted and the response status will be a 204.  This indicates a successful request with no body returned.</p>
+
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X DELETE "https://api.digitalocean.com/v2/domains/example.com/records/21" \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/x-www-form-urlencoded"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 85fc53eaee8bdeda8f5342e833b6087536eb78ad23e534301a47c9ba647b6bf3
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516410
+      ```
+
   
 
 ### Domain Records Update a Domain Record [PUT]
@@ -1105,10 +1308,9 @@ Content-Length: 163
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records/21" -d '{
-  "name": "new_name"
-}' -X PUT \
-	-H "Authorization: Bearer d536fea19bb31944524fbada125390da56cbe4bfd1ec0f96134160acfa344408" \
+    curl -X PUT "https://api.digitalocean.com/v2/domains/example.com/records/26" \
+	-d '{"name":"new_name"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -1117,7 +1319,7 @@ Content-Length: 163
     - Headers
 
       ```
-      Authorization: Bearer d536fea19bb31944524fbada125390da56cbe4bfd1ec0f96134160acfa344408
+      Authorization: Bearer 6b24d7b2d05730843c66b0bb29e99505b29fab53663d072578fb3689d32ded8b
 Content-Type: application/json
       ```
 
@@ -1139,7 +1341,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429599
+X-RateLimit-Reset: 1402516411
 Content-Length: 164
       ```
 
@@ -1149,7 +1351,7 @@ Content-Length: 164
       ```json
       {
   "domain_record": {
-    "id": 21,
+    "id": 26,
     "type": "CNAME",
     "name": "new_name",
     "data": "@",
@@ -1159,46 +1361,6 @@ Content-Length: 164
   }
 }
       ```
-  
-
-### Domain Records Delete a Domain Record [DELETE]
-
-<p>To delete a record for a domain, send a DELETE request to <code>/v2/domains/$DOMAIN_NAME/records/$RECORD_ID</code>.</p>
-
-<p>The record will be deleted and the response status will be a 204.  This indicates a successful request with no body returned.</p>
-
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com/records/26" -d '' -X DELETE \
-	-H "Authorization: Bearer 54cd2687b8a23d8f7f54328fa6b6f78574573c797a616b1c59ed50f4fcb06e64" \
-	-H "Content-Type: application/x-www-form-urlencoded"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 54cd2687b8a23d8f7f54328fa6b6f78574573c797a616b1c59ed50f4fcb06e64
-Content-Type: application/x-www-form-urlencoded
-      ```
-
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429599
-      ```
-
   
 # Domains
 
@@ -1280,8 +1442,8 @@ An array of Domain objects will be returned, each of which contain the standard 
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/domains" -X GET \
-	-H "Authorization: Bearer d0afd1d657928ed795bda59dafd8494b11739c4fbe76e191723cb315e2689d75"
+    curl -X GET "https://api.digitalocean.com/v2/domains" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -1289,7 +1451,7 @@ An array of Domain objects will be returned, each of which contain the standard 
     - Headers
 
       ```
-      Authorization: Bearer d0afd1d657928ed795bda59dafd8494b11739c4fbe76e191723cb315e2689d75
+      Authorization: Bearer b9848149727b73291730eff63b0c703743e51a88bc811a36695c7cd9297e17c2
       ```
 
   
@@ -1302,7 +1464,7 @@ An array of Domain objects will be returned, each of which contain the standard 
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429599
+X-RateLimit-Reset: 1402516411
 Total: 1
 Content-Length: 130
       ```
@@ -1415,8 +1577,9 @@ Content-Length: 130
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/domains" -d '{"name":"example.com","ip_address":"127.0.0.1"}' -X POST \
-	-H "Authorization: Bearer ee7d74a01bd16a8f1b209155549d6f32929e756bee784cbcbe8aaab70529b67c" \
+    curl -X POST "https://api.digitalocean.com/v2/domains" \
+	-d '{"name":"example.com","ip_address":"127.0.0.1"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -1425,7 +1588,7 @@ Content-Length: 130
     - Headers
 
       ```
-      Authorization: Bearer ee7d74a01bd16a8f1b209155549d6f32929e756bee784cbcbe8aaab70529b67c
+      Authorization: Bearer 63c2e73f88bf237af3887c4abbaca418ab5379e20451afc787d17eac215fe192
 Content-Type: application/json
       ```
 
@@ -1448,7 +1611,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429599
+X-RateLimit-Reset: 1402516411
 Content-Length: 88
       ```
 
@@ -1468,47 +1631,7 @@ Content-Length: 88
 
 ## Domains Member [/v2/domains/{domain_name}]
 
-### Domains Delete a Domain [DELETE]
-
-<p>To delete a domain, send a DELETE request to <code>/v2/domains/$DOMAIN_NAME</code>.</p>
-
-<p>The domain will be removed from your account and a response status of 204 will be returned.  This indicates a successful request with no response body.</p>
-
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com" -d '' -X DELETE \
-	-H "Authorization: Bearer 8e3ffd053ba62229cfd12f429336f9bdd070fb7812e6847bb3e4236910eaa374" \
-	-H "Content-Type: application/x-www-form-urlencoded"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 8e3ffd053ba62229cfd12f429336f9bdd070fb7812e6847bb3e4236910eaa374
-Content-Type: application/x-www-form-urlencoded
-      ```
-
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429600
-      ```
-
-  
-
-### Domains Show [GET]
+### Domains Retrieve an existing Domain [GET]
 
 <p>To get details about a specific domain, send a GET request to <code>/v2/domains/$DOMAIN_NAME</code>. </p>
 
@@ -1547,8 +1670,8 @@ The response received will contain the standard attributes defined for a domain:
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/domains/example.com" -X GET \
-	-H "Authorization: Bearer 259cc8c252070d12b85ca5444b87b9e8ba27b0a9772c8c29c5e996fe5e6c1f94"
+    curl -X GET "https://api.digitalocean.com/v2/domains/example.com" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -1556,7 +1679,7 @@ The response received will contain the standard attributes defined for a domain:
     - Headers
 
       ```
-      Authorization: Bearer 259cc8c252070d12b85ca5444b87b9e8ba27b0a9772c8c29c5e996fe5e6c1f94
+      Authorization: Bearer 005f066e452f9b99b9457cf145852fc83856f366633c1466c119149294842531
       ```
 
   
@@ -1569,7 +1692,7 @@ The response received will contain the standard attributes defined for a domain:
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429600
+X-RateLimit-Reset: 1402516411
 Content-Length: 111
       ```
 
@@ -1585,6 +1708,46 @@ Content-Length: 111
   }
 }
       ```
+  
+
+### Domains Delete a Domain [DELETE]
+
+<p>To delete a domain, send a DELETE request to <code>/v2/domains/$DOMAIN_NAME</code>.</p>
+
+<p>The domain will be removed from your account and a response status of 204 will be returned.  This indicates a successful request with no response body.</p>
+
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X DELETE "https://api.digitalocean.com/v2/domains/example.com" \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/x-www-form-urlencoded"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 24393655cd85ebd9cf2d0e98d9df7945293ff478d2c6bec97d54e40eebd86e14
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516411
+      ```
+
   
 # Droplet
 
@@ -1619,7 +1782,7 @@ Content-Length: 111
     <tr>
       <td><strong>region</strong></td>
       <td><em>object</em></td>
-      <td>The region that the Droplet instance is deployed in.  WHen setting a region, the value should be the slug identifier for the region.  When you query a Droplet, teh entire region object will be returned.</td>
+      <td>The region that the Droplet instance is deployed in.  When setting a region, the value should be the slug identifier for the region.  When you query a Droplet, the entire region object will be returned.</td>
       <td><code>{"slug":"nyc1","name":"New York","sizes":["1024mb","512mb"],"available":true}</code></td>
     </tr>
     <tr>
@@ -1635,24 +1798,6 @@ Content-Length: 111
       <td><code>{"slug":"512mb","memory":512,"vcpus":1,"disk":20,"transfer":null,"price_monthly":"5.0","price_hourly":"0.00744","regions":["nyc1","sfo1","ams4"]}</code></td>
     </tr>
     <tr>
-      <td><strong>networks</strong></td>
-      <td><em>object</em></td>
-      <td>The details of the network that are configured for the Droplet instance.  This is an object that contains keys for IPv4 and IPv6.  The value of each of these is an array that contains objects describing an individual IP resource allocated to the Droplet.  These will define attributes like the IP address, netmask, and gateway of the specific network depending on the type of network it is.</td>
-      <td><code>{"v4":[{"ip_address":"127.0.0.2","netmask":"255.255.255.0","gateway":"127.0.0.1","type":"public"}],"v6":[]}</code></td>
-    </tr>
-    <tr>
-      <td><strong>backups</strong></td>
-      <td><em>array</em></td>
-      <td>An array of any backups that have been taken of the Droplet instance.  Droplet backups are enabled at the time of the instance creation.  The array contains image objects representing each backup.</td>
-      <td><code>[123, 456, 789]</code></td>
-    </tr>
-    <tr>
-      <td><strong>snapshots</strong></td>
-      <td><em>array</em></td>
-      <td>An array of any snapshots created from the Droplet instance.  The array contains objects that represent each snapshot.  This will be in the form of an image object.</td>
-      <td><code>[123, 456, 789]</code></td>
-    </tr>
-    <tr>
       <td><strong>locked</strong></td>
       <td><em>boolean</em></td>
       <td>A boolean value indicating whether the Droplet has been locked, preventing actions by users.</td>
@@ -1664,6 +1809,30 @@ Content-Length: 111
       <td>A status string indicating the state of the Droplet instance.  This may be "new", "active", or "archive".</td>
       <td><code>online</code></td>
     </tr>
+    <tr>
+      <td><strong>networks</strong></td>
+      <td><em>object</em></td>
+      <td>The details of the network that are configured for the Droplet instance.  This is an object that contains keys for IPv4 and IPv6.  The value of each of these is an array that contains objects describing an individual IP resource allocated to the Droplet.  These will define attributes like the IP address, netmask, and gateway of the specific network depending on the type of network it is.</td>
+      <td><code>{"v4":[{"ip_address":"127.0.0.2","netmask":"255.255.255.0","gateway":"127.0.0.1","type":"public"}],"v6":[]}</code></td>
+    </tr>
+    <tr>
+      <td><strong>backups</strong></td>
+      <td><em>array</em></td>
+      <td>An array of backup IDs of any backups that have been taken of the Droplet instance.  Droplet backups are enabled at the time of the instance creation.</td>
+      <td><code>[123, 456, 789]</code></td>
+    </tr>
+    <tr>
+      <td><strong>snapshots</strong></td>
+      <td><em>array</em></td>
+      <td>An array of snapshot IDs of any snapshots created from the Droplet instance.</td>
+      <td><code>[123, 456, 789]</code></td>
+    </tr>
+    <tr>
+      <td><strong>action_ids</strong></td>
+      <td><em>array</em></td>
+      <td>An array of action IDs of any actions that have been taken on this Droplet.</td>
+      <td><code>[123, 456, 789]</code></td>
+    </tr>
   </tbody>
 </table>
 
@@ -1674,7 +1843,7 @@ Content-Length: 111
 <p>To list all Droplets in your account, send a GET request to <code>/v2/droplets</code>.</p>
 
 
-<p>The response body will be an array containing objects representing each Droplet. These will have the standard Droplet attributes:</p>
+<p>The response body will be a JSON object with a key of <code>droplets</code>.  This will be set to an array containing objects representing each Droplet. These will contain the standard Droplet attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -1687,53 +1856,58 @@ Content-Length: 111
     <tbody>
         <tr>
             <td>id</td>
-            <td>Integer</td>
+            <td>integer</td>
             <td>A unique identifier for each Droplet.  This is automatically generated upon Droplet creation.</td>
         </tr>
         <tr>
             <td>name</td>
-            <td>String</td>
+            <td>string</td>
             <td>A human-readable name set for the Droplet instance.</td>
         </tr>
         <tr>
             <td>region</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The region that the Droplet instance is deployed in.  The entire region object is returned.</td>
         </tr>
         <tr>
             <td>image</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The base image used to create the Droplet instance.  The entire image object is returned.</td>
         </tr>
         <tr>
             <td>size</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The size of the Droplet instance.  The entire size object is returned.</td>
         </tr>
         <tr>
-            <td>networks</td>
-            <td>Array</td>
-            <td>The details of the networks configured for the Droplet.  This is an object containing arrays for each of the separate networks.  Each array defines the IP address and the network details (netmask, gateway, public or private, etc.) of the specific network.</td>
-        </tr>
-        <tr>
-            <td>backups</td>
-            <td>Array</td>
-            <td>An array of any backups that have been taken of the Droplet.  The array contain backup objects.  These follow the conventions of an image object.</td>
-        </tr>
-        <tr>
-            <td>snapshots</td>
-            <td>Array</td>
-            <td>An array of any snapshots created from the Droplet.  The array contains snapshot objects.  These follow the conventions of an image object.</td>
-        </tr>
-        <tr>
             <td>locked</td>
-            <td>Boolean</td>
+            <td>boolean</td>
             <td>A boolean value indicating whether the Droplet has been locked, preventing actions by users.</td>
         </tr>
         <tr>
             <td>status</td>
-            <td>String</td>
+            <td>string</td>
             <td>A string indicating the state of the Droplet instance.  This may be "new", "active", or "archive".</td>
+        </tr>
+        <tr>
+            <td>networks</td>
+            <td>array</td>
+            <td>The details of the networks configured for the Droplet.  This is an object containing arrays for each of the separate networks.  Each array defines the IP address and the network details (netmask, gateway, public or private, etc.) of the specific network.</td>
+        </tr>
+        <tr>
+            <td>backups</td>
+            <td>array</td>
+            <td>An array of backup IDs of any backups that have been taken of the Droplet.</td>
+        </tr>
+        <tr>
+            <td>snapshots</td>
+            <td>array</td>
+            <td>An array of snapshot IDs of any snapshots created from the Droplet.</td>
+        </tr>
+        <tr>
+            <td>action_ids</td>
+            <td>array</td>
+            <td>An array of action IDs of any actions that have been taken on this Droplet.</td>
         </tr>
     </tbody>
 </table>
@@ -1744,8 +1918,8 @@ Content-Length: 111
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets" -X GET \
-	-H "Authorization: Bearer 1271e769f329d6b9f2d90cd938a503cf1a52f65b584277a0454701aee6a78b51"
+    curl -X GET "https://api.digitalocean.com/v2/droplets" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -1753,7 +1927,7 @@ Content-Length: 111
     - Headers
 
       ```
-      Authorization: Bearer 1271e769f329d6b9f2d90cd938a503cf1a52f65b584277a0454701aee6a78b51
+      Authorization: Bearer 5dad134107d94515bb5f4d7a9ebc2172c3ffb0b9350b146bb4881389a1cc2fb9
       ```
 
   
@@ -1766,9 +1940,9 @@ Content-Length: 111
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429601
+X-RateLimit-Reset: 1402516413
 Total: 1
-Content-Length: 1531
+Content-Length: 1430
       ```
 
   
@@ -1778,7 +1952,7 @@ Content-Length: 1531
       {
   "droplets": [
     {
-      "id": 1,
+      "id": 14,
       "name": "test.example.com",
       "region": {
         "slug": "nyc1",
@@ -1819,32 +1993,28 @@ Content-Length: 1531
       "networks": {
         "v4": [
           {
-            "ip_address": {
-              "ip_address": "127.0.0.1",
-              "netmask": "255.255.255.0",
-              "gateway": "127.0.0.2",
-              "type": "public"
-            }
+            "ip_address": "127.0.0.1",
+            "netmask": "255.255.255.0",
+            "gateway": "127.0.0.2",
+            "type": "public"
           }
 
         ],
         "v6": [
           {
-            "ipv6_address": {
-              "ip_address": "2400:6180:0000:00D0:0000:0000:0009:7001",
-              "cidr": 124,
-              "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
-              "type": "public"
-            }
+            "ip_address": "2400:6180:0000:00D0:0000:0000:0009:7001",
+            "cidr": 124,
+            "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
+            "type": "public"
           }
 
         ]
       },
       "backup_ids": [
-        119192825
+        119192833
       ],
       "snapshot_ids": [
-        119192826
+        119192834
       ],
       "action_ids": [
 
@@ -1864,8 +2034,8 @@ Lists all of the droplet's snapshots
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/3/snapshots" -X GET \
-	-H "Authorization: Bearer d5775ff79904cf4424d863177c3b111b5975d9560fa0458fb2bd7ef031a31ae6"
+    curl -X GET "https://api.digitalocean.com/v2/droplets/16/snapshots" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -1873,7 +2043,7 @@ Lists all of the droplet's snapshots
     - Headers
 
       ```
-      Authorization: Bearer d5775ff79904cf4424d863177c3b111b5975d9560fa0458fb2bd7ef031a31ae6
+      Authorization: Bearer 353a5ec114f07635fd0335acf8480314d6353b3aa7f8e7b55ee3eda8450efb9a
       ```
 
   
@@ -1886,7 +2056,7 @@ Lists all of the droplet's snapshots
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429602
+X-RateLimit-Reset: 1402516414
 Total: 1
 Content-Length: 207
       ```
@@ -1898,7 +2068,64 @@ Content-Length: 207
       {
   "snapshots": [
     {
-      "id": 119192829,
+      "id": 119192837,
+      "name": "Ubuntu 13.04",
+      "distribution": "ubuntu",
+      "slug": null,
+      "public": false,
+      "regions": [
+        "nyc1"
+      ]
+    }
+  ]
+}
+      ```
+  
+
+### Droplet Retrieve backups for a Droplet [GET]
+
+Lists all of the droplet's backups
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X GET "https://api.digitalocean.com/v2/droplets/17/backups" \
+	-H "Authorization: Bearer $TOKEN"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer bf10a0df89f25a6d78471763429a457dd4edf7d81eaf429db98523ef44cce0d3
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516414
+Total: 1
+Content-Length: 205
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "backups": [
+    {
+      "id": 119192838,
       "name": "Ubuntu 13.04",
       "distribution": "ubuntu",
       "slug": null,
@@ -1978,7 +2205,7 @@ Content-Length: 207
     </tbody>
 </table>
 
-<p>A Droplet will be created using the provided information.  The response body will contain the standard attributes for your new Droplet:</p>
+<p>A Droplet will be created using the provided information.  The response body will contain a JSON object with a key called <code>droplet</code>.  The value will be an object containing the standard attributes for your new Droplet:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -1991,53 +2218,58 @@ Content-Length: 207
     <tbody>
         <tr>
             <td>id</td>
-            <td>Integer</td>
+            <td>integer</td>
             <td>A unique identifier for each Droplet.  This is automatically generated upon Droplet creation.</td>
         </tr>
         <tr>
             <td>name</td>
-            <td>String</td>
+            <td>string</td>
             <td>A human-readable name set for the Droplet instance.</td>
         </tr>
         <tr>
             <td>region</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The region that the Droplet instance is deployed in.  The entire region object is returned.</td>
         </tr>
         <tr>
             <td>image</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The base image used to create the Droplet instance.  The entire image object is returned.</td>
         </tr>
         <tr>
             <td>size</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The size of the Droplet instance.  The entire size object is returned.</td>
         </tr>
         <tr>
-            <td>networks</td>
-            <td>Array</td>
-            <td>The details of the networks configured for the Droplet.  This is an object containing arrays for each of the separate networks.  Each array defines the IP address and the network details (netmask, gateway, public or private, etc.) of the specific network.</td>
-        </tr>
-        <tr>
-            <td>backups</td>
-            <td>Array</td>
-            <td>An array of any backups that have been taken of the Droplet.  The array contain backup objects.  These follow the conventions of an image object.</td>
-        </tr>
-        <tr>
-            <td>snapshots</td>
-            <td>Array</td>
-            <td>An array of any snapshots created from the Droplet.  The array contains snapshot objects.  These follow the conventions of an image object.</td>
-        </tr>
-        <tr>
             <td>locked</td>
-            <td>Boolean</td>
+            <td>boolean</td>
             <td>A boolean value indicating whether the Droplet has been locked, preventing actions by users.</td>
         </tr>
         <tr>
             <td>status</td>
-            <td>String</td>
+            <td>string</td>
             <td>A string indicating the state of the Droplet instance.  This may be "new", "active", or "archive".</td>
+        </tr>
+        <tr>
+            <td>networks</td>
+            <td>array</td>
+            <td>The details of the networks configured for the Droplet.  This is an object containing arrays for each of the separate networks.  Each array defines the IP address and the network details (netmask, gateway, public or private, etc.) of the specific network.</td>
+        </tr>
+        <tr>
+            <td>backups</td>
+            <td>array</td>
+            <td>An array of backup IDs of any backups that have been taken of the Droplet.</td>
+        </tr>
+        <tr>
+            <td>snapshots</td>
+            <td>array</td>
+            <td>An array of snapshot IDs of any snapshots created from the Droplet.</td>
+        </tr>
+        <tr>
+            <td>action_ids</td>
+            <td>array</td>
+            <td>An array of action IDs of any actions that have been taken on this Droplet.</td>
         </tr>
     </tbody>
 </table>
@@ -2109,13 +2341,9 @@ Content-Length: 207
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets" -d '{
-  "name": "My-Droplet",
-  "region": "nyc1",
-  "size": "512mb",
-  "image": 119192830
-}' -X POST \
-	-H "Authorization: Bearer 6ec329a0f8d73133fc4870c9b055c9c61c74b7576e82f5255393d56d2b6792f4" \
+    curl -X POST "https://api.digitalocean.com/v2/droplets" \
+	-d '{"name":"My-Droplet","region":"nyc1","size":"512mb","image":119192839}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -2124,7 +2352,7 @@ Content-Length: 207
     - Headers
 
       ```
-      Authorization: Bearer 6ec329a0f8d73133fc4870c9b055c9c61c74b7576e82f5255393d56d2b6792f4
+      Authorization: Bearer effb15bb9cf26ac18d94a8de6f1f2f3e0481fc3ae35d0117986246cd6b86e865
 Content-Type: application/json
       ```
 
@@ -2136,7 +2364,7 @@ Content-Type: application/json
   "name": "My-Droplet",
   "region": "nyc1",
   "size": "512mb",
-  "image": 119192830
+  "image": 119192839
 }
       ```
   
@@ -2149,9 +2377,9 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429602
-Link: <http://example.org/v2/droplets/4/actions/4>; rel="monitor"
-Content-Length: 844
+X-RateLimit-Reset: 1402516414
+Link: <http://example.org/v2/droplets/18/actions/14>; rel="monitor"
+Content-Length: 846
       ```
 
   
@@ -2160,19 +2388,19 @@ Content-Length: 844
       ```json
       {
   "droplet": {
-    "id": 4,
+    "id": 18,
     "name": "My-Droplet",
     "region": {
       "slug": "nyc1",
       "name": "New York",
       "sizes": [
-        "1024mb",
-        "512mb"
+        "512mb",
+        "1024mb"
       ],
       "available": true
     },
     "image": {
-      "id": 119192830,
+      "id": 119192839,
       "name": "Ubuntu 13.04",
       "distribution": "ubuntu",
       "slug": null,
@@ -2207,66 +2435,9 @@ Content-Length: 844
 
     ],
     "action_ids": [
-      4
+      14
     ]
   }
-}
-      ```
-  
-
-### Droplet Retrieve backups for a Droplet [GET]
-
-Lists all of the droplet's backups
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/5/backups" -X GET \
-	-H "Authorization: Bearer 9018e55b6294f46742471dc68e77b4ea54ec558dbb8f84204d605128c529c6a1"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 9018e55b6294f46742471dc68e77b4ea54ec558dbb8f84204d605128c529c6a1
-      ```
-
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429602
-Total: 1
-Content-Length: 205
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "backups": [
-    {
-      "id": 119192831,
-      "name": "Ubuntu 13.04",
-      "distribution": "ubuntu",
-      "slug": null,
-      "public": false,
-      "regions": [
-        "nyc1"
-      ]
-    }
-  ]
 }
       ```
   
@@ -2277,7 +2448,7 @@ Content-Length: 205
 
 <p>To show an individual droplet, send a GET request to <code>/v2/droplets/$DROPLET_ID</code>.</p>
 
-<p>The response will contain the Droplet's attributes:</p>
+<p>The response will be a JSON object with a key called <code>droplet</code>.  This will be set to a JSON object that contains the Droplet's attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -2290,53 +2461,58 @@ Content-Length: 205
     <tbody>
         <tr>
             <td>id</td>
-            <td>Integer</td>
+            <td>integer</td>
             <td>A unique identifier for each Droplet.  This is automatically generated upon Droplet creation.</td>
         </tr>
         <tr>
             <td>name</td>
-            <td>String</td>
+            <td>string</td>
             <td>A human-readable name set for the Droplet instance.</td>
         </tr>
         <tr>
             <td>region</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The region that the Droplet instance is deployed in.  The entire region object is returned.</td>
         </tr>
         <tr>
             <td>image</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The base image used to create the Droplet instance.  The entire image object is returned.</td>
         </tr>
         <tr>
             <td>size</td>
-            <td>Object</td>
+            <td>object</td>
             <td>The size of the Droplet instance.  The entire size object is returned.</td>
         </tr>
         <tr>
-            <td>networks</td>
-            <td>Array</td>
-            <td>The details of the networks configured for the Droplet.  This is an object containing arrays for each of the separate networks.  Each array defines the IP address and the network details (netmask, gateway, public or private, etc.) of the specific network.</td>
-        </tr>
-        <tr>
-            <td>backups</td>
-            <td>Array</td>
-            <td>An array of any backups that have been taken of the Droplet.  The array contain backup objects.  These follow the conventions of image objects. </td>
-        </tr>
-        <tr>
-            <td>snapshots</td>
-            <td>Array</td>
-            <td>An array of any snapshots created from the Droplet.  The array contains snapshot objects.  These follow the conventions of image objects.</td>
-        </tr>
-        <tr>
             <td>locked</td>
-            <td>Boolean</td>
+            <td>boolean</td>
             <td>A boolean value indicating whether the Droplet has been locked, preventing actions by users.</td>
         </tr>
         <tr>
             <td>status</td>
-            <td>String</td>
+            <td>string</td>
             <td>A string indicating the state of the Droplet instance.  This may be "new", "active", or "archive".</td>
+        </tr>
+        <tr>
+            <td>networks</td>
+            <td>array</td>
+            <td>The details of the networks configured for the Droplet.  This is an object containing arrays for each of the separate networks.  Each array defines the IP address and the network details (netmask, gateway, public or private, etc.) of the specific network.</td>
+        </tr>
+        <tr>
+            <td>backups</td>
+            <td>array</td>
+            <td>An array of backup IDs of any backups that have been taken of the Droplet.</td>
+        </tr>
+        <tr>
+            <td>snapshots</td>
+            <td>array</td>
+            <td>An array of snapshot IDs of any snapshots created from the Droplet.</td>
+        </tr>
+        <tr>
+            <td>action_ids</td>
+            <td>array</td>
+            <td>An array of action IDs of any actions that have been taken on this Droplet.</td>
         </tr>
     </tbody>
 </table>
@@ -2347,8 +2523,8 @@ Content-Length: 205
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/2" -X GET \
-	-H "Authorization: Bearer 672c408f6c5e23ed7553e053915e1bf3a21dc4eed7aa4e4d67b4468d728a43f5"
+    curl -X GET "https://api.digitalocean.com/v2/droplets/15" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -2356,7 +2532,7 @@ Content-Length: 205
     - Headers
 
       ```
-      Authorization: Bearer 672c408f6c5e23ed7553e053915e1bf3a21dc4eed7aa4e4d67b4468d728a43f5
+      Authorization: Bearer 6fd263fe12fdc53d313c80b887f46179e1d8353f3671dea028c7f007efb9ca15
       ```
 
   
@@ -2369,8 +2545,8 @@ Content-Length: 205
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429602
-Content-Length: 1382
+X-RateLimit-Reset: 1402516414
+Content-Length: 1289
       ```
 
   
@@ -2379,14 +2555,14 @@ Content-Length: 1382
       ```json
       {
   "droplet": {
-    "id": 2,
+    "id": 15,
     "name": "test.example.com",
     "region": {
       "slug": "nyc1",
       "name": "New York",
       "sizes": [
-        "512mb",
-        "1024mb"
+        "1024mb",
+        "512mb"
       ],
       "available": true
     },
@@ -2410,9 +2586,9 @@ Content-Length: 1382
       "price_hourly": "0.00744",
       "regions": [
         "nyc1",
-        "ams4",
+        "br1",
         "sfo1",
-        "br1"
+        "ams4"
       ]
     },
     "locked": false,
@@ -2420,32 +2596,28 @@ Content-Length: 1382
     "networks": {
       "v4": [
         {
-          "ip_address": {
-            "ip_address": "127.0.0.2",
-            "netmask": "255.255.255.0",
-            "gateway": "127.0.0.3",
-            "type": "public"
-          }
+          "ip_address": "127.0.0.2",
+          "netmask": "255.255.255.0",
+          "gateway": "127.0.0.3",
+          "type": "public"
         }
 
       ],
       "v6": [
         {
-          "ipv6_address": {
-            "ip_address": "2400:6180:0000:00D0:0000:0000:0009:7002",
-            "cidr": 124,
-            "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
-            "type": "public"
-          }
+          "ip_address": "2400:6180:0000:00D0:0000:0000:0009:7002",
+          "cidr": 124,
+          "gateway": "2400:6180:0000:00D0:0000:0000:0009:7000",
+          "type": "public"
         }
 
       ]
     },
     "backup_ids": [
-      119192827
+      119192835
     ],
     "snapshot_ids": [
-      119192828
+      119192836
     ],
     "action_ids": [
 
@@ -2467,8 +2639,8 @@ Content-Length: 1382
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/6" -d '' -X DELETE \
-	-H "Authorization: Bearer 91dac362560bccc43c38347a2785bb626b3d54b47e06212fda7c4fb88980c953" \
+    curl -X DELETE "https://api.digitalocean.com/v2/droplets/19" \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/x-www-form-urlencoded"
     ```
 
@@ -2477,7 +2649,7 @@ Content-Length: 1382
     - Headers
 
       ```
-      Authorization: Bearer 91dac362560bccc43c38347a2785bb626b3d54b47e06212fda7c4fb88980c953
+      Authorization: Bearer e828aaea17102abaceba2bdd3a1cd1628de6bc1745164053cb08f87f1f9f4f03
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -2490,7 +2662,7 @@ Content-Type: application/x-www-form-urlencoded
       ```
       X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429602
+X-RateLimit-Reset: 1402516414
       ```
 
   
@@ -2521,9 +2693,9 @@ X-RateLimit-Reset: 1402429602
       <td><code>1234</code></td>
     </tr>
     <tr>
-      <td><strong>progress</strong></td>
+      <td><strong>status</strong></td>
       <td><em>string</em></td>
-      <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+      <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
       <td><code>in-progress</code></td>
     </tr>
     <tr>
@@ -2534,8 +2706,26 @@ X-RateLimit-Reset: 1402429602
     </tr>
     <tr>
       <td><strong>started_at</strong></td>
-      <td><em>datetime</em></td>
-      <td>The datetime containing the time that the action was initiated.</td>
+      <td><em>integer</em></td>
+      <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
+    </tr>
+    <tr>
+      <td><strong>completed_at</strong></td>
+      <td><em>integer</em></td>
+      <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
+    </tr>
+    <tr>
+      <td><strong>resource_id</strong></td>
+      <td><em>integer</em></td>
+      <td>A unique identifier for the resource that the action is associated with.</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
+    </tr>
+    <tr>
+      <td><strong>resource_type</strong></td>
+      <td><em>string</em></td>
+      <td>The type of resource that the action is associated with.</td>
       <td><code>2014-05-08T19:11:41Z</code></td>
     </tr>
   </tbody>
@@ -2543,11 +2733,9 @@ X-RateLimit-Reset: 1402429602
 
 ## Droplet Actions Collection [/v2/droplets/{droplet_id}/actions]
 
-### Droplet Actions Restore a Droplet [POST]
+### Droplet Actions Reboot a Droplet [POST]
 
-<p>To restore a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>restore</code> and the "image" attribute to an image ID.</p>
-
-<p>A Droplet restoration will rebuild an image using a backup image.  The image ID that is passed in must be a backup of the current Droplet instance.  The operation will leave any embedded SSH keys intact.</p>
+<p>To reboot a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>reboot</code>.</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -2562,19 +2750,13 @@ X-RateLimit-Reset: 1402429602
         <tr>
             <td>type</td>
             <td>string</td>
-            <td>Must be <code>restore</code>.</td>
-            <td>true</td>
-        </tr>
-        <tr>
-            <td>image</td>
-            <td>integer</td>
-            <td>The image ID of the backup image that you would like to restore.</td>
+            <td>Must be <code>reboot</code></td>
             <td>true</td>
         </tr>
     </tbody>
 </table>
 
-<p>The response will contain all of the standard Droplet action attributes:</p>
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -2591,9 +2773,9 @@ X-RateLimit-Reset: 1402429602
             <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>status</td>
             <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
@@ -2602,8 +2784,23 @@ X-RateLimit-Reset: 1402429602
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -2621,13 +2818,7 @@ X-RateLimit-Reset: 1402429602
   
     <tr>
       <td><strong>type</strong></td>
-      <td>restore</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>image</strong></td>
-      <td>the desired image identifier</td>
+      <td>reboot</td>
       <td>true</td>
     </tr>
   
@@ -2639,8 +2830,9 @@ X-RateLimit-Reset: 1402429602
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/7/actions" -d '{"type":"restore","image":119192833}' -X POST \
-	-H "Authorization: Bearer c38e683b44b250ed0d8a4bec9970ce2098732c63445c9c41c222b0b12767350c" \
+    curl -X POST "https://api.digitalocean.com/v2/droplets/4/actions" \
+	-d '{"type":"reboot"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -2649,7 +2841,7 @@ X-RateLimit-Reset: 1402429602
     - Headers
 
       ```
-      Authorization: Bearer c38e683b44b250ed0d8a4bec9970ce2098732c63445c9c41c222b0b12767350c
+      Authorization: Bearer 35e483313ea291701b4bef57101284fe93ace9d87783a32099d7b1b384e0c690
 Content-Type: application/json
       ```
 
@@ -2658,8 +2850,7 @@ Content-Type: application/json
 
       ```json
       {
-  "type": "restore",
-  "image": 119192833
+  "type": "reboot"
 }
       ```
   
@@ -2672,8 +2863,8 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429603
-Content-Length: 208
+X-RateLimit-Reset: 1402516411
+Content-Length: 207
       ```
 
   
@@ -2682,12 +2873,12 @@ Content-Length: 208
       ```json
       {
   "action": {
-    "id": 6,
+    "id": 4,
     "status": "in-progress",
-    "type": "restore",
-    "started_at": "2014-06-10T18:46:43Z",
+    "type": "reboot",
+    "started_at": "2014-06-11T18:53:32Z",
     "completed_at": null,
-    "resource_id": 7,
+    "resource_id": 4,
     "resource_type": "droplet"
   }
 }
@@ -2717,7 +2908,7 @@ Content-Length: 208
     </tbody>
 </table>
 
-<p>The response will be a Droplet actions object:</p>
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -2734,9 +2925,9 @@ Content-Length: 208
             <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>status</td>
             <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
@@ -2745,8 +2936,23 @@ Content-Length: 208
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -2776,8 +2982,9 @@ Content-Length: 208
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/8/actions" -d '{"type":"power_cycle"}' -X POST \
-	-H "Authorization: Bearer 25f38dd41080bc39b096347bdd73a9fb34b201399dbbe1a096186e777b5d208e" \
+    curl -X POST "https://api.digitalocean.com/v2/droplets/5/actions" \
+	-d '{"type":"power_cycle"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -2786,7 +2993,7 @@ Content-Length: 208
     - Headers
 
       ```
-      Authorization: Bearer 25f38dd41080bc39b096347bdd73a9fb34b201399dbbe1a096186e777b5d208e
+      Authorization: Bearer a045979cf8e1a0abe613e117f2040ca0e9fefc716d825c3f1496cd2e81368e66
 Content-Type: application/json
       ```
 
@@ -2808,7 +3015,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429603
+X-RateLimit-Reset: 1402516412
 Content-Length: 212
       ```
 
@@ -2818,311 +3025,12 @@ Content-Length: 212
       ```json
       {
   "action": {
-    "id": 7,
+    "id": 5,
     "status": "in-progress",
     "type": "power_cycle",
-    "started_at": "2014-06-10T18:46:43Z",
+    "started_at": "2014-06-11T18:53:32Z",
     "completed_at": null,
-    "resource_id": 8,
-    "resource_type": "droplet"
-  }
-}
-      ```
-  
-
-### Droplet Actions Rebuild a Droplet [POST]
-
-<p>To rebuild a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>rebuild</code> and the "image" attribute to an image ID or slug.</p>
-
-<p>A rebuild action functions just like a new create.</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Required?</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>type</td>
-            <td>string</td>
-            <td>Must be <code>rebuild</code></td>
-            <td>true</td>
-        </tr>
-        <tr>
-            <td>image</td>
-            <td>string if an image slug. integer if an image ID.</td>
-            <td>An image slug or ID.  This represents the image that the Droplet will use as a base.</td>
-        </tr>
-    </tbody>
-</table>
-
-<p>The response will be a standard Droplet action:</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>id</td>
-            <td>Integer</td>
-            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
-        </tr>
-        <tr>
-            <td>progress</td>
-            <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
-        </tr>
-        <tr>
-            <td>type</td>
-            <td>String</td>
-            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
-        </tr>
-        <tr>
-            <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
-        </tr>
-    </tbody>
-</table>
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>rebuild</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>image</strong></td>
-      <td>the desired image identifier</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/9/actions" -d '{"type":"rebuild","image":119192836}' -X POST \
-	-H "Authorization: Bearer 79283f5df3ecb71807f94eecaffc2fa1495e0d9bf4194d26e2ce318e0d21425f" \
-	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 79283f5df3ecb71807f94eecaffc2fa1495e0d9bf4194d26e2ce318e0d21425f
-Content-Type: application/json
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "type": "rebuild",
-  "image": 119192836
-}
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429603
-Content-Length: 208
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "action": {
-    "id": 8,
-    "status": "in-progress",
-    "type": "rebuild",
-    "started_at": "2014-06-10T18:46:43Z",
-    "completed_at": null,
-    "resource_id": 9,
-    "resource_type": "droplet"
-  }
-}
-      ```
-  
-
-### Droplet Actions Rename a Droplet [POST]
-
-<p>To rename a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>rename</code> and the "name" attribute to the new name for the droplet.</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Required?</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>type</td>
-            <td>string</td>
-            <td>Must be <code>rename</code></td>
-            <td>true</td>
-        </tr>
-        <tr>
-            <td>name</td>
-            <td>string</td>
-            <td>The new name for the Droplet.</td>
-            <td>true</td>
-        </tr>
-    </tbody>
-</table>
-
-<p>The response will be a standard Droplet action:</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>id</td>
-            <td>Integer</td>
-            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
-        </tr>
-        <tr>
-            <td>progress</td>
-            <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
-        </tr>
-        <tr>
-            <td>type</td>
-            <td>String</td>
-            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
-        </tr>
-        <tr>
-            <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
-        </tr>
-    </tbody>
-</table>
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>rename</td>
-      <td>true</td>
-    </tr>
-  
-    <tr>
-      <td><strong>name</strong></td>
-      <td>the desired name</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/10/actions" -d '{"type":"rename","name":"Droplet-Name"}' -X POST \
-	-H "Authorization: Bearer 852e47297731297ad2bdeaa8ba143a03542660df14bc022e7f82c960fd4d231e" \
-	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 852e47297731297ad2bdeaa8ba143a03542660df14bc022e7f82c960fd4d231e
-Content-Type: application/json
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "type": "rename",
-  "name": "Droplet-Name"
-}
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429603
-Content-Length: 208
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "action": {
-    "id": 9,
-    "status": "in-progress",
-    "type": "rename",
-    "started_at": "2014-06-10T18:46:43Z",
-    "completed_at": null,
-    "resource_id": 10,
+    "resource_id": 5,
     "resource_type": "droplet"
   }
 }
@@ -3133,7 +3041,7 @@ Content-Length: 208
 
 <p>To shutdown a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>shutdown</code>.</p>
 
-                <p>A shutdown action is an attempt to shutdown the Droplet in a graceful way, similar to using the <code>shutdown</code> command from the console.</p>
+<p>A shutdown action is an attempt to shutdown the Droplet in a graceful way, similar to using the <code>shutdown</code> command from the console.</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -3154,7 +3062,7 @@ Content-Length: 208
     </tbody>
 </table>
 
-<p>The response will be a standard Droplet action:</p>
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -3171,9 +3079,9 @@ Content-Length: 208
             <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>status</td>
             <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
@@ -3182,8 +3090,23 @@ Content-Length: 208
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -3213,8 +3136,9 @@ Content-Length: 208
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/11/actions" -d '{"type":"shutdown"}' -X POST \
-	-H "Authorization: Bearer 0419b4ef8d30a3c2c0dc3aea3e8694c670bf10047e1dda53a8be59101658a3b3" \
+    curl -X POST "https://api.digitalocean.com/v2/droplets/6/actions" \
+	-d '{"type":"shutdown"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -3223,7 +3147,7 @@ Content-Length: 208
     - Headers
 
       ```
-      Authorization: Bearer 0419b4ef8d30a3c2c0dc3aea3e8694c670bf10047e1dda53a8be59101658a3b3
+      Authorization: Bearer a600b3236dcb0d75fe87625e5bf447fcd67b43a1f3b0c508b79062179e8f857d
 Content-Type: application/json
       ```
 
@@ -3245,8 +3169,8 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429603
-Content-Length: 211
+X-RateLimit-Reset: 1402516412
+Content-Length: 209
       ```
 
   
@@ -3255,12 +3179,320 @@ Content-Length: 211
       ```json
       {
   "action": {
-    "id": 10,
+    "id": 6,
     "status": "in-progress",
     "type": "shutdown",
-    "started_at": "2014-06-10T18:46:43Z",
+    "started_at": "2014-06-11T18:53:32Z",
     "completed_at": null,
-    "resource_id": 11,
+    "resource_id": 6,
+    "resource_type": "droplet"
+  }
+}
+      ```
+  
+
+### Droplet Actions Power Off a Droplet [POST]
+
+<p>To power off a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>power_off</code>.</p>
+
+<p>A <code>power_off</code> event is a hard shutdown and should only be used if the <code>shutdown</code> action is not successful.  It is similar to cutting the power on a server and could lead to complications.</p>
+
+<p>The request should contain the following attributes:</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>type</td>
+            <td>string</td>
+            <td>Must be <code>powered_off</code></td>
+            <td>true</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+            <td>Integer</td>
+            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>String</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>String</td>
+            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
+        </tr>
+        <tr>
+            <td>started_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
+        </tr>
+    </tbody>
+</table>
+
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>power_off</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X POST "https://api.digitalocean.com/v2/droplets/7/actions" \
+	-d '{"type":"power_off"}' \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 093b1ad52e09fc189b6f3f54d62e481a6e64d9cfd022b2a39787d3072e6b06e5
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "power_off"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516412
+Content-Length: 210
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "action": {
+    "id": 7,
+    "status": "in-progress",
+    "type": "power_off",
+    "started_at": "2014-06-11T18:53:32Z",
+    "completed_at": null,
+    "resource_id": 7,
+    "resource_type": "droplet"
+  }
+}
+      ```
+  
+
+### Droplet Actions Power On a Droplet [POST]
+
+<p>To power on a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>power_on</code>.</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>type</td>
+            <td>string</td>
+            <td>Must be <code>power_on</code></td>
+            <td>true</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+            <td>Integer</td>
+            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>String</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>String</td>
+            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
+        </tr>
+        <tr>
+            <td>started_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
+        </tr>
+    </tbody>
+</table>
+
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>power_on</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X POST "https://api.digitalocean.com/v2/droplets/8/actions" \
+	-d '{"type":"power_on"}' \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer b3fcc17bcf6e1ea9d8a7627366a1996bb2c29871e33b29db37e489193d8bf210
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "power_on"
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516412
+Content-Length: 209
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "action": {
+    "id": 8,
+    "status": "in-progress",
+    "type": "power_on",
+    "started_at": "2014-06-11T18:53:32Z",
+    "completed_at": null,
+    "resource_id": 8,
     "resource_type": "droplet"
   }
 }
@@ -3290,7 +3522,7 @@ Content-Length: 211
     </tbody>
 </table>
 
-<p>The response will be a standard Droplet action:</p>
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -3307,9 +3539,9 @@ Content-Length: 211
             <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>status</td>
             <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
@@ -3318,8 +3550,23 @@ Content-Length: 211
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -3349,8 +3596,9 @@ Content-Length: 211
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/12/actions" -d '{"type":"password_reset"}' -X POST \
-	-H "Authorization: Bearer 563b06c8f7356e9a6144ea39c3135348564cb5a3b7ccc15be6e37b4f922b1c96" \
+    curl -X POST "https://api.digitalocean.com/v2/droplets/9/actions" \
+	-d '{"type":"password_reset"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -3359,7 +3607,7 @@ Content-Length: 211
     - Headers
 
       ```
-      Authorization: Bearer 563b06c8f7356e9a6144ea39c3135348564cb5a3b7ccc15be6e37b4f922b1c96
+      Authorization: Bearer a56b6e626a02de0626a940c6d24dfcd732094a3b16782c1f1e0ed21a95d20437
 Content-Type: application/json
       ```
 
@@ -3381,8 +3629,8 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429603
-Content-Length: 217
+X-RateLimit-Reset: 1402516412
+Content-Length: 215
       ```
 
   
@@ -3391,12 +3639,12 @@ Content-Length: 217
       ```json
       {
   "action": {
-    "id": 11,
+    "id": 9,
     "status": "in-progress",
     "type": "password_reset",
-    "started_at": "2014-06-10T18:46:43Z",
+    "started_at": "2014-06-11T18:53:32Z",
     "completed_at": null,
-    "resource_id": 12,
+    "resource_id": 9,
     "resource_type": "droplet"
   }
 }
@@ -3434,7 +3682,7 @@ Content-Length: 217
     </tbody>
 </table>
 
-<p>The response will be a standard Droplet action:</p>
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -3451,9 +3699,9 @@ Content-Length: 217
             <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>status</td>
             <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
@@ -3462,8 +3710,23 @@ Content-Length: 217
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -3499,8 +3762,9 @@ Content-Length: 217
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/13/actions" -d '{"type":"resize","size":"1024mb"}' -X POST \
-	-H "Authorization: Bearer 0ed810f505c4326f525fba46e2ba213f7438f1d4a81746a05d70c93f4eedd8ad" \
+    curl -X POST "https://api.digitalocean.com/v2/droplets/10/actions" \
+	-d '{"type":"resize","size":"1024mb"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -3509,7 +3773,7 @@ Content-Length: 217
     - Headers
 
       ```
-      Authorization: Bearer 0ed810f505c4326f525fba46e2ba213f7438f1d4a81746a05d70c93f4eedd8ad
+      Authorization: Bearer 028fb3f61a0f7c60cdc5758cca2a5b4fd3a43a7cc30cc0d946cd8c8e6964ac25
 Content-Type: application/json
       ```
 
@@ -3532,8 +3796,341 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429604
+X-RateLimit-Reset: 1402516413
 Content-Length: 209
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "action": {
+    "id": 10,
+    "status": "in-progress",
+    "type": "resize",
+    "started_at": "2014-06-11T18:53:33Z",
+    "completed_at": null,
+    "resource_id": 10,
+    "resource_type": "droplet"
+  }
+}
+      ```
+  
+
+### Droplet Actions Restore a Droplet [POST]
+
+<p>To restore a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>restore</code> and the "image" attribute to an image ID.</p>
+
+<p>A Droplet restoration will rebuild an image using a backup image.  The image ID that is passed in must be a backup of the current Droplet instance.  The operation will leave any embedded SSH keys intact.</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>type</td>
+            <td>string</td>
+            <td>Must be <code>restore</code>.</td>
+            <td>true</td>
+        </tr>
+        <tr>
+            <td>image</td>
+            <td>integer</td>
+            <td>The image ID of the backup image that you would like to restore.</td>
+            <td>true</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+            <td>Integer</td>
+            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>String</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>String</td>
+            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
+        </tr>
+        <tr>
+            <td>started_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
+        </tr>
+    </tbody>
+</table>
+
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>restore</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>image</strong></td>
+      <td>the desired image identifier</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X POST "https://api.digitalocean.com/v2/droplets/11/actions" \
+	-d '{"type":"restore","image":119192829}' \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 3034e240e82726ffe4cd3d907e013da93490da5d79395d449ba5b02109ba16bb
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "restore",
+  "image": 119192829
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516413
+Content-Length: 210
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "action": {
+    "id": 11,
+    "status": "in-progress",
+    "type": "restore",
+    "started_at": "2014-06-11T18:53:33Z",
+    "completed_at": null,
+    "resource_id": 11,
+    "resource_type": "droplet"
+  }
+}
+      ```
+  
+
+### Droplet Actions Rebuild a Droplet [POST]
+
+<p>To rebuild a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>rebuild</code> and the "image" attribute to an image ID or slug.</p>
+
+<p>A rebuild action functions just like a new create.</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>type</td>
+            <td>string</td>
+            <td>Must be <code>rebuild</code></td>
+            <td>true</td>
+        </tr>
+        <tr>
+            <td>image</td>
+            <td>string if an image slug. integer if an image ID.</td>
+            <td>An image slug or ID.  This represents the image that the Droplet will use as a base.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
+
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+            <td>Integer</td>
+            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>String</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>String</td>
+            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
+        </tr>
+        <tr>
+            <td>started_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
+        </tr>
+    </tbody>
+</table>
+
+**Parameters:**
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+    <tr>
+      <td><strong>type</strong></td>
+      <td>rebuild</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>image</strong></td>
+      <td>the desired image identifier</td>
+      <td>true</td>
+    </tr>
+  
+  </tbody>
+</table>
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X POST "https://api.digitalocean.com/v2/droplets/12/actions" \
+	-d '{"type":"rebuild","image":119192831}' \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/json"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 37e63bcdb9b36b502cede88a8d8f2dd8db4593f34750be1b0657bf7da123ac08
+Content-Type: application/json
+      ```
+
+  
+    - Body
+
+      ```json
+      {
+  "type": "rebuild",
+  "image": 119192831
+}
+      ```
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      Content-Type: application/json; charset=utf-8
+X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516413
+Content-Length: 210
       ```
 
   
@@ -3544,19 +4141,19 @@ Content-Length: 209
   "action": {
     "id": 12,
     "status": "in-progress",
-    "type": "resize",
-    "started_at": "2014-06-10T18:46:44Z",
+    "type": "rebuild",
+    "started_at": "2014-06-11T18:53:33Z",
     "completed_at": null,
-    "resource_id": 13,
+    "resource_id": 12,
     "resource_type": "droplet"
   }
 }
       ```
   
 
-### Droplet Actions Power On a Droplet [POST]
+### Droplet Actions Rename a Droplet [POST]
 
-<p>To power on a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>power_on</code>.</p>
+<p>To rename a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>rename</code> and the "name" attribute to the new name for the droplet.</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -3571,13 +4168,19 @@ Content-Length: 209
         <tr>
             <td>type</td>
             <td>string</td>
-            <td>Must be <code>power_on</code></td>
+            <td>Must be <code>rename</code></td>
+            <td>true</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>The new name for the Droplet.</td>
             <td>true</td>
         </tr>
     </tbody>
 </table>
 
-<p>The response should be a standard Droplet action:</p>
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -3594,9 +4197,9 @@ Content-Length: 209
             <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>status</td>
             <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
@@ -3605,8 +4208,23 @@ Content-Length: 209
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -3624,7 +4242,13 @@ Content-Length: 209
   
     <tr>
       <td><strong>type</strong></td>
-      <td>power_on</td>
+      <td>rename</td>
+      <td>true</td>
+    </tr>
+  
+    <tr>
+      <td><strong>name</strong></td>
+      <td>the desired name</td>
       <td>true</td>
     </tr>
   
@@ -3636,8 +4260,9 @@ Content-Length: 209
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/14/actions" -d '{"type":"power_on"}' -X POST \
-	-H "Authorization: Bearer 9f6cf35ecacf1858ee841116ba334fd2f3419d94530c984d6f2dfe8c87e9336a" \
+    curl -X POST "https://api.digitalocean.com/v2/droplets/13/actions" \
+	-d '{"type":"rename","name":"Droplet-Name"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -3646,7 +4271,7 @@ Content-Length: 209
     - Headers
 
       ```
-      Authorization: Bearer 9f6cf35ecacf1858ee841116ba334fd2f3419d94530c984d6f2dfe8c87e9336a
+      Authorization: Bearer 6313052a8dad3543176cdcc6565eedbdbf29e50ed2610777a0479c4bbde07fb9
 Content-Type: application/json
       ```
 
@@ -3655,7 +4280,8 @@ Content-Type: application/json
 
       ```json
       {
-  "type": "power_on"
+  "type": "rename",
+  "name": "Droplet-Name"
 }
       ```
   
@@ -3668,8 +4294,8 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429604
-Content-Length: 211
+X-RateLimit-Reset: 1402516413
+Content-Length: 209
       ```
 
   
@@ -3680,286 +4306,10 @@ Content-Length: 211
   "action": {
     "id": 13,
     "status": "in-progress",
-    "type": "power_on",
-    "started_at": "2014-06-10T18:46:44Z",
+    "type": "rename",
+    "started_at": "2014-06-11T18:53:33Z",
     "completed_at": null,
-    "resource_id": 14,
-    "resource_type": "droplet"
-  }
-}
-      ```
-  
-
-### Droplet Actions Power Off a Droplet [POST]
-
-<p>To power off a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>power_off</code>.</p>
-
-<p>A <code>power_off</code> event is a hard shutdown and should only be used if the <code>shutdown</code> action is not successful.  It is similar to cutting the power on a server and could lead to complications.</p>
-
-<p>The request should contain the following attributes:</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Required?</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>type</td>
-            <td>string</td>
-            <td>Must be <code>powered_off</code></td>
-            <td>true</td>
-        </tr>
-    </tbody>
-</table>
-
-<p>The response should be a standard Droplet action:</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>id</td>
-            <td>Integer</td>
-            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
-        </tr>
-        <tr>
-            <td>progress</td>
-            <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
-        </tr>
-        <tr>
-            <td>type</td>
-            <td>String</td>
-            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
-        </tr>
-        <tr>
-            <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
-        </tr>
-    </tbody>
-</table>
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>power_off</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/15/actions" -d '{"type":"power_off"}' -X POST \
-	-H "Authorization: Bearer 7b4fc135fbd73a260aecdbcc2472a7d41ce7607c3b780d92fc4241a0bd6ed3c7" \
-	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer 7b4fc135fbd73a260aecdbcc2472a7d41ce7607c3b780d92fc4241a0bd6ed3c7
-Content-Type: application/json
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "type": "power_off"
-}
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429604
-Content-Length: 212
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "action": {
-    "id": 14,
-    "status": "in-progress",
-    "type": "power_off",
-    "started_at": "2014-06-10T18:46:44Z",
-    "completed_at": null,
-    "resource_id": 15,
-    "resource_type": "droplet"
-  }
-}
-      ```
-  
-
-### Droplet Actions Reboot a Droplet [POST]
-
-<p>To reboot a Droplet, send a POST request to <code>/v2/droplets/$DROPLET_ID/actions</code>.  Set the "type" attribute to <code>reboot</code>.</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Required?</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>type</td>
-            <td>string</td>
-            <td>Must be <code>reboot</code></td>
-            <td>true</td>
-        </tr>
-    </tbody>
-</table>
-
-<p>The response will be a standard Droplet action:</p>
-
-<table class="pure-table pure-table-horizontal">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>id</td>
-            <td>Integer</td>
-            <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
-        </tr>
-        <tr>
-            <td>progress</td>
-            <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
-        </tr>
-        <tr>
-            <td>type</td>
-            <td>String</td>
-            <td>The type of action that the event is executing (reboot, power_off, etc.).</td>
-        </tr>
-        <tr>
-            <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
-        </tr>
-    </tbody>
-</table>
-
-**Parameters:**
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Required</th>
-    </tr>
-  </thead>
-  <tbody>
-  
-    <tr>
-      <td><strong>type</strong></td>
-      <td>reboot</td>
-      <td>true</td>
-    </tr>
-  
-  </tbody>
-</table>
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/droplets/16/actions" -d '{"type":"reboot"}' -X POST \
-	-H "Authorization: Bearer cd81b26b5da0b276c942246041cbf1e241c5fd69ea4e1fc4149508b2bc68b70e" \
-	-H "Content-Type: application/json"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer cd81b26b5da0b276c942246041cbf1e241c5fd69ea4e1fc4149508b2bc68b70e
-Content-Type: application/json
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "type": "reboot"
-}
-      ```
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      Content-Type: application/json; charset=utf-8
-X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429604
-Content-Length: 209
-      ```
-
-  
-    - Body
-
-      ```json
-      {
-  "action": {
-    "id": 15,
-    "status": "in-progress",
-    "type": "reboot",
-    "started_at": "2014-06-10T18:46:44Z",
-    "completed_at": null,
-    "resource_id": 16,
+    "resource_id": 13,
     "resource_type": "droplet"
   }
 }
@@ -3972,9 +4322,7 @@ Content-Length: 209
 
 <p>To retrieve a Droplet action, send a GET request to <code>/v2/droplets/$DROPLET_ID/actions/$ACTION_ID</code>.</p>
 
-<p>A Droplet action object is an object containing the id, progress, type, and started_at attributes.  It can be used to track the completion of actions that were requested.</p>
-
-<p>The response will be a standard Droplet action:</p>
+<p>The response will be a JSON object with a key called <code>action</code>.  The value will be a Droplet actions object:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -3991,9 +4339,9 @@ Content-Length: 209
             <td>A unique identifier for each Droplet action event.  This is used to reference a specific action that was requested.</td>
         </tr>
         <tr>
-            <td>progress</td>
+            <td>status</td>
             <td>String</td>
-            <td>The current progress of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
+            <td>The current status of the action.  The value of this attribute will be "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
@@ -4002,8 +4350,23 @@ Content-Length: 209
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>The datetime containing the time that the action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -4014,8 +4377,8 @@ Content-Length: 209
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/droplets/17/actions/16" -X GET \
-	-H "Authorization: Bearer c5c45094bb9abb542277d5c3d8f6265db81fe02e94a6ee64321faaa908262b93"
+    curl -X GET "https://api.digitalocean.com/v2/droplets/3/actions/3" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -4023,7 +4386,7 @@ Content-Length: 209
     - Headers
 
       ```
-      Authorization: Bearer c5c45094bb9abb542277d5c3d8f6265db81fe02e94a6ee64321faaa908262b93
+      Authorization: Bearer 6997f04212f3000adaad4495c5d9bfb3a96a66531f60e7bdd7d51d1c084d2646
       ```
 
   
@@ -4036,8 +4399,8 @@ Content-Length: 209
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429604
-Content-Length: 206
+X-RateLimit-Reset: 1402516411
+Content-Length: 205
       ```
 
   
@@ -4046,10 +4409,10 @@ Content-Length: 206
       ```json
       {
   "action": {
-    "id": 16,
+    "id": 3,
     "status": "in-progress",
     "type": "create",
-    "started_at": "2014-06-10T18:46:44Z",
+    "started_at": "2014-06-11T18:53:31Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": null
@@ -4082,9 +4445,9 @@ Content-Length: 206
       <td><code>1234</code></td>
     </tr>
     <tr>
-      <td><strong>progress</strong></td>
+      <td><strong>status</strong></td>
       <td><em>string</em></td>
-      <td>The current progress of the image action.  This will be either "in-progress", "completed", or "errored".</td>
+      <td>The current status of the image action.  This will be either "in-progress", "completed", or "errored".</td>
       <td><code>in-progress</code></td>
     </tr>
     <tr>
@@ -4095,8 +4458,26 @@ Content-Length: 206
     </tr>
     <tr>
       <td><strong>started_at</strong></td>
-      <td><em>datetime</em></td>
-      <td>This represents the time that the image action was initiated.</td>
+      <td><em>integer</em></td>
+      <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
+    </tr>
+    <tr>
+      <td><strong>completed_at</strong></td>
+      <td><em>integer</em></td>
+      <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
+    </tr>
+    <tr>
+      <td><strong>resource_id</strong></td>
+      <td><em>integer</em></td>
+      <td>A unique identifier for the resource that the action is associated with.</td>
+      <td><code>2014-05-08T19:11:41Z</code></td>
+    </tr>
+    <tr>
+      <td><strong>resource_type</strong></td>
+      <td><em>string</em></td>
+      <td>The type of resource that the action is associated with.</td>
       <td><code>2014-05-08T19:11:41Z</code></td>
     </tr>
   </tbody>
@@ -4133,7 +4514,7 @@ Content-Length: 206
     </tbody>
 </table>
 
-The response will contain the image action:
+<p>The response will be a JSON object with a key called <code>action</code>.  The value of this will be an object containing the standard image action attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -4146,23 +4527,38 @@ The response will contain the image action:
     <tbody>
         <tr>
             <td>id</td>
-            <td>Integer</td>
-            <td>A unique numeric ID that can be used to identify and reference an image action event.</td>
+            <td>integer</td>
+            <td>A unique numeric ID used to identify and reference an image action.</td>
         </tr>
         <tr>
-            <td>progress</td>
-            <td>String</td>
-            <td>The current progress of the image action.  This will be either "in-progress", "completed", or "errored".</td>
+            <td>status</td>
+            <td>string</td>
+            <td>The current status of the image action.  This will be either "in-progress", "completed", or "errored".</td>
         </tr>
         <tr>
             <td>type</td>
-            <td>String</td>
-            <td>This is the type of the image action that the JSON object represents.</td>
+            <td>string</td>
+            <td>This is the type of the image action (transfer, etc.).</td>
         </tr>
         <tr>
             <td>started_at</td>
-            <td>Datetime</td>
-            <td>This represents the time that the image action was initiated.</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was initiated.</td>
+        </tr>
+        <tr>
+            <td>completed_at</td>
+            <td>integer</td>
+            <td>A time value given in UTC epoch seconds that represents when the action was completed.</td>
+        </tr>
+        <tr>
+            <td>resource_id</td>
+            <td>integer</td>
+            <td>A unique identifier for the resource that the action is associated with.</td>
+        </tr>
+        <tr>
+            <td>resource_type</td>
+            <td>string</td>
+            <td>The type of resource that the action is associated with.</td>
         </tr>
     </tbody>
 </table>
@@ -4198,8 +4594,9 @@ The response will contain the image action:
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192819/actions" -d '{"type":"transfer","region":"sfo1"}' -X POST \
-	-H "Authorization: Bearer 93d482b57a2aa692adb0cbba50df28133fb3777c2349b8eefb2a1f9262c7430c" \
+    curl -X POST "https://api.digitalocean.com/v2/images/119192841/actions" \
+	-d '{"type":"transfer","region":"sfo1"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -4208,7 +4605,7 @@ The response will contain the image action:
     - Headers
 
       ```
-      Authorization: Bearer 93d482b57a2aa692adb0cbba50df28133fb3777c2349b8eefb2a1f9262c7430c
+      Authorization: Bearer 0e40f92cae431d6ba57de797bb2456b1ecc0f43ffe76b8cf7f288574a668a4fe
 Content-Type: application/json
       ```
 
@@ -4231,8 +4628,8 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429600
-Content-Length: 212
+X-RateLimit-Reset: 1402516415
+Content-Length: 213
       ```
 
   
@@ -4241,10 +4638,10 @@ Content-Length: 212
       ```json
       {
   "action": {
-    "id": 2,
+    "id": 17,
     "status": "in-progress",
     "type": "transfer",
-    "started_at": "2014-06-10T18:46:40Z",
+    "started_at": "2014-06-11T18:53:35Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": "backend"
@@ -4264,8 +4661,8 @@ Content-Length: 212
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192818/actions/1" -X GET \
-	-H "Authorization: Bearer 8592d2a9eaf03bf5720ad4b540a1a3d220574a5882ecd73881bdc130c98e33f2"
+    curl -X GET "https://api.digitalocean.com/v2/images/119192840/actions/16" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -4273,7 +4670,7 @@ Content-Length: 212
     - Headers
 
       ```
-      Authorization: Bearer 8592d2a9eaf03bf5720ad4b540a1a3d220574a5882ecd73881bdc130c98e33f2
+      Authorization: Bearer e30cbe36d843bff4573b93970b57c8534f2af0d6bb3fbe8118ad0d12065f5e57
       ```
 
   
@@ -4286,8 +4683,8 @@ Content-Length: 212
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429600
-Content-Length: 207
+X-RateLimit-Reset: 1402516415
+Content-Length: 208
       ```
 
   
@@ -4296,10 +4693,10 @@ Content-Length: 207
       ```json
       {
   "action": {
-    "id": 1,
+    "id": 16,
     "status": "in-progress",
     "type": "transfer",
-    "started_at": "2014-06-10T18:46:40Z",
+    "started_at": "2014-06-11T18:53:35Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": null
@@ -4342,7 +4739,7 @@ Content-Length: 207
     <tr>
       <td><strong>distribution</strong></td>
       <td><em>string</em></td>
-      <td>This attribute describes the base distribution used for this image.  This will not contain release information, but only a simple string like "Ubuntu".</td>
+      <td>This attribute describes the base distribution used for this image.</td>
       <td><code>ubuntu</code></td>
     </tr>
     <tr>
@@ -4363,17 +4760,22 @@ Content-Length: 207
       <td>This attribute is an array of the regions that the image is available in.  The regions are represented by their identifying slug values.</td>
       <td><code>["nyc1", "sfo1"]</code></td>
     </tr>
+    <tr>
+      <td><strong>action_ids</strong></td>
+      <td><em>array</em></td>
+      <td>An array of action IDs of any actions that have been taken on this image.</td>
+      <td><code>[123, 456, 789]</code></td>
+    </tr>
   </tbody>
 </table>
 
 ## Images Collection [/v2/images]
 
-### Images List a
-    ll Images [GET]
+### Images List all Images [GET]
 
 <p>To list all of the images available on your account, send a GET request to <code>/v2/images</code>.</p>
 
-<p>The response will be an array of image objects.  The objects will each contain the standard image attributes:</p>
+<p>The response will be a JSON object with a key called <code>images</code>.  This will be set to an array of image objects, each of which will contain the standard image attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -4414,6 +4816,11 @@ Content-Length: 207
             <td>array</td>
             <td>An array of the regions that the image is available in.  The regions are represented by their identifying slug values.</td>
         </tr>
+        <tr>
+            <td>action_ids</td>
+            <td>array</td>
+            <td>An array of action IDs of any actions that have been taken on this image.</td>
+        </tr>
     </tbody>
 </table>
 
@@ -4423,8 +4830,8 @@ Content-Length: 207
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/images/" -X GET \
-	-H "Authorization: Bearer 2722e05df7b1e09d6bd27f895f8895bd76caebeeac2daf65b2e53880238c6c88"
+    curl -X GET "https://api.digitalocean.com/v2/images/" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -4432,7 +4839,7 @@ Content-Length: 207
     - Headers
 
       ```
-      Authorization: Bearer 2722e05df7b1e09d6bd27f895f8895bd76caebeeac2daf65b2e53880238c6c88
+      Authorization: Bearer 59709e78e66cef77675945cbc9a1d7884e98e0a0318093e0657ff504e50a3347
       ```
 
   
@@ -4445,7 +4852,7 @@ Content-Length: 207
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429600
+X-RateLimit-Reset: 1402516415
 Total: 2
 Content-Length: 390
       ```
@@ -4467,7 +4874,7 @@ Content-Length: 390
       ]
     },
     {
-      "id": 119192820,
+      "id": 119192842,
       "name": "Ubuntu 13.04",
       "distribution": null,
       "slug": null,
@@ -4487,7 +4894,7 @@ Content-Length: 390
 
 <p>To retrieve information about an image (public or private), send a GET request to <code>/v2/images/$IMAGE_ID</code>.</p>
 
-<p>The response will be an image object containing the standard image attributes:</p>
+<p>The response will be a JSON object with a key called <code>image</code>.  The value of this will be an image object containing the standard image attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -4528,6 +4935,11 @@ Content-Length: 390
             <td>array</td>
             <td>An array of the regions that the image is available in.  The regions are represented by their identifying slug values.</td>
         </tr>
+        <tr>
+            <td>action_ids</td>
+            <td>array</td>
+            <td>An array of action IDs of any actions that have been taken on this image.</td>
+        </tr>
     </tbody>
 </table>
 
@@ -4537,8 +4949,8 @@ Content-Length: 390
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192821" -X GET \
-	-H "Authorization: Bearer ad6768b9beea9cdbaf6553b1afd62a2c34a2baa198a1e56effd41203b78b44b6"
+    curl -X GET "https://api.digitalocean.com/v2/images/119192843" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -4546,7 +4958,7 @@ Content-Length: 390
     - Headers
 
       ```
-      Authorization: Bearer ad6768b9beea9cdbaf6553b1afd62a2c34a2baa198a1e56effd41203b78b44b6
+      Authorization: Bearer b7969743b1a3d4e103e2576c767f1ab1e69805a22f18b0a08fd1ec3a15bd15e2
       ```
 
   
@@ -4559,7 +4971,7 @@ Content-Length: 390
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429601
+X-RateLimit-Reset: 1402516415
 Content-Length: 171
       ```
 
@@ -4569,7 +4981,7 @@ Content-Length: 171
       ```json
       {
   "image": {
-    "id": 119192821,
+    "id": 119192843,
     "name": "Ubuntu 13.04",
     "distribution": null,
     "slug": null,
@@ -4586,7 +4998,7 @@ Content-Length: 171
 
 <p>To retrieve information about a public image, one option is to send a GET request to <code>/v2/images/$IMAGE_SLUG</code>.</p>
 
-<p>The response will be an image object containing the standard image attributes:</p>
+<p>The response will be a JSON object with a key called <code>image</code>.  The value of this will be an image object containing the standard image attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -4627,6 +5039,11 @@ Content-Length: 171
             <td>array</td>
             <td>An array of the regions that the image is available in.  The regions are represented by their identifying slug values.</td>
         </tr>
+        <tr>
+            <td>action_ids</td>
+            <td>array</td>
+            <td>An array of action IDs of any actions that have been taken on this image.</td>
+        </tr>
     </tbody>
 </table>
 
@@ -4636,8 +5053,8 @@ Content-Length: 171
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/images/ubuntu1304" -X GET \
-	-H "Authorization: Bearer fac69fb31340e856f9d803ff19c39a7b14efb869824ed725c36064e6259b529b"
+    curl -X GET "https://api.digitalocean.com/v2/images/ubuntu1304" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -4645,7 +5062,7 @@ Content-Length: 171
     - Headers
 
       ```
-      Authorization: Bearer fac69fb31340e856f9d803ff19c39a7b14efb869824ed725c36064e6259b529b
+      Authorization: Bearer f0baf29c820945e40f562c588b0f56c7536dd878e3fff37d4fba80d04616f6d5
       ```
 
   
@@ -4658,7 +5075,7 @@ Content-Length: 171
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429601
+X-RateLimit-Reset: 1402516415
 Content-Length: 182
       ```
 
@@ -4679,6 +5096,46 @@ Content-Length: 182
   }
 }
       ```
+  
+
+### Images Delete an Image [DELETE]
+
+<p>To delete an image, send a DELETE request to <code>/v2/images/$IMAGE_ID</code>.</p>
+
+<p>A status of 204 will be given.  This indicates that the request was processed successfully, but that no response body is needed.</p>
+
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X DELETE "https://api.digitalocean.com/v2/images/119192845" \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/x-www-form-urlencoded"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 63fca1d2806f313992d19c9f1857042d6e86e73a96c227d6a5df9af105498f1b
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516415
+      ```
+
   
 
 ### Images Update an Image [PUT]
@@ -4703,7 +5160,7 @@ Content-Length: 182
     </tbody>
 </table>
 
-<p>The response will be an image object containing the standard image attributes:</p>
+<p>The response will be a JSON object with a key set to <code>image</code>.  The value of this will be an image object containing the standard image attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -4743,6 +5200,11 @@ Content-Length: 182
             <td>regions</td>
             <td>array</td>
             <td>An array of the regions that the image is available in.  The regions are represented by their identifying slug values.</td>
+        </tr>
+        <tr>
+            <td>action_ids</td>
+            <td>array</td>
+            <td>An array of action IDs of any actions that have been taken on this image.</td>
         </tr>
     </tbody>
 </table>
@@ -4772,8 +5234,9 @@ Content-Length: 182
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/images/119192823" -d '{"name":"New Image Name"}' -X PUT \
-	-H "Authorization: Bearer a1eeb49c2210d8faf6b046b40f350475b5ab55067af699ebd830c68d99dbab7c" \
+    curl -X PUT "https://api.digitalocean.com/v2/images/119192846" \
+	-d '{"name":"New Image Name"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -4782,7 +5245,7 @@ Content-Length: 182
     - Headers
 
       ```
-      Authorization: Bearer a1eeb49c2210d8faf6b046b40f350475b5ab55067af699ebd830c68d99dbab7c
+      Authorization: Bearer f014a545d01bc0cde378688b6dedd110d6533646799d2e3a0fba5fb335b664be
 Content-Type: application/json
       ```
 
@@ -4804,7 +5267,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429601
+X-RateLimit-Reset: 1402516415
 Content-Length: 173
       ```
 
@@ -4814,7 +5277,7 @@ Content-Length: 173
       ```json
       {
   "image": {
-    "id": 119192823,
+    "id": 119192846,
     "name": "New Image Name",
     "distribution": null,
     "slug": null,
@@ -4825,46 +5288,6 @@ Content-Length: 173
   }
 }
       ```
-  
-
-### Images Delete an Image [DELETE]
-
-<p>To delete an image, send a DELETE request to <code>/v2/images/$IMAGE_ID</code>.</p>
-
-<p>A status of 204 will be given.  This indicates that the request was processed successfully, but that no response body is needed.</p>
-
-
-**Example:**
-
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/images/119192824" -d '' -X DELETE \
-	-H "Authorization: Bearer ac369f1ff107a08085e8d1a913e2d8d7af5247c30a8ee4def2cf2c37af6d5171" \
-	-H "Content-Type: application/x-www-form-urlencoded"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer ac369f1ff107a08085e8d1a913e2d8d7af5247c30a8ee4def2cf2c37af6d5171
-Content-Type: application/x-www-form-urlencoded
-      ```
-
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429601
-      ```
-
   
 # Keys
 
@@ -4913,9 +5336,9 @@ X-RateLimit-Reset: 1402429601
 
 ### Keys List all Keys [GET]
 
-<p>To retrieve a list of all of the domains in your account, send a GET request to <code>/v2/domains</code>.</p>
+<p>To list all of the keys in your account, send a GET request to <code>/v2/account/keys</code>.</p>
 
-An array of Domain objects will be returned, each of which contain the standard domain attributes:
+<p>The response will be a JSON object with a key set to <code>ssh_keys</code>.  The value of this will be an array of key objects, each of which contain the standard key attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -4927,19 +5350,24 @@ An array of Domain objects will be returned, each of which contain the standard 
     </thead>
     <tbody>
         <tr>
+            <td>id</td>
+            <td>integer</td>
+            <td>A unique identification number for the key.  This is used to reference the specific SSH key.</td>
+        </tr>
+        <tr>
             <td>name</td>
             <td>string</td>
-            <td>The name of the domain name itself.  The string should be in the form of <code>domain.TLD</code>.  For instance, <code>example.com</code> is a valid domain value.</td>
+            <td>The display name for the given SSH key.</td>
         </tr>
         <tr>
-            <td>ttl</td>
-            <td>integer</td>
-            <td>This value is the time to live for the records on this domain, in seconds.  This defines the time frame that clients can cache queried information before a refresh should be requested.</td>
-        </tr>
-        <tr>
-            <td>zone_file</td>
+            <td>fingerprint</td>
             <td>string</td>
-            <td>This attribute contains the complete contents of the zone file for the selected domain.  Most individual domain records can be accessed through the <code>/v2/domains/$DOMAIN_NAME/records</code> endpoint.  However, the SOA record for the domain is only available through the <code>zone_file</code>.</td>
+            <td>The fingerprint value generated from the public key.  This is a unique identifier that can be used to  differentiate it from other keys using a format that SSH recognizes.</td>
+        </tr>
+        <tr>
+            <td>public_key</td>
+            <td>string</td>
+            <td>The entire public key string that was uploaded.  This is embedded into the root user's <code>authorized_keys</code> file if you choose to include the SSH key during Droplet creation.</td>
         </tr>
     </tbody>
 </table>
@@ -4950,8 +5378,8 @@ An array of Domain objects will be returned, each of which contain the standard 
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/account/keys" -X GET \
-	-H "Authorization: Bearer b11803326e3ed7a92f11f077e407bb734fd759ad7551eb88ba0c4dfba601fab0"
+    curl -X GET "https://api.digitalocean.com/v2/account/keys" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -4959,7 +5387,7 @@ An array of Domain objects will be returned, each of which contain the standard 
     - Headers
 
       ```
-      Authorization: Bearer b11803326e3ed7a92f11f077e407bb734fd759ad7551eb88ba0c4dfba601fab0
+      Authorization: Bearer f69daca2c1aef23635472b483edcb851b351270a81978abaecef5a0c147b8a82
       ```
 
   
@@ -4972,7 +5400,7 @@ An array of Domain objects will be returned, each of which contain the standard 
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429605
+X-RateLimit-Reset: 1402516408
 Content-Length: 572
       ```
 
@@ -4995,7 +5423,7 @@ Content-Length: 572
 
 ### Keys Create a new Key [POST]
 
-<p>To create a new domain, send a POST request to <code>/v2/domains</code>.  Set the "name" attribute to the domain name you are adding.  Set the "ip_address" attribute to the IP address you want to point the domain to.</p>
+<p>To add a new SSH public key to your DigitalOcean account, send a POST request to <code>/v2/account/keys</code>.  Set the "name" attribute to the name you wish to use and the "public_key" attribute to a string of the full public key you are adding.</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -5010,19 +5438,19 @@ Content-Length: 572
         <tr>
             <td>name</td>
             <td>string</td>
-            <td>The domain name to add to the DigitalOcean DNS management interface.  The name must be unique in DigitalOcean's DNS system.  The request will fail if the name has already been taken.</td>
+            <td>The name to give the new SSH key in your account.</td>
             <td>true</td>
         </tr>
         <tr>
-            <td>ip_address</td>
+            <td>public_key</td>
             <td>string</td>
-            <td>This attribute contains the IP address you want the domain to point to.</td>
+            <td>A string containing the entire public key.</td>
             <td>true</td>
         </tr>
     </tbody>
 </table>
 
-<p>The response will contain the standard attributes associated with a domain:</p>
+<p>The response body will be a JSON object with a key set to <code>ssh_key</code>.  The value will be the complete generated key object. This will have the standard key attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -5034,25 +5462,27 @@ Content-Length: 572
     </thead>
     <tbody>
         <tr>
+            <td>id</td>
+            <td>integer</td>
+            <td>A unique identification number for the key.  This is used to reference the specific SSH key.</td>
+        </tr>
+        <tr>
             <td>name</td>
             <td>string</td>
-            <td>The name of the domain name itself.  The string should be in the form of <code>domain.TLD</code>.  For instance, <code>example.com</code> is a valid domain value.</td>
+            <td>The display name for the given SSH key.</td>
         </tr>
         <tr>
-            <td>ttl</td>
-            <td>integer</td>
-            <td>This value is the time to live for the records on this domain, in seconds.  This defines the time frame that clients can cache queried information before a refresh should be requested.</td>
-        </tr>
-        <tr>
-            <td>zone_file</td>
+            <td>fingerprint</td>
             <td>string</td>
-            <td>This attribute contains the complete contents of the zone file for the selected domain.  Most individual domain records can be accessed through the <code>/v2/domains/$DOMAIN_NAME/records</code> endpoint.  However, the SOA record for the domain is only available through the <code>zone_file</code>.</td>
+            <td>The fingerprint value generated from the public key.  This is a unique identifier that can be used to  differentiate it from other keys using a format that SSH recognizes.</td>
+        </tr>
+        <tr>
+            <td>public_key</td>
+            <td>string</td>
+            <td>The entire public key string that was uploaded.  This is embedded into the root user's <code>authorized_keys</code> file if you choose to include the SSH key during Droplet creation.</td>
         </tr>
     </tbody>
 </table>
-
-
-<p>Keep in mind that, upon creation, the <code>zone_file</code> field will have a value of <code>null</code> until a zone file is generated and propagated through an automatic process on the DigitalOcean servers.</p>
 
 **Parameters:**
 <table>
@@ -5085,11 +5515,9 @@ Content-Length: 572
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/account/keys" -d '{
-  "name": "Example Key",
-  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com"
-}' -X POST \
-	-H "Authorization: Bearer 49c730607201b00df1435678388e85acfa3dfb1c11495dc5cc161028a15ea9cc" \
+    curl -X POST "https://api.digitalocean.com/v2/account/keys" \
+	-d '{"name":"Example Key","public_key":"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/json"
     ```
 
@@ -5098,7 +5526,7 @@ Content-Length: 572
     - Headers
 
       ```
-      Authorization: Bearer 49c730607201b00df1435678388e85acfa3dfb1c11495dc5cc161028a15ea9cc
+      Authorization: Bearer b6f3e49c5e81d5c9bb469b3dce51cba321abea089d6245d0645c59b8a290d0d8
 Content-Type: application/json
       ```
 
@@ -5121,7 +5549,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429605
+X-RateLimit-Reset: 1402516408
 Content-Length: 551
       ```
 
@@ -5142,11 +5570,11 @@ Content-Length: 551
 
 ## Keys Member [/v2/account/keys/{id_or_fingerprint}]
 
-### Keys Show [GET]
+### Keys Retrieve and existing Key [GET]
 
-<p>To get details about a specific domain, send a GET request to <code>/v2/domains/$DOMAIN_NAME</code>. </p>
+<p>To show information about a key, send a GET request to <code>/v2/account/keys/$KEY_ID</code> or <code>/v2/account/keys/$KEY_FINGERPRINT</code>.</p>
 
-The response received will contain the standard attributes defined for a domain:
+<p>The response will be a JSON object with a key called <code>ssh_key</code>.  The value of this will be a key object which contains the standard key attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -5158,19 +5586,24 @@ The response received will contain the standard attributes defined for a domain:
     </thead>
     <tbody>
         <tr>
+            <td>id</td>
+            <td>integer</td>
+            <td>A unique identification number for the key.  This is used to reference the specific SSH key.</td>
+        </tr>
+        <tr>
             <td>name</td>
             <td>string</td>
-            <td>The name of the domain name itself.  The string should be in the form of <code>domain.TLD</code>.  For instance, <code>example.com</code> is a valid domain value.</td>
+            <td>The display name for the given SSH key.</td>
         </tr>
         <tr>
-            <td>ttl</td>
-            <td>integer</td>
-            <td>This value is the time to live for the records on this domain, in seconds.  This defines the time frame that clients can cache queried information before a refresh should be requested.</td>
-        </tr>
-        <tr>
-            <td>zone_file</td>
+            <td>fingerprint</td>
             <td>string</td>
-            <td>This attribute contains the complete contents of the zone file for the selected domain.  Most individual domain records can be accessed through the <code>/v2/domains/$DOMAIN_NAME/records</code> endpoint.  However, the SOA record for the domain is only available through the <code>zone_file</code>.</td>
+            <td>The fingerprint value generated from the public key.  This is a unique identifier that can be used to  differentiate it from other keys using a format that SSH recognizes.</td>
+        </tr>
+        <tr>
+            <td>public_key</td>
+            <td>string</td>
+            <td>The entire public key string that was uploaded.  This is embedded into the root user's <code>authorized_keys</code> file if you choose to include the SSH key during Droplet creation.</td>
         </tr>
     </tbody>
 </table>
@@ -5181,8 +5614,8 @@ The response received will contain the standard attributes defined for a domain:
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" -X GET \
-	-H "Authorization: Bearer 3070ce74ef5e19062a92880b6b662bf8c2e2f37849b389ab1f3e3f9d5df1b910"
+    curl -X GET "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -5190,7 +5623,7 @@ The response received will contain the standard attributes defined for a domain:
     - Headers
 
       ```
-      Authorization: Bearer 3070ce74ef5e19062a92880b6b662bf8c2e2f37849b389ab1f3e3f9d5df1b910
+      Authorization: Bearer 9fb83b1ee00556a995a5e57cbec1ffc38a92053c7d603058df3406acf320a8a4
       ```
 
   
@@ -5203,7 +5636,7 @@ The response received will contain the standard attributes defined for a domain:
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429605
+X-RateLimit-Reset: 1402516409
 Content-Length: 551
       ```
 
@@ -5222,49 +5655,63 @@ Content-Length: 551
       ```
   
 
-### Keys Destroy [DELETE]
+### Keys Update a Key [PUT]
 
-<p>To delete a domain, send a DELETE request to <code>/v2/domains/$DOMAIN_NAME</code>.</p>
+<p>To update the name of an SSH key, send a PUT request to either <code>/v2/account/keys/$SSH_KEY_ID</code> or <code>/v2/account/keys/$SSH_KEY_FINGERPRINT</code>.  Set the "name" attribute to the new name you want to use.</p>
 
-<p>The domain will be removed from your account and a response status of 204 will be returned.  This indicates a successful request with no response body.</p>
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Required?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>The new name to give the SSH key.</td>
+            <td>true</td>
+        </tr>
+    </tbody>
+</table>
 
+<p>The response body will be a JSON object with a key set to <code>ssh_key</code>.  The value will be an ojbect that contains the standard key attributes:</p>
 
-**Example:**
+<table class="pure-table pure-table-horizontal">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+            <td>integer</td>
+            <td>A unique identification number for the key.  This is used to reference the specific SSH key.</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string</td>
+            <td>The display name for the given SSH key.</td>
+        </tr>
+        <tr>
+            <td>fingerprint</td>
+            <td>string</td>
+            <td>The fingerprint value generated from the public key.  This is a unique identifier that can be used to  differentiate it from other keys using a format that SSH recognizes.</td>
+        </tr>
+        <tr>
+            <td>public_key</td>
+            <td>string</td>
+            <td>The entire public key string that was uploaded.  This is embedded into the root user's <code>authorized_keys</code> file if you choose to include the SSH key during Droplet creation.</td>
+        </tr>
+    </tbody>
+</table>
 
-  - **cURL**
-
-    ```bash
-    curl "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" -d '' -X DELETE \
-	-H "Authorization: Bearer db0b8102d87db3da926251b621b6f4d5babd049570f462ade887e25e0360c2f5" \
-	-H "Content-Type: application/x-www-form-urlencoded"
-    ```
-
-  - **Request**
-
-    - Headers
-
-      ```
-      Authorization: Bearer db0b8102d87db3da926251b621b6f4d5babd049570f462ade887e25e0360c2f5
-Content-Type: application/x-www-form-urlencoded
-      ```
-
-  
-
-  - **Response**
-
-    - Headers
-
-      ```
-      X-RateLimit-Limit: 1200
-X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429605
-      ```
-
-  
-
-### Keys Update [PUT]
-
-Update a Key
 **Parameters:**
 <table>
   <thead>
@@ -5290,10 +5737,9 @@ Update a Key
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" -d '{
-  "name": "New Name"
-}' -X PUT \
-	-H "Authorization: Bearer d4b75b82770961c873bca4700b67d2836bff20331d889b6eb1677ff3ac87623d" \
+    curl -X PUT "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" \
+	-d '{"name":"New Name"}' \
+	-H "Authorization: Bearer $TOKEN" \
 	-H "Content-Type: application/x-www-form-urlencoded"
     ```
 
@@ -5302,7 +5748,7 @@ Update a Key
     - Headers
 
       ```
-      Authorization: Bearer d4b75b82770961c873bca4700b67d2836bff20331d889b6eb1677ff3ac87623d
+      Authorization: Bearer f21abe0d1c58f0f0a4dd81a20a3a4ebebcad3e3fe73ca3385436c8d1ee3d8489
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -5324,7 +5770,7 @@ Content-Type: application/x-www-form-urlencoded
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429605
+X-RateLimit-Reset: 1402516409
 Content-Length: 551
       ```
 
@@ -5334,13 +5780,53 @@ Content-Length: 551
       ```json
       {
   "ssh_key": {
-    "id": 6,
+    "id": 5,
     "fingerprint": "f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2",
     "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPrtBjQaNBwDSV3ePC86zaEWu06g4+KEiivyqWAiOTvIp33Nia3b91NjfQydMkJlVfKuFs+hf2buQvCvslF4NNmWqxkPB69d+fS0ZL8Y4FMqut2I8hJuDg5MHO66QX6BkMqjqt3vsaJqbn7/dy0rKsqnaHgH0xqg0sPccK98nhL3nuoDGrzlsK0zMdfktX/yRSdjlpj4KdufA8/9uX14YGXNyduKMr8Sl7fLiAgtM0J3HHPAEOXce1iSmfIbxn16c8ikOddgM5MGK8DveX4EEscqwG0MxNkXJxgrU3e+k6dkb6RKuvGCtdSthrJ5X6O99lZCP0L6i3CD69d13YFobB name@example.com",
     "name": "Example Key"
   }
 }
       ```
+  
+
+### Keys Destroy a Key [DELETE]
+
+<p>To destroy a public SSH key that you have in your account, send a DELETE request to <code>/v2/account/keys/$KEY_ID</code> or <code>/v2/account/keys/$KEY_FINGERPRINT</code>. </p>
+
+<p>A 204 status will be returned, indicating that the action was successful and that the response body is empty.</p>
+
+
+**Example:**
+
+  - **cURL**
+
+    ```bash
+    curl -X DELETE "https://api.digitalocean.com/v2/account/keys/f5:de:eb:64:2d:6a:b6:d5:bb:06:47:7f:04:4b:f8:e2" \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/x-www-form-urlencoded"
+    ```
+
+  - **Request**
+
+    - Headers
+
+      ```
+      Authorization: Bearer 4a97ffde03109870649b7c6902ed05035eda48197178d3ba56f0598064aebbc4
+Content-Type: application/x-www-form-urlencoded
+      ```
+
+  
+
+  - **Response**
+
+    - Headers
+
+      ```
+      X-RateLimit-Limit: 1200
+X-RateLimit-Remaining: 1199
+X-RateLimit-Reset: 1402516409
+      ```
+
   
 # Regions
 
@@ -5393,7 +5879,7 @@ Content-Length: 551
 
 <p>To list all of the regions that are available, send a GET request to <code>/v2/regions</code>.</p>
 
-The response will be an array of region objects, each of which will contain the standard region attributes:
+The response will be a JSON object with a key called <code>regions</code>.  The value of this will be an array of region objects, each of which will contain the standard region attributes:
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -5433,8 +5919,8 @@ The response will be an array of region objects, each of which will contain the 
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/regions" -X GET \
-	-H "Authorization: Bearer 71273ab1bb6f30e329c823e60afd7577fdc59117ea1eaa35ddcb9fd0f6d5c36e"
+    curl -X GET "https://api.digitalocean.com/v2/regions" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -5442,7 +5928,7 @@ The response will be an array of region objects, each of which will contain the 
     - Headers
 
       ```
-      Authorization: Bearer 71273ab1bb6f30e329c823e60afd7577fdc59117ea1eaa35ddcb9fd0f6d5c36e
+      Authorization: Bearer 6f18eeb29e5bc43b8a031eaf30df929a38f14f7fdf506326502a87a70d801b6c
       ```
 
   
@@ -5455,7 +5941,7 @@ The response will be an array of region objects, each of which will contain the 
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429599
+X-RateLimit-Reset: 1402516416
 Content-Length: 431
       ```
 
@@ -5571,7 +6057,7 @@ Content-Length: 431
 
 <p>To list all of the sizes, send a GET request to <code>/v2/sizes</code>.</p>
 
-<p>The response will be an array of size objects each of which contain the standard sizes attributes:</p>
+<p>The response will be a JSON object with a key called <code>sizes</code>.  The value of this will be an array of size objects each of which contain the standard sizes attributes:</p>
 
 <table class="pure-table pure-table-horizontal">
     <thead>
@@ -5631,8 +6117,8 @@ Content-Length: 431
   - **cURL**
 
     ```bash
-    curl "https://api.digitalocean.com/v2/sizes" -X GET \
-	-H "Authorization: Bearer 665928be91e83243214549541e47c86a123ca911794cc1482b4d59c3c2c993a6"
+    curl -X GET "https://api.digitalocean.com/v2/sizes" \
+	-H "Authorization: Bearer $TOKEN"
     ```
 
   - **Request**
@@ -5640,7 +6126,7 @@ Content-Length: 431
     - Headers
 
       ```
-      Authorization: Bearer 665928be91e83243214549541e47c86a123ca911794cc1482b4d59c3c2c993a6
+      Authorization: Bearer 50c9ba8c9ba03af4f23d21c4b3ffd0f88f5eb4e2c4f7d9d877e9ac9bdf9f1c78
       ```
 
   
@@ -5653,7 +6139,7 @@ Content-Length: 431
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402429599
+X-RateLimit-Reset: 1402516416
 Content-Length: 561
       ```
 
