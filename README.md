@@ -8,9 +8,9 @@ All of the functionality that you are familiar with in the DigitalOcean control 
 
 The API documentation will start with a general overview about the design and technology that has been implemented, followed by reference information about specific endpoints.
 
-### HTML Requests
+### HTTP Requests
 
-The DigitalOcean API is fully [RESTful]("http://en.wikipedia.org/wiki/Representational_state_transfer").  Users can access the resources provided by the API by using standard HTML methods.
+The DigitalOcean API is fully [RESTful]("http://en.wikipedia.org/wiki/Representational_state_transfer").  Users can access the resources provided by the API by using standard HTTP methods.
 
 Any tool that is fluent in HTTP can communicate with the API simply by requesting the correct URI.  Requests should be made using the HTTPS protocol so that traffic is encrypted.  The interface responds to different methods depending on the action required.
 
@@ -68,9 +68,9 @@ Any tool that is fluent in HTTP can communicate with the API simply by requestin
 </table>
 
 
-### HTML Statuses
+### HTTP Statuses
 
-Along with the HTML methods that the API responds to, it will also return standard HTML statuses, including error codes.
+Along with the HTTP methods that the API responds to, it will also return standard HTTP statuses, including error codes.
 
 In the event of a problem, the status will contain the error code, while the body of the response will usually contain additional information about the problem that was encountered.
 
@@ -410,7 +410,7 @@ Lists all Actions for the currently authenticated user.
     - Headers
 
       ```
-      Authorization: Bearer b82a9f7e1e96927d064751ebb1977210f4c648d32aab5b6795992fdeffc60b06
+      Authorization: Bearer 52d2fa67f3a157f313f8f239c6ec601e029b5031235b3e5bb851c8575631e21a
       ```
 
   
@@ -423,7 +423,7 @@ Lists all Actions for the currently authenticated user.
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516409
+X-RateLimit-Reset: 1402519661
 Total: 1
 Content-Length: 230
       ```
@@ -438,7 +438,7 @@ Content-Length: 230
       "id": 1,
       "status": "in-progress",
       "type": "test",
-      "started_at": "2014-06-11T18:53:29Z",
+      "started_at": "2014-06-11T19:47:41Z",
       "completed_at": null,
       "resource_id": null,
       "resource_type": null
@@ -468,7 +468,7 @@ Shows the details for a single Action
     - Headers
 
       ```
-      Authorization: Bearer 3ae72a1b9a1fe3ac682bcc53333b7e1b29c3f51eeebfface90698610bc50a692
+      Authorization: Bearer b52ce3c12de7f0c13148526a4e1d72a0ca948ff7dd2a5aee57c54dc5df09562a
       ```
 
   
@@ -481,7 +481,7 @@ Shows the details for a single Action
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516410
+X-RateLimit-Reset: 1402519661
 Content-Length: 203
       ```
 
@@ -494,7 +494,7 @@ Content-Length: 203
     "id": 2,
     "status": "in-progress",
     "type": "test",
-    "started_at": "2014-06-11T18:53:30Z",
+    "started_at": "2014-06-11T19:47:41Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": null
@@ -777,7 +777,7 @@ Content-Length: 203
     - Headers
 
       ```
-      Authorization: Bearer 3a398d43d48ff80724e35ab1b27421aaa0eb24d4d2116199e428d889bdcc44cb
+      Authorization: Bearer 09d5406eba33327ce0f4ce2bbfdb3e95326c41b023caf792d6f6dbc0cf5fff77
       ```
 
   
@@ -790,7 +790,7 @@ Content-Length: 203
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516410
+X-RateLimit-Reset: 1402519661
 Content-Length: 861
       ```
 
@@ -1020,7 +1020,7 @@ Content-Length: 861
     - Headers
 
       ```
-      Authorization: Bearer 47cf5b4a2986deefe2ab82de237bb4556cf3a6e3cb880f782652600660fca9e1
+      Authorization: Bearer 3597bda09fefbb3f9f128b4852bb625c01709680becc73063fb5daf7bcf37db9
 Content-Type: application/json
       ```
 
@@ -1044,7 +1044,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516410
+X-RateLimit-Reset: 1402519661
 Content-Length: 185
       ```
 
@@ -1136,7 +1136,7 @@ The request will be an object that contains all of the standard domain record at
     - Headers
 
       ```
-      Authorization: Bearer dd328de576a8e30002c93003dd733111739506e2c928da3dfb6c40d220cc5dd5
+      Authorization: Bearer ffa5e6a23cb12867ff2a26843fabc45b02fdb8d0322e8187e0c32cb479597272
       ```
 
   
@@ -1149,7 +1149,7 @@ The request will be an object that contains all of the standard domain record at
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516410
+X-RateLimit-Reset: 1402519661
 Content-Length: 163
       ```
 
@@ -1193,7 +1193,7 @@ Content-Length: 163
     - Headers
 
       ```
-      Authorization: Bearer 85fc53eaee8bdeda8f5342e833b6087536eb78ad23e534301a47c9ba647b6bf3
+      Authorization: Bearer 89f29425a6e76a82a309837a659b262f263341787605d00ee3c3045e578c62dd
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -1206,7 +1206,7 @@ Content-Type: application/x-www-form-urlencoded
       ```
       X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516410
+X-RateLimit-Reset: 1402519662
       ```
 
   
@@ -1319,7 +1319,7 @@ X-RateLimit-Reset: 1402516410
     - Headers
 
       ```
-      Authorization: Bearer 6b24d7b2d05730843c66b0bb29e99505b29fab53663d072578fb3689d32ded8b
+      Authorization: Bearer 33330f40ba973db9049b41b32c5ee3082cf3a59a7b5f11cf615ff76421d48641
 Content-Type: application/json
       ```
 
@@ -1341,7 +1341,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516411
+X-RateLimit-Reset: 1402519662
 Content-Length: 164
       ```
 
@@ -1451,7 +1451,7 @@ An array of Domain objects will be returned, each of which contain the standard 
     - Headers
 
       ```
-      Authorization: Bearer b9848149727b73291730eff63b0c703743e51a88bc811a36695c7cd9297e17c2
+      Authorization: Bearer 11955f340c27a3791dff33d9b1be87e034e5371738751ec463e070cce231077a
       ```
 
   
@@ -1464,7 +1464,7 @@ An array of Domain objects will be returned, each of which contain the standard 
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516411
+X-RateLimit-Reset: 1402519662
 Total: 1
 Content-Length: 130
       ```
@@ -1588,7 +1588,7 @@ Content-Length: 130
     - Headers
 
       ```
-      Authorization: Bearer 63c2e73f88bf237af3887c4abbaca418ab5379e20451afc787d17eac215fe192
+      Authorization: Bearer 202e72ad1499bbdecd76ad3cf0f6b55acf2e733122d7dc345acd08136b6757c6
 Content-Type: application/json
       ```
 
@@ -1611,7 +1611,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516411
+X-RateLimit-Reset: 1402519662
 Content-Length: 88
       ```
 
@@ -1679,7 +1679,7 @@ The response received will contain the standard attributes defined for a domain:
     - Headers
 
       ```
-      Authorization: Bearer 005f066e452f9b99b9457cf145852fc83856f366633c1466c119149294842531
+      Authorization: Bearer d61d534ae3aa4fef1cc473a99493b01da4aac2b368b25982a52ee3af3ba08d87
       ```
 
   
@@ -1692,7 +1692,7 @@ The response received will contain the standard attributes defined for a domain:
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516411
+X-RateLimit-Reset: 1402519662
 Content-Length: 111
       ```
 
@@ -1732,7 +1732,7 @@ Content-Length: 111
     - Headers
 
       ```
-      Authorization: Bearer 24393655cd85ebd9cf2d0e98d9df7945293ff478d2c6bec97d54e40eebd86e14
+      Authorization: Bearer 7e10c827fce398666010d10200cedeee770993cc432f7a96a1e1b012365fed64
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -1745,7 +1745,7 @@ Content-Type: application/x-www-form-urlencoded
       ```
       X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516411
+X-RateLimit-Reset: 1402519662
       ```
 
   
@@ -1927,7 +1927,7 @@ X-RateLimit-Reset: 1402516411
     - Headers
 
       ```
-      Authorization: Bearer 5dad134107d94515bb5f4d7a9ebc2172c3ffb0b9350b146bb4881389a1cc2fb9
+      Authorization: Bearer 0c1ee1a6a6af9236615540c1a898047fbd5e0c2b2fcbe3f2f12e462749966e8e
       ```
 
   
@@ -1940,7 +1940,7 @@ X-RateLimit-Reset: 1402516411
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516413
+X-RateLimit-Reset: 1402519665
 Total: 1
 Content-Length: 1430
       ```
@@ -2043,7 +2043,7 @@ Lists all of the droplet's snapshots
     - Headers
 
       ```
-      Authorization: Bearer 353a5ec114f07635fd0335acf8480314d6353b3aa7f8e7b55ee3eda8450efb9a
+      Authorization: Bearer 53c7728211d3305ce2b946005b9aefff887807d274bb94707e935b62bb7bd9d8
       ```
 
   
@@ -2056,7 +2056,7 @@ Lists all of the droplet's snapshots
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516414
+X-RateLimit-Reset: 1402519665
 Total: 1
 Content-Length: 207
       ```
@@ -2100,7 +2100,7 @@ Lists all of the droplet's backups
     - Headers
 
       ```
-      Authorization: Bearer bf10a0df89f25a6d78471763429a457dd4edf7d81eaf429db98523ef44cce0d3
+      Authorization: Bearer cbcfb7cf37e4d3cbcd1166121b78071455caa5b9bfd61a12dcfdae01cf734a90
       ```
 
   
@@ -2113,7 +2113,7 @@ Lists all of the droplet's backups
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516414
+X-RateLimit-Reset: 1402519665
 Total: 1
 Content-Length: 205
       ```
@@ -2352,7 +2352,7 @@ Content-Length: 205
     - Headers
 
       ```
-      Authorization: Bearer effb15bb9cf26ac18d94a8de6f1f2f3e0481fc3ae35d0117986246cd6b86e865
+      Authorization: Bearer 3082af2fd345a65dc1ae61a3e88e51dbdb1c7be641374b6a127efcac82d5e572
 Content-Type: application/json
       ```
 
@@ -2377,7 +2377,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516414
+X-RateLimit-Reset: 1402519665
 Link: <http://example.org/v2/droplets/18/actions/14>; rel="monitor"
 Content-Length: 846
       ```
@@ -2394,8 +2394,8 @@ Content-Length: 846
       "slug": "nyc1",
       "name": "New York",
       "sizes": [
-        "512mb",
-        "1024mb"
+        "1024mb",
+        "512mb"
       ],
       "available": true
     },
@@ -2532,7 +2532,7 @@ Content-Length: 846
     - Headers
 
       ```
-      Authorization: Bearer 6fd263fe12fdc53d313c80b887f46179e1d8353f3671dea028c7f007efb9ca15
+      Authorization: Bearer 7447ac43c89f59b2ccbadd075ba784f8bee1ebe9e65fa6f2001ba52d39b14000
       ```
 
   
@@ -2545,7 +2545,7 @@ Content-Length: 846
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516414
+X-RateLimit-Reset: 1402519665
 Content-Length: 1289
       ```
 
@@ -2649,7 +2649,7 @@ Content-Length: 1289
     - Headers
 
       ```
-      Authorization: Bearer e828aaea17102abaceba2bdd3a1cd1628de6bc1745164053cb08f87f1f9f4f03
+      Authorization: Bearer 422cbe5ddc2df3475b4de4fa4f61e44dd40ec6d8399fbb82fc22ea952ee85bbb
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -2662,7 +2662,7 @@ Content-Type: application/x-www-form-urlencoded
       ```
       X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516414
+X-RateLimit-Reset: 1402519665
       ```
 
   
@@ -2841,7 +2841,7 @@ X-RateLimit-Reset: 1402516414
     - Headers
 
       ```
-      Authorization: Bearer 35e483313ea291701b4bef57101284fe93ace9d87783a32099d7b1b384e0c690
+      Authorization: Bearer d5ed2fa1d84488260646c165171d1a9e0f06292f1135eb33b3884acc68522cfe
 Content-Type: application/json
       ```
 
@@ -2863,7 +2863,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516411
+X-RateLimit-Reset: 1402519663
 Content-Length: 207
       ```
 
@@ -2876,7 +2876,7 @@ Content-Length: 207
     "id": 4,
     "status": "in-progress",
     "type": "reboot",
-    "started_at": "2014-06-11T18:53:32Z",
+    "started_at": "2014-06-11T19:47:43Z",
     "completed_at": null,
     "resource_id": 4,
     "resource_type": "droplet"
@@ -2993,7 +2993,7 @@ Content-Length: 207
     - Headers
 
       ```
-      Authorization: Bearer a045979cf8e1a0abe613e117f2040ca0e9fefc716d825c3f1496cd2e81368e66
+      Authorization: Bearer 9c98358a589294d08567f7def7388a2126312bf36f5c691a14e73499afa0151e
 Content-Type: application/json
       ```
 
@@ -3015,7 +3015,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516412
+X-RateLimit-Reset: 1402519663
 Content-Length: 212
       ```
 
@@ -3028,7 +3028,7 @@ Content-Length: 212
     "id": 5,
     "status": "in-progress",
     "type": "power_cycle",
-    "started_at": "2014-06-11T18:53:32Z",
+    "started_at": "2014-06-11T19:47:43Z",
     "completed_at": null,
     "resource_id": 5,
     "resource_type": "droplet"
@@ -3147,7 +3147,7 @@ Content-Length: 212
     - Headers
 
       ```
-      Authorization: Bearer a600b3236dcb0d75fe87625e5bf447fcd67b43a1f3b0c508b79062179e8f857d
+      Authorization: Bearer 44e2bdade4e69c4aebe9dcb89445947dd912cfe99e4e86b45073f186f2be5cb6
 Content-Type: application/json
       ```
 
@@ -3169,7 +3169,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516412
+X-RateLimit-Reset: 1402519663
 Content-Length: 209
       ```
 
@@ -3182,7 +3182,7 @@ Content-Length: 209
     "id": 6,
     "status": "in-progress",
     "type": "shutdown",
-    "started_at": "2014-06-11T18:53:32Z",
+    "started_at": "2014-06-11T19:47:43Z",
     "completed_at": null,
     "resource_id": 6,
     "resource_type": "droplet"
@@ -3303,7 +3303,7 @@ Content-Length: 209
     - Headers
 
       ```
-      Authorization: Bearer 093b1ad52e09fc189b6f3f54d62e481a6e64d9cfd022b2a39787d3072e6b06e5
+      Authorization: Bearer 87980006310189fe62bfc01ea276b72b339c4871f829333af608b7a0777047eb
 Content-Type: application/json
       ```
 
@@ -3325,7 +3325,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516412
+X-RateLimit-Reset: 1402519663
 Content-Length: 210
       ```
 
@@ -3338,7 +3338,7 @@ Content-Length: 210
     "id": 7,
     "status": "in-progress",
     "type": "power_off",
-    "started_at": "2014-06-11T18:53:32Z",
+    "started_at": "2014-06-11T19:47:43Z",
     "completed_at": null,
     "resource_id": 7,
     "resource_type": "droplet"
@@ -3455,7 +3455,7 @@ Content-Length: 210
     - Headers
 
       ```
-      Authorization: Bearer b3fcc17bcf6e1ea9d8a7627366a1996bb2c29871e33b29db37e489193d8bf210
+      Authorization: Bearer d616428f5db7da18490af1977e4ee8416f0fe4486a76aabc697405675dd21573
 Content-Type: application/json
       ```
 
@@ -3477,7 +3477,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516412
+X-RateLimit-Reset: 1402519663
 Content-Length: 209
       ```
 
@@ -3490,7 +3490,7 @@ Content-Length: 209
     "id": 8,
     "status": "in-progress",
     "type": "power_on",
-    "started_at": "2014-06-11T18:53:32Z",
+    "started_at": "2014-06-11T19:47:43Z",
     "completed_at": null,
     "resource_id": 8,
     "resource_type": "droplet"
@@ -3607,7 +3607,7 @@ Content-Length: 209
     - Headers
 
       ```
-      Authorization: Bearer a56b6e626a02de0626a940c6d24dfcd732094a3b16782c1f1e0ed21a95d20437
+      Authorization: Bearer e133fdaa8c3b1a3fe74e8eef8abac90692689fdb9a6ea8b87bf29788fec56cac
 Content-Type: application/json
       ```
 
@@ -3629,7 +3629,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516412
+X-RateLimit-Reset: 1402519664
 Content-Length: 215
       ```
 
@@ -3642,7 +3642,7 @@ Content-Length: 215
     "id": 9,
     "status": "in-progress",
     "type": "password_reset",
-    "started_at": "2014-06-11T18:53:32Z",
+    "started_at": "2014-06-11T19:47:44Z",
     "completed_at": null,
     "resource_id": 9,
     "resource_type": "droplet"
@@ -3773,7 +3773,7 @@ Content-Length: 215
     - Headers
 
       ```
-      Authorization: Bearer 028fb3f61a0f7c60cdc5758cca2a5b4fd3a43a7cc30cc0d946cd8c8e6964ac25
+      Authorization: Bearer 041fff89a90cb7f195c1faf2c7e9e2ed255886fb634ac90fb8b96355c1ab2550
 Content-Type: application/json
       ```
 
@@ -3796,7 +3796,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516413
+X-RateLimit-Reset: 1402519664
 Content-Length: 209
       ```
 
@@ -3809,7 +3809,7 @@ Content-Length: 209
     "id": 10,
     "status": "in-progress",
     "type": "resize",
-    "started_at": "2014-06-11T18:53:33Z",
+    "started_at": "2014-06-11T19:47:44Z",
     "completed_at": null,
     "resource_id": 10,
     "resource_type": "droplet"
@@ -3940,7 +3940,7 @@ Content-Length: 209
     - Headers
 
       ```
-      Authorization: Bearer 3034e240e82726ffe4cd3d907e013da93490da5d79395d449ba5b02109ba16bb
+      Authorization: Bearer 7979a4a36ba97bc4ba1259f803e0abd45ec8faf3d9f77417d5ee27b8d7298433
 Content-Type: application/json
       ```
 
@@ -3963,7 +3963,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516413
+X-RateLimit-Reset: 1402519664
 Content-Length: 210
       ```
 
@@ -3976,7 +3976,7 @@ Content-Length: 210
     "id": 11,
     "status": "in-progress",
     "type": "restore",
-    "started_at": "2014-06-11T18:53:33Z",
+    "started_at": "2014-06-11T19:47:44Z",
     "completed_at": null,
     "resource_id": 11,
     "resource_type": "droplet"
@@ -4106,7 +4106,7 @@ Content-Length: 210
     - Headers
 
       ```
-      Authorization: Bearer 37e63bcdb9b36b502cede88a8d8f2dd8db4593f34750be1b0657bf7da123ac08
+      Authorization: Bearer aee1c49495e11b48c924a5151138e8cb46ca087c74c34c4237ab4500f975f445
 Content-Type: application/json
       ```
 
@@ -4129,7 +4129,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516413
+X-RateLimit-Reset: 1402519664
 Content-Length: 210
       ```
 
@@ -4142,7 +4142,7 @@ Content-Length: 210
     "id": 12,
     "status": "in-progress",
     "type": "rebuild",
-    "started_at": "2014-06-11T18:53:33Z",
+    "started_at": "2014-06-11T19:47:44Z",
     "completed_at": null,
     "resource_id": 12,
     "resource_type": "droplet"
@@ -4271,7 +4271,7 @@ Content-Length: 210
     - Headers
 
       ```
-      Authorization: Bearer 6313052a8dad3543176cdcc6565eedbdbf29e50ed2610777a0479c4bbde07fb9
+      Authorization: Bearer 12b98694ba6ac400d6b83ed3304a6db6860c6d4dee3ad41bfef553084661ce2a
 Content-Type: application/json
       ```
 
@@ -4294,7 +4294,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516413
+X-RateLimit-Reset: 1402519664
 Content-Length: 209
       ```
 
@@ -4307,7 +4307,7 @@ Content-Length: 209
     "id": 13,
     "status": "in-progress",
     "type": "rename",
-    "started_at": "2014-06-11T18:53:33Z",
+    "started_at": "2014-06-11T19:47:44Z",
     "completed_at": null,
     "resource_id": 13,
     "resource_type": "droplet"
@@ -4386,7 +4386,7 @@ Content-Length: 209
     - Headers
 
       ```
-      Authorization: Bearer 6997f04212f3000adaad4495c5d9bfb3a96a66531f60e7bdd7d51d1c084d2646
+      Authorization: Bearer 1e49563ae9bf5af71ec9dd5bd532c754b08844d743aacb15c68e4b7d3c1853ce
       ```
 
   
@@ -4399,7 +4399,7 @@ Content-Length: 209
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516411
+X-RateLimit-Reset: 1402519663
 Content-Length: 205
       ```
 
@@ -4412,7 +4412,7 @@ Content-Length: 205
     "id": 3,
     "status": "in-progress",
     "type": "create",
-    "started_at": "2014-06-11T18:53:31Z",
+    "started_at": "2014-06-11T19:47:43Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": null
@@ -4605,7 +4605,7 @@ Content-Length: 205
     - Headers
 
       ```
-      Authorization: Bearer 0e40f92cae431d6ba57de797bb2456b1ecc0f43ffe76b8cf7f288574a668a4fe
+      Authorization: Bearer 335a4a0aaccd9aa481791768b2df69ce2d82de66896ce8f1d80d7add8a92ef0b
 Content-Type: application/json
       ```
 
@@ -4628,7 +4628,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516415
+X-RateLimit-Reset: 1402519666
 Content-Length: 213
       ```
 
@@ -4641,7 +4641,7 @@ Content-Length: 213
     "id": 17,
     "status": "in-progress",
     "type": "transfer",
-    "started_at": "2014-06-11T18:53:35Z",
+    "started_at": "2014-06-11T19:47:46Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": "backend"
@@ -4670,7 +4670,7 @@ Content-Length: 213
     - Headers
 
       ```
-      Authorization: Bearer e30cbe36d843bff4573b93970b57c8534f2af0d6bb3fbe8118ad0d12065f5e57
+      Authorization: Bearer 80e17f12f4b54d8a7ed000e159c4970aa59314997e0fae345bb446bd250c65d8
       ```
 
   
@@ -4683,7 +4683,7 @@ Content-Length: 213
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516415
+X-RateLimit-Reset: 1402519666
 Content-Length: 208
       ```
 
@@ -4696,7 +4696,7 @@ Content-Length: 208
     "id": 16,
     "status": "in-progress",
     "type": "transfer",
-    "started_at": "2014-06-11T18:53:35Z",
+    "started_at": "2014-06-11T19:47:46Z",
     "completed_at": null,
     "resource_id": null,
     "resource_type": null
@@ -4839,7 +4839,7 @@ Content-Length: 208
     - Headers
 
       ```
-      Authorization: Bearer 59709e78e66cef77675945cbc9a1d7884e98e0a0318093e0657ff504e50a3347
+      Authorization: Bearer f0f0757415ab18f3e1a855e9e43812fdb8487525345fa4cccc20944367ffaa9a
       ```
 
   
@@ -4852,7 +4852,7 @@ Content-Length: 208
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516415
+X-RateLimit-Reset: 1402519666
 Total: 2
 Content-Length: 390
       ```
@@ -4958,7 +4958,7 @@ Content-Length: 390
     - Headers
 
       ```
-      Authorization: Bearer b7969743b1a3d4e103e2576c767f1ab1e69805a22f18b0a08fd1ec3a15bd15e2
+      Authorization: Bearer 6eb6a2d8b582da5e20226c09c2345adfaf9cef5428375b9a83b9958504f0ae0b
       ```
 
   
@@ -4971,7 +4971,7 @@ Content-Length: 390
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516415
+X-RateLimit-Reset: 1402519666
 Content-Length: 171
       ```
 
@@ -5062,7 +5062,7 @@ Content-Length: 171
     - Headers
 
       ```
-      Authorization: Bearer f0baf29c820945e40f562c588b0f56c7536dd878e3fff37d4fba80d04616f6d5
+      Authorization: Bearer 809c984dba644d465ae165eeb7f23bd2a1be345870a7dd0defa012529bc8857d
       ```
 
   
@@ -5075,7 +5075,7 @@ Content-Length: 171
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516415
+X-RateLimit-Reset: 1402519666
 Content-Length: 182
       ```
 
@@ -5120,7 +5120,7 @@ Content-Length: 182
     - Headers
 
       ```
-      Authorization: Bearer 63fca1d2806f313992d19c9f1857042d6e86e73a96c227d6a5df9af105498f1b
+      Authorization: Bearer 827b641852f793c79003924372dbae3b3e2814403b692490e4e5b6375f4d76e4
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -5133,7 +5133,7 @@ Content-Type: application/x-www-form-urlencoded
       ```
       X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516415
+X-RateLimit-Reset: 1402519666
       ```
 
   
@@ -5245,7 +5245,7 @@ X-RateLimit-Reset: 1402516415
     - Headers
 
       ```
-      Authorization: Bearer f014a545d01bc0cde378688b6dedd110d6533646799d2e3a0fba5fb335b664be
+      Authorization: Bearer 19d4fd80b6de321fa83d21b9d114d1d16f7d7e54731f17a33afe7a615c2151ae
 Content-Type: application/json
       ```
 
@@ -5267,7 +5267,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516415
+X-RateLimit-Reset: 1402519667
 Content-Length: 173
       ```
 
@@ -5387,7 +5387,7 @@ Content-Length: 173
     - Headers
 
       ```
-      Authorization: Bearer f69daca2c1aef23635472b483edcb851b351270a81978abaecef5a0c147b8a82
+      Authorization: Bearer b0749d566f3dc049c2647a79a9db2368ec4c606d080ce4e55462e37dfdab0648
       ```
 
   
@@ -5400,7 +5400,7 @@ Content-Length: 173
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516408
+X-RateLimit-Reset: 1402519660
 Content-Length: 572
       ```
 
@@ -5526,7 +5526,7 @@ Content-Length: 572
     - Headers
 
       ```
-      Authorization: Bearer b6f3e49c5e81d5c9bb469b3dce51cba321abea089d6245d0645c59b8a290d0d8
+      Authorization: Bearer 7aa4104b77a4eb501e34e90da05b7b5a6bda7379cf8f70bb8bbd4809ce765a50
 Content-Type: application/json
       ```
 
@@ -5549,7 +5549,7 @@ Content-Type: application/json
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516408
+X-RateLimit-Reset: 1402519660
 Content-Length: 551
       ```
 
@@ -5623,7 +5623,7 @@ Content-Length: 551
     - Headers
 
       ```
-      Authorization: Bearer 9fb83b1ee00556a995a5e57cbec1ffc38a92053c7d603058df3406acf320a8a4
+      Authorization: Bearer 5a66dfaf9b6df71e2edc0d42d582e732b09db6581ff683dbd65267959faed68b
       ```
 
   
@@ -5636,7 +5636,7 @@ Content-Length: 551
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516409
+X-RateLimit-Reset: 1402519660
 Content-Length: 551
       ```
 
@@ -5748,7 +5748,7 @@ Content-Length: 551
     - Headers
 
       ```
-      Authorization: Bearer f21abe0d1c58f0f0a4dd81a20a3a4ebebcad3e3fe73ca3385436c8d1ee3d8489
+      Authorization: Bearer 310195e0345391961faac0510cf75ab44c0c099b1600bffddb7b4cfd511e49f4
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -5770,7 +5770,7 @@ Content-Type: application/x-www-form-urlencoded
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516409
+X-RateLimit-Reset: 1402519660
 Content-Length: 551
       ```
 
@@ -5811,7 +5811,7 @@ Content-Length: 551
     - Headers
 
       ```
-      Authorization: Bearer 4a97ffde03109870649b7c6902ed05035eda48197178d3ba56f0598064aebbc4
+      Authorization: Bearer d13e83ae2a2e1177b4c06cf1af54298dc44e0b538369c8e6448a2177c7abca32
 Content-Type: application/x-www-form-urlencoded
       ```
 
@@ -5824,7 +5824,7 @@ Content-Type: application/x-www-form-urlencoded
       ```
       X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516409
+X-RateLimit-Reset: 1402519660
       ```
 
   
@@ -5928,7 +5928,7 @@ The response will be a JSON object with a key called <code>regions</code>.  The 
     - Headers
 
       ```
-      Authorization: Bearer 6f18eeb29e5bc43b8a031eaf30df929a38f14f7fdf506326502a87a70d801b6c
+      Authorization: Bearer 4f9add7e91592e2b3bcf6f83a79397c796df604fc64c5516e79e3220532b8fe5
       ```
 
   
@@ -5941,7 +5941,7 @@ The response will be a JSON object with a key called <code>regions</code>.  The 
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516416
+X-RateLimit-Reset: 1402519667
 Content-Length: 431
       ```
 
@@ -6126,7 +6126,7 @@ Content-Length: 431
     - Headers
 
       ```
-      Authorization: Bearer 50c9ba8c9ba03af4f23d21c4b3ffd0f88f5eb4e2c4f7d9d877e9ac9bdf9f1c78
+      Authorization: Bearer 416c64c66ce54ae785232e2082d41e1eb3dbc90b17aece8ffc3929ca87beed15
       ```
 
   
@@ -6139,7 +6139,7 @@ Content-Length: 431
       Content-Type: application/json; charset=utf-8
 X-RateLimit-Limit: 1200
 X-RateLimit-Remaining: 1199
-X-RateLimit-Reset: 1402516416
+X-RateLimit-Reset: 1402519667
 Content-Length: 561
       ```
 
