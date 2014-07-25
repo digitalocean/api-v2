@@ -1,9 +1,9 @@
 # Changelog
 
 ## 7-25-2014
-
+  
   - Add vcpus, memory, and disk to Droplet, remove those fields from the embedded Size object.
-  - Size's price\_monthly and price\_hourly are now floats.
+  - Size's `price_monthly` and `price_hourly` are now floats. `transfer` is now in TB as documented.
 
 ## 7-18-2014
 
