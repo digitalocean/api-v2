@@ -1,5 +1,14 @@
 # Changelog
 
+## 8-20-2014
+
+  - Remove embedded action_ids from Droplet and Image.
+
+## 8-06-2014
+
+  - Fix return code to be 201 when creating actions.
+  - List action_ids on Image.
+
 ## 7-25-2014
   
   - Add vcpus, memory, and disk to Droplet, remove those fields from the embedded Size object.
